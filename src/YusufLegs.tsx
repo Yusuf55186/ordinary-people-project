@@ -1,9 +1,12 @@
+
 type Props = {
-    kneeRotation:number
+    leftKneeRotation:number
     rightKneeRotation: number
+    leftHipRotation:number
+    rightHipRotation:number
 
 };
-export function YusufLegs({ kneeRotation,rightKneeRotation}:Props){
+export function YusufLegs({ leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation}:Props){
     
     return (
         
@@ -74,8 +77,8 @@ export function YusufLegs({ kneeRotation,rightKneeRotation}:Props){
     `}</style>
     </defs>
     
-    <g id="Leg_L">
-    <g id="lower_Leg_L" transform={`rotate(${kneeRotation} 41 172)`}><g id="Foot_L">
+    <g id="Leg_L" transform={`rotate(${leftHipRotation} 50 10)`}>
+    <g id="lower_Leg_L" transform={`rotate(${leftKneeRotation} 41 172)`}><g id="Foot_L">
       <path id="Body_Foot_L" className="cls-7" d="M66.43,280.85c-.94-5.29-6.52-7.68-11.98-6.68-4.93.88-10.18,1.97-14.93,3.46-2.43.76-4.56,1.62-6.77,2.4-7.41,2.42-18.74,3.65-24.91,7.4-2.36,1.41-3.34,3.77-1.26,5.23,2.57,1.57,5.19,1.37,9.06,1.72,5.55.37,11.51.56,16.99.3,6.98-.41,14.19-.43,21.11.32,1.82.17,3.55.57,5.34.45,7.01-.77,8.55-9.31,7.37-14.57v-.04Z"/>
       <g id="Shoe_L">
         <g id="Shoe_Sole-2" data-name="Shoe Sole">
@@ -113,7 +116,7 @@ export function YusufLegs({ kneeRotation,rightKneeRotation}:Props){
       <path id="Pants_Thigh_L" className="cls-6" d="M14.76,171.89l5.39-78.91c0-.26-.02-.52-.05-.77-3.29-27.12-3.03-55.22.79-84.29.51-3.87,3.74-6.74,7.52-6.67l45.1.87c4.1.08,7.37,3.58,7.29,7.81l-1.83,98.08c-.08,4.23-3.47,7.6-7.57,7.52h0c-3.97-.08-7.29,3.08-7.56,7.16l-5.65,57.18"/>
     </g>
   </g>
-  <g  id="Leg_R">
+  <g  id="Leg_R" transform={`rotate(${rightHipRotation} 116 10)`}>
     <g id="lower_Leg_R" transform={`rotate(${rightKneeRotation} 116 173)`}>
 <g id="Foot_R">
       <path id="Body_Foot_R" className="cls-7" d="M127.34,275.97c1.58-5.16,7.43-6.97,12.74-5.41,4.8,1.38,9.89,3,14.44,4.97,2.33,1,4.34,2.07,6.45,3.08,7.08,3.17,18.2,5.55,23.88,9.9,2.18,1.65,2.86,4.09.61,5.33-2.76,1.3-5.33.83-9.22.78-5.57-.2-11.52-.62-16.94-1.44-6.89-1.12-14.07-1.88-21.05-1.85-1.83-.02-3.6.2-5.37-.1-6.88-1.49-7.36-10.13-5.54-15.23v-.04Z"/>

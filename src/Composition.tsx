@@ -3,11 +3,9 @@ import {
   CalculateMetadataFunction,
   Composition,
   useCurrentFrame,
-  interpolate,
-} from 'remotion';
-import { YusufLegs } from './YusufLegs';
-
-
+} from "remotion";
+import { YusufLegs } from "./YusufLegs";
+import { walkCycle } from "./animations/useWalkCycle";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -22,30 +20,23 @@ const LegsScene: React.FC<Props> = () => {
   //   [0,50,0]
   // );
   const frame = useCurrentFrame();
-  const kneeRotation = interpolate(
-    frame,
-    [0,30,59],
-    [-20,20,-20]
-  );
-  const rightKneeRotation = interpolate(
-    frame,
-    [0,30,59],
-    [-20,20,-20]
-  );
+  const pose = walkCycle(frame);
   return (
     <AbsoluteFill
       style={{
-        backgroundColor: '#ffffff',
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: "#ffffff",
+        justifyContent: "center",
+        alignItems: "center",
       }}
+      from={-7}
     >
       <YusufLegs
-      rightKneeRotation={rightKneeRotation}
-      kneeRotation={kneeRotation}
-      // kneeRotation_L={kneeRotation_L}
+        rightKneeRotation={pose.rightKneeRotation}
+        leftKneeRotation={pose.leftKneeRotation}
+        leftHipRotation={0}
+        rightHipRotation={15}
+        // kneeRotation_L={kneeRotation_L}
       />
-    
     </AbsoluteFill>
   );
 };
