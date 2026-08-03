@@ -15,11 +15,22 @@ const calculateMetadata: CalculateMetadataFunction<Props> = () => {
 };
 
 const LegsScene: React.FC<Props> = () => {
+  // const frameLegL = useCurrentFrame();
+  // const kneeRotation_L = interpolate(
+  //   frameLegL,
+  //   [0,30,59],
+  //   [0,50,0]
+  // );
   const frame = useCurrentFrame();
   const kneeRotation = interpolate(
     frame,
     [0,30,59],
-    [0,50,0]
+    [-20,20,-20]
+  );
+  const rightKneeRotation = interpolate(
+    frame,
+    [0,30,59],
+    [-20,20,-20]
   );
   return (
     <AbsoluteFill
@@ -30,7 +41,9 @@ const LegsScene: React.FC<Props> = () => {
       }}
     >
       <YusufLegs
+      rightKneeRotation={rightKneeRotation}
       kneeRotation={kneeRotation}
+      // kneeRotation_L={kneeRotation_L}
       />
     
     </AbsoluteFill>
