@@ -1,4 +1,3 @@
-
 type Props = {
     leftKneeRotation:number
     rightKneeRotation: number
@@ -10,9 +9,9 @@ export function YusufLegs({ leftKneeRotation,rightKneeRotation,leftHipRotation,r
     
     return (
         
-        <svg 
-        
-        viewBox="-110 0 350 306.17">
+        <svg
+          style={{ width: "100%", height: "auto", display: "block", overflow: "visible" }}
+viewBox="0 0 188.5 306.17"        >
             
               <defs>
                 <clipPath id="CalfClip_L">

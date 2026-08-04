@@ -4,14 +4,14 @@ import {
   Composition,
   useCurrentFrame,
 } from "remotion";
-import { YusufLegs } from "./YusufLegs";
-import { walkCycle } from "./animations/useWalkCycle";
+import { YusufCharacter } from "./YusufCharacter";
+import { walkCycle } from "./animations/walkCycle";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
   return {};
 };
-
+const WALK_CYCLE_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -20,7 +20,7 @@ const LegsScene: React.FC<Props> = () => {
   //   [0,50,0]
   // );
   const frame = useCurrentFrame();
-  const pose = walkCycle(frame);
+  const pose = walkCycle(frame,WALK_CYCLE_FRAMES);
   return (
     <AbsoluteFill
       style={{
@@ -30,12 +30,12 @@ const LegsScene: React.FC<Props> = () => {
       }}
       from={-7}
     >
-      <YusufLegs
+      <YusufCharacter
         rightKneeRotation={pose.rightKneeRotation}
         leftKneeRotation={pose.leftKneeRotation}
-        leftHipRotation={0}
-        rightHipRotation={15}
-        // kneeRotation_L={kneeRotation_L}
+        leftHipRotation={pose.leftHipRotation}
+        rightHipRotation={pose.rightHipRotation}
+        
       />
     </AbsoluteFill>
   );
@@ -46,7 +46,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={60}
+      durationInFrames={WALK_CYCLE_FRAMES}
       fps={30}
       width={1920}
       height={1080}
