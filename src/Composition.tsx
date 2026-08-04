@@ -45,6 +45,7 @@ const LegsScene: React.FC<Props> = () => {
 rightArmSwing={wavePose.rightArmSwing}
 leftElbowRotation={wavePose.leftElbowRotation}
 rightElbowRotation={wavePose.rightArmSwing}
+leftHandRotation={wavePose.leftHandRotation}
         
         
       />

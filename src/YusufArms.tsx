@@ -3,8 +3,9 @@ type Props = {
     rightArmSwing:number
     leftElbowRotation:number
     rightElbowRotation:number
+    leftHandRotation:number
 };
-export function YusufArms({leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation}:Props){
+export function YusufArms({leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation}:Props){
     return (
         <>
         <svg   style={{ position: "absolute", left: 136, top: 230, width: 251, height: 261,overflow:"visible"}}
@@ -46,7 +47,7 @@ stroke="#1e0d0d" d="M31.06,7.88c-1.53-1.46-2.74-2.17-2.74-2.17C21.12-4.45.59,3.3
               <g id="Forearm_L"   transform={`rotate(${leftElbowRotation} 78 64)`}>
                     <path id="Body_Forearm_L" className="cls-2" d="M76.93,64.16l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z" />
                     <path id="Lower_Sleeve_L" className="cls-1" d="M74.83,55.78c6.65,2.84,52.36,50.84,61.37,77.96l-6.42,5.35s-4.69-1.54-9.14-4.86c-3.95-2.95-7.43-7.5-11.4-10.8-29.17-24.3-49.1-43.3-49.92-48.74-.24-1.56,0,0,0,0" />
-                    <g id="Hand_L">
+                    <g id="Hand_L"   transform={`rotate(${leftHandRotation} 130 136)`}>
                         <path className="cls-3" d="M125.77,145.92c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z" />
                         <path className="cls-3" d="M145.67,131.03c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z" />
                         <path className="cls-3" d="M133.56,152.29c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32.96-1.11.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z" />
