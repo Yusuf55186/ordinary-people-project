@@ -6,6 +6,7 @@ import {
 } from "remotion";
 import { YusufCharacter } from "./YusufCharacter";
 import { walkCycle } from "./animations/walkCycle";
+
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -22,6 +23,7 @@ const LegsScene: React.FC<Props> = () => {
   const frame = useCurrentFrame();
   const pose = walkCycle(frame,WALK_CYCLE_FRAMES);
   return (
+    
     <AbsoluteFill
       style={{
         backgroundColor: "#ffffff",
@@ -35,10 +37,15 @@ const LegsScene: React.FC<Props> = () => {
         leftKneeRotation={pose.leftKneeRotation}
         leftHipRotation={pose.leftHipRotation}
         rightHipRotation={pose.rightHipRotation}
+        bodyY={pose.bodyY} 
+        leftArmSwing={pose.leftArmSwing}
+rightArmSwing={pose.rightArmSwing}
+        
         
       />
     </AbsoluteFill>
   );
+  
 };
 
 export const MyComposition = () => {
