@@ -6,6 +6,7 @@ import {
 } from "remotion";
 import { YusufCharacter } from "./YusufCharacter";
 import { walkCycle } from "./animations/walkCycle";
+import { WaveAnimation } from "./animations/wave";
 
 type Props = {};
 
@@ -13,6 +14,7 @@ const calculateMetadata: CalculateMetadataFunction<Props> = () => {
   return {};
 };
 const WALK_CYCLE_FRAMES = 60;
+const WAVE_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -22,6 +24,7 @@ const LegsScene: React.FC<Props> = () => {
   // );
   const frame = useCurrentFrame();
   const pose = walkCycle(frame,WALK_CYCLE_FRAMES);
+  const wavePose = WaveAnimation(frame,WAVE_ANIMATION_FRAMES);
   return (
     
     <AbsoluteFill
@@ -30,7 +33,7 @@ const LegsScene: React.FC<Props> = () => {
         justifyContent: "center",
         alignItems: "center",
       }}
-      from={-7}
+      
     >
       <YusufCharacter
         rightKneeRotation={pose.rightKneeRotation}
@@ -38,8 +41,10 @@ const LegsScene: React.FC<Props> = () => {
         leftHipRotation={pose.leftHipRotation}
         rightHipRotation={pose.rightHipRotation}
         bodyY={pose.bodyY} 
-        leftArmSwing={pose.leftArmSwing}
-rightArmSwing={pose.rightArmSwing}
+        leftArmSwing={wavePose.leftArmSwing}
+rightArmSwing={wavePose.rightArmSwing}
+leftElbowRotation={wavePose.leftElbowRotation}
+rightElbowRotation={wavePose.rightArmSwing}
         
         
       />
@@ -53,7 +58,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={WALK_CYCLE_FRAMES}
+      durationInFrames={WAVE_ANIMATION_FRAMES}
       fps={30}
       width={1920}
       height={1080}

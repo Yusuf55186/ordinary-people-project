@@ -1,8 +1,10 @@
 type Props = {
     leftArmSwing:number
     rightArmSwing:number
+    leftElbowRotation:number
+    rightElbowRotation:number
 };
-export function YusufArms({leftArmSwing,rightArmSwing}:Props){
+export function YusufArms({leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation}:Props){
     return (
         <>
         <svg   style={{ position: "absolute", left: 136, top: 230, width: 251, height: 261,overflow:"visible"}}
@@ -40,7 +42,8 @@ id="Arm_L" viewBox="0 0 156.75 163.11 ">
 <path id="Upper_Sleeve_L-2"  data-name="Upper_Sleeve_L" fill="#354ea1"
 stroke="#1e0d0d" d="M31.06,7.88c-1.53-1.46-2.74-2.17-2.74-2.17C21.12-4.45.59,3.38.59,3.38l9.65,39.09,10.51.09,2.41-1.45s31.27-10.96,7.89-33.23Z" 
 />
-</g>                <g id="Forearm_L">
+</g>  
+              <g id="Forearm_L"   transform={`rotate(${leftElbowRotation} 78 64)`}>
                     <path id="Body_Forearm_L" className="cls-2" d="M76.93,64.16l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z" />
                     <path id="Lower_Sleeve_L" className="cls-1" d="M74.83,55.78c6.65,2.84,52.36,50.84,61.37,77.96l-6.42,5.35s-4.69-1.54-9.14-4.86c-3.95-2.95-7.43-7.5-11.4-10.8-29.17-24.3-49.1-43.3-49.92-48.74-.24-1.56,0,0,0,0" />
                     <g id="Hand_L">
@@ -88,7 +91,7 @@ stroke="#1e0d0d" d="M31.06,7.88c-1.53-1.46-2.74-2.17-2.74-2.17C21.12-4.45.59,3.3
 stroke="#1e0d0d" data-name="Upper Sleeve_R" className="cls-1" d="M124.31,7.23c1.58-1.33,2.83-1.98,2.83-1.98,7.45-9.26,28.7-2.12,28.7-2.12l-10.71,35.86-8.19-.21-4.05,1.98s-32.78-13.23-8.59-33.54Z" 
  
 />
-</g>                    <g id="Forearm_R">
+</g>                    <g id="Forearm_R"   transform={`rotate(${rightElbowRotation} 78 64)`}>
                         <path id="Body_Forearm_R" className="cls-2" d="M78.96,64.31l9.78,8.77c1.22,1.1.37,4.34-2.26,8.62h0c-2.25,3.66-5.57,7.7-9.11,11.08l-42.11,40.19c-4.17,3.98-7.9,5.96-9.14,4.86l-5.36-4.81c-1.09-.98.19-4.36,3.18-8.39l31.79-42.9c4.23-5.71,9.74-11.25,14.56-14.65h0c4.16-2.93,7.34-3.94,8.67-2.75Z" />
                         <path id="Lower_Sleeve_R" data-name="Lower Sleeve_R" className="cls-1" d="M81.07,54.51c-6.65,2.84-52.36,50.84-61.37,77.96l6.42,5.35s4.69-1.54,9.14-4.86c3.95-2.95,7.43-7.5,11.4-10.8,29.17-24.3,51.1-43.3,51.92-48.74.24-1.56,0,0,0,0" />
                         <g id="Hand_R">

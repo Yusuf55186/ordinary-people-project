@@ -11,8 +11,10 @@ rightHipRotation: number
 bodyY:number
 leftArmSwing:number
 rightArmSwing:number
+leftElbowRotation:number
+rightElbowRotation:number
 }
-export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing}:Props){
+export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation}:Props){
     return (
         <div style={{position:"relative", width: 500,height: 1050,transform: `translateY(${bodyY}px)`,}} >
             <div style={{  position: "absolute",
@@ -27,7 +29,7 @@ export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotati
         rightKneeRotation={rightKneeRotation}
         leftHipRotation={leftHipRotation}
         rightHipRotation={rightHipRotation}
-        
+       
         
          />
          </div>
@@ -45,7 +47,7 @@ export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotati
         />
         
         </div>
-        <YusufArms leftArmSwing={leftArmSwing} rightArmSwing={rightArmSwing}
+        <YusufArms leftArmSwing={leftArmSwing} rightArmSwing={rightArmSwing} leftElbowRotation={leftElbowRotation} rightElbowRotation={rightElbowRotation}
         />
         </div>
     
