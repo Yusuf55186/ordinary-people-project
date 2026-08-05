@@ -49,6 +49,7 @@ rightArmSwing={idlePose.rightArmSwing}
 leftElbowRotation={idlePose.leftElbowRotation}
 rightElbowRotation={0}
 leftHandRotation={idlePose.leftHandRotation}
+headRotation={idlePose.headRotation}
         
         
       />

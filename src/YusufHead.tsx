@@ -1,8 +1,20 @@
-
-export function YusufHead(){
+type Props = {
+    headRotation : number
+}
+export function YusufHead({headRotation}:Props){
     return (
-        <svg style={{ width: "100%", height: "auto", display: "block" }} id="Head" version="1.1" viewBox="0 0 100.34 128.99">
-  <defs>
+<svg
+  style={{
+    width: "100%",
+    height: "auto",
+    display: "block",
+    overflow: "visible",
+  }}
+  id="Head"
+  version="1.1"
+  viewBox="0 0 100.34 128.99"
+  transform={`rotate(${headRotation} 50.17 116)`}
+>  <defs>
     <style>{`
       .st0, .st1, .st2, .st3 {
         stroke: #010101;
