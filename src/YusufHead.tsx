@@ -1,7 +1,8 @@
 type Props = {
-    headRotation : number
+    headRotation:number
+    eyeScaleY:number
 }
-export function YusufHead({headRotation}:Props){
+export function YusufHead({headRotation,eyeScaleY}:Props){
     return (
 <svg
   style={{
@@ -68,12 +69,24 @@ export function YusufHead({headRotation}:Props){
     <path id="nostril_L" className="st0" d="M44.52,87.28s-3.76,5.31,3.24,5"/>
     <path id="nose_bridge" className="st0" d="M55.07,90.71s-.91-.21-1.68-.03-1.49,1.99-1.49,1.99c0,0-1.29.25-1.73-.03s-1.47-2.14-1.47-2.14c0,0-1.13-.23-1.76-.03"/>
   </g>
-  <g id="Eye_x5F_R">
+  <g id="Eye_x5F_R"
+  transform={`
+    translate(30.96 67.3)
+    scale(1 ${eyeScaleY})
+    translate(-30.96 -67.3)
+  `}
+>
     <path className="st2" d="M34.15,75.29l-6.46-.07c-3.39-.04-6.06-3.63-5.96-8.02h0c.1-4.39,2.92-7.93,6.32-7.89l6.46.07c3.39.04,6.06,3.63,5.96,8.02h0c-.1,4.39-2.92,7.93-6.32,7.89Z"/>
     <ellipse className="st1" cx="30.96" cy="69.64" rx="1.38" ry="1.07" transform="translate(-39.83 97.88) rotate(-87.78)"/>
     <path className="st3" d="M40.04,63.67l-17.84.06s1.47-4.54,7.53-4l5.51.13s3.99.38,4.8,3.82Z"/>
   </g>
-  <g id="Eye_x5F_L">
+  <g id="Eye_x5F_L"
+  transform={`
+    translate(72.57 67.3)
+    scale(1 ${eyeScaleY})
+    translate(-72.57 -67.3)
+  `}
+  >
     <path className="st2" d="M75.76,75.29l-6.46-.07c-3.39-.04-6.06-3.63-5.96-8.02h0c.1-4.39,2.92-7.93,6.31-7.89l6.46.07c3.39.04,6.06,3.63,5.96,8.02h0c-.1,4.39-2.92,7.93-6.31,7.89Z"/>
     <ellipse className="st1" cx="72.57" cy="69.64" rx="1.38" ry="1.07" transform="translate(.18 139.47) rotate(-87.78)"/>
     <path className="st3" d="M81.65,63.76l-17.83.06s1.46-4.64,7.53-4.09l5.51.13s3.99.38,4.8,3.9Z"/>

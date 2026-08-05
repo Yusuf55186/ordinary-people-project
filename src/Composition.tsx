@@ -8,6 +8,7 @@ import { YusufCharacter } from "./YusufCharacter";
 import { walkCycle } from "./animations/walkCycle";
 import { WaveAnimation } from "./animations/wave";
 import { idleAnimation } from "./animations/idleAnimation";
+import { BlinkingAnimation } from "./animations/BlinkingAnimation";
 
 type Props = {};
 
@@ -17,6 +18,7 @@ const calculateMetadata: CalculateMetadataFunction<Props> = () => {
 const WALK_CYCLE_FRAMES = 60;
 const WAVE_ANIMATION_FRAMES = 60;
 const IDLE_ANIMATION_FRAMES = 60;
+const BLINK_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -28,6 +30,7 @@ const LegsScene: React.FC<Props> = () => {
   const pose = walkCycle(frame,WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame,WAVE_ANIMATION_FRAMES);
   const idlePose = idleAnimation(frame,IDLE_ANIMATION_FRAMES);
+  const blinkPose = BlinkingAnimation(frame,BLINK_ANIMATION_FRAMES)
   return (
     
     <AbsoluteFill
@@ -50,6 +53,7 @@ leftElbowRotation={idlePose.leftElbowRotation}
 rightElbowRotation={0}
 leftHandRotation={idlePose.leftHandRotation}
 headRotation={idlePose.headRotation}
+eyeScaleY={blinkPose.eyeScaleY}
         
         
       />
