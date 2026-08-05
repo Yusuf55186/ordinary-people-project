@@ -7,6 +7,7 @@ import {
 import { YusufCharacter } from "./YusufCharacter";
 import { walkCycle } from "./animations/walkCycle";
 import { WaveAnimation } from "./animations/wave";
+import { idleAnimation } from "./animations/idleAnimation";
 
 type Props = {};
 
@@ -15,6 +16,7 @@ const calculateMetadata: CalculateMetadataFunction<Props> = () => {
 };
 const WALK_CYCLE_FRAMES = 60;
 const WAVE_ANIMATION_FRAMES = 60;
+const IDLE_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -25,6 +27,7 @@ const LegsScene: React.FC<Props> = () => {
   const frame = useCurrentFrame();
   const pose = walkCycle(frame,WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame,WAVE_ANIMATION_FRAMES);
+  const idlePose = idleAnimation(frame,IDLE_ANIMATION_FRAMES);
   return (
     
     <AbsoluteFill
@@ -36,16 +39,16 @@ const LegsScene: React.FC<Props> = () => {
       
     >
       <YusufCharacter
-        rightKneeRotation={pose.rightKneeRotation}
-        leftKneeRotation={pose.leftKneeRotation}
-        leftHipRotation={pose.leftHipRotation}
-        rightHipRotation={pose.rightHipRotation}
-        bodyY={pose.bodyY} 
-        leftArmSwing={wavePose.leftArmSwing}
-rightArmSwing={wavePose.rightArmSwing}
-leftElbowRotation={wavePose.leftElbowRotation}
-rightElbowRotation={wavePose.rightArmSwing}
-leftHandRotation={wavePose.leftHandRotation}
+        rightKneeRotation={0}
+        leftKneeRotation={0}
+        leftHipRotation={0}
+        rightHipRotation={0}
+        bodyY={idlePose.bodyY} 
+        leftArmSwing={idlePose.leftArmSwing}
+rightArmSwing={idlePose.rightArmSwing}
+leftElbowRotation={idlePose.leftElbowRotation}
+rightElbowRotation={0}
+leftHandRotation={idlePose.leftHandRotation}
         
         
       />
@@ -59,7 +62,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={WAVE_ANIMATION_FRAMES}
+      durationInFrames={IDLE_ANIMATION_FRAMES}
       fps={30}
       width={1920}
       height={1080}

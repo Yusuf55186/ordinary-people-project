@@ -1,3 +1,4 @@
+
 export function YusufHead(){
     return (
         <svg style={{ width: "100%", height: "auto", display: "block" }} id="Head" version="1.1" viewBox="0 0 100.34 128.99">
