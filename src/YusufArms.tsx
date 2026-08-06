@@ -1,13 +1,15 @@
 type Props = {
     leftArmSwing:number
     rightArmSwing:number
+    leftArmScaleY:number
+    rightArmScaleY: number
     leftElbowRotation:number
     rightElbowRotation:number
     leftHandRotation:number
     leftHandPose: "open" | "point"
 };
 
-export function YusufArms({leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,leftHandPose}:Props){
+export function YusufArms({leftArmSwing,rightArmSwing,rightArmScaleY,leftArmScaleY,leftElbowRotation,rightElbowRotation,leftHandRotation,leftHandPose}:Props){
       const isPointing = leftHandPose === "point";
 
     return (
@@ -38,7 +40,15 @@ id="Arm_L" viewBox="0 0 156.75 163.11 ">
       }`}
                 </style>
             </defs>
-<g id="UpperArm_L" transform={`rotate(${45 + leftArmSwing} 20 20)`}>                <g id="Body_Shoulder_L">
+<g
+  id="UpperArm_L"
+  transform={`
+    rotate(${45 + leftArmSwing} 20 20)
+    translate(20 20)
+    scale(1 ${leftArmScaleY})
+    translate(-20 -20)
+  `}
+>                <g id="Body_Shoulder_L">
                     <path className="cls-2" d="M11.18,5.09l4.41-.44,12.6,5.99c1.78,1.03,2.65,2.9,2.61,5.62l-.24,11.79c-.17,4.54-1.38,8.44-3.64,11.68l-12.6,1.25L11.18,5.09Z" />
                     <path className="cls-2" d="M20.73,8.05c-.92-.81-.49-1.61,1.27-2.39,4.12-1.32,7.3.25,9.52,4.71l3.76,18.86c.54,2.96-.45,4.57-2.97,4.82l-4.62.46c-2.24.22-3.64-1.3-4.21-4.56l-2.76-21.9Z" />
                 </g>
@@ -90,7 +100,15 @@ stroke="#1e0d0d" d="M31.06,7.88c-1.53-1.46-2.74-2.17-2.74-2.17C21.12-4.45.59,3.3
       }
     `}</style>
   </defs>
-<g id="UpperArm_R" transform={`rotate(${-45 + rightArmSwing} 136 20)`}>                    <g id="Body_Shoulder_R" transform="translate(-10,0)">
+<g
+  id="UpperArm_R"
+  transform={`
+    rotate(${-45 + rightArmSwing} 136 20)
+    translate(136 20)
+    scale(1 ${rightArmScaleY})
+    translate(-136 -20)
+  `}
+>                   <g id="Body_Shoulder_R" transform="translate(-10,0)">
                         <path className="cls-2" d="M150.21,3.18l-4.03-.43-11.52,5.89c-1.63,1.01-2.43,2.86-2.39,5.54l.22,11.61c.15,4.47,1.27,8.3,3.33,11.5l11.53,1.23,2.86-35.34Z" />
                         <path className="cls-2" d="M141.47,6.1c.84-.8.45-1.59-1.17-2.35-3.77-1.29-6.67.25-8.71,4.64l-3.44,18.57c-.49,2.92.41,4.5,2.72,4.75l4.23.45c2.05.22,3.33-1.28,3.85-4.49l2.52-21.56Z" />
                     </g>
