@@ -2,7 +2,6 @@ import { YusufLegs } from "./YusufLegs"
 import { YusufTorsoPelvis } from "./YusufTorsoPelvis"
 import { YusufHead } from "./YusufHead"
 import { YusufArms } from "./YusufArms"
-
 type Props = {
 leftKneeRotation: number
 rightKneeRotation: number
@@ -16,15 +15,17 @@ rightElbowRotation:number
 leftHandRotation:number
 headRotation:number
 eyeScaleY:number
+leftHandPose: "open" | "point"
+
 }
-export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY}:Props){
+export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose}:Props){
     return (
         <div style={{position:"relative", width: 500,height: 1050,transform: `translateY(${bodyY}px)`,}} >
             <div style={{  position: "absolute",
     left: 125,
     top: 560,
     width: 250,
-    transform: "scaleY(1.06)",
+    transform: "scaleY(1.1)",
     transformOrigin: "50% 0%", }}>
                
         <YusufLegs
@@ -55,8 +56,10 @@ export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotati
         
         
         </div>
-        <YusufArms leftArmSwing={leftArmSwing} rightArmSwing={rightArmSwing} leftElbowRotation={leftElbowRotation} rightElbowRotation={rightElbowRotation} leftHandRotation={leftHandRotation}
+        <YusufArms leftArmSwing={leftArmSwing} rightArmSwing={rightArmSwing} leftElbowRotation={leftElbowRotation} rightElbowRotation={rightElbowRotation} leftHandRotation={leftHandRotation} leftHandPose={leftHandPose}
+        
         />
+        
         </div>
     
        

@@ -9,6 +9,8 @@ import { walkCycle } from "./animations/walkCycle";
 import { WaveAnimation } from "./animations/wave";
 import { idleAnimation } from "./animations/idleAnimation";
 import { BlinkingAnimation } from "./animations/BlinkingAnimation";
+import { pointAnimation } from "./animations/PointingAnimation";
+import { talkingAnimation } from "./animations/TalkingAnimation";
 
 type Props = {};
 
@@ -19,6 +21,8 @@ const WALK_CYCLE_FRAMES = 60;
 const WAVE_ANIMATION_FRAMES = 60;
 const IDLE_ANIMATION_FRAMES = 60;
 const BLINK_ANIMATION_FRAMES = 60;
+const POINT_ANIMATION_FRAMES = 60;
+const TALK_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -31,6 +35,8 @@ const LegsScene: React.FC<Props> = () => {
   const wavePose = WaveAnimation(frame,WAVE_ANIMATION_FRAMES);
   const idlePose = idleAnimation(frame,IDLE_ANIMATION_FRAMES);
   const blinkPose = BlinkingAnimation(frame,BLINK_ANIMATION_FRAMES)
+  const pointPose = pointAnimation(frame,POINT_ANIMATION_FRAMES)
+  const talkpose = talkingAnimation(frame,TALK_ANIMATION_FRAMES)
   return (
     
     <AbsoluteFill
@@ -46,17 +52,20 @@ const LegsScene: React.FC<Props> = () => {
         leftKneeRotation={0}
         leftHipRotation={0}
         rightHipRotation={0}
-        bodyY={idlePose.bodyY} 
-        leftArmSwing={idlePose.leftArmSwing}
-rightArmSwing={idlePose.rightArmSwing}
-leftElbowRotation={idlePose.leftElbowRotation}
-rightElbowRotation={0}
-leftHandRotation={idlePose.leftHandRotation}
-headRotation={idlePose.headRotation}
+        bodyY={talkpose.bodyY} 
+        leftArmSwing={talkpose.leftArmSwing}
+rightArmSwing={talkpose.rightArmSwing}
+leftElbowRotation={talkpose.leftElbowRotation}
+rightElbowRotation={talkpose.leftElbowRotation}
+leftHandRotation={talkpose.leftHandRotation}
+headRotation={talkpose.headRotation}
 eyeScaleY={blinkPose.eyeScaleY}
-        
+// leftHandPose={pointPose.leftHandPose}
+     
         
       />
+       
+          
     </AbsoluteFill>
   );
   

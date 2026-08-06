@@ -92,7 +92,7 @@ export function YusufHead({headRotation,eyeScaleY}:Props){
     <path className="st3" d="M81.65,63.76l-17.83.06s1.46-4.64,7.53-4.09l5.51.13s3.99.38,4.8,3.9Z"/>
   </g>
   <g id="Glasses" className="st6">
-    <path className="st2" d="M19.61,70.46l-12.04-13.09-.48-.52s.64-.64,1.34.2"/>
+    <path  className="st2" d="M19.61,70.46l-12.04-13.09-.48-.52s.64-.64,1.34.2"/>
     <line className="st2" x1="42.84" y1="68.31" x2="60.93" y2="68.65"/>
     <ellipse className="st2" cx="72.95" cy="67.39" rx="14.51" ry="11.99" transform="translate(4.22 139.08) rotate(-88.94)"/>
     <ellipse className="st2" cx="31.26" cy="66.62" rx="14.51" ry="11.99" transform="translate(-35.93 96.64) rotate(-88.94)"/>
