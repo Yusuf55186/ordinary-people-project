@@ -35,18 +35,18 @@ const leftArmSwing = interpolate(
 
 const rightArmSwing = interpolate(
   localFrame,
-  [0, 7, 15, 22, 29],
+  [0, 7, 15, 22, lastFrame],
 [0, 5, 0, -5, 0]
 );
 const leftElbowRotation = interpolate(
   localFrame,
-  [0, 7, 15, 22,25,27,29],
-[0, -18, -14, -16,-12,-10,0]
+  [0, 7, 15, 22,lastFrame],
+[0, -18, -14, -16,0]
 );
 
 const rightElbowRotation = interpolate(
   localFrame,
-  [0, 7, 15, 22,25,27, 29],
+  [0, 7, 15, 22,25,27, lastFrame],
 [0, 18, 14, 16,12,10,0]);
 const bodyY = interpolate(localFrame,[0,quarterFrame,middleFrame,threeQuarterFrame,lastFrame],[0, -16, 0, -16, 0])
 const headRotation = interpolate(localFrame,[0,quarterFrame,middleFrame,threeQuarterFrame,lastFrame],[0, -2, 0, 2, 0])
