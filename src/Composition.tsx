@@ -11,6 +11,7 @@ import { idleAnimation } from "./animations/idleAnimation";
 import { BlinkingAnimation } from "./animations/BlinkingAnimation";
 import { pointAnimation } from "./animations/PointingAnimation";
 import { talkingAnimation } from "./animations/TalkingAnimation";
+import { HeadShakeAnimation } from "./animations/HeadShakeAnimation";
 
 type Props = {};
 
@@ -23,6 +24,7 @@ const IDLE_ANIMATION_FRAMES = 60;
 const BLINK_ANIMATION_FRAMES = 60;
 const POINT_ANIMATION_FRAMES = 60;
 const TALK_ANIMATION_FRAMES = 60;
+const HEAD_SHAKE_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -37,6 +39,7 @@ const LegsScene: React.FC<Props> = () => {
   const blinkPose = BlinkingAnimation(frame,BLINK_ANIMATION_FRAMES)
   const pointPose = pointAnimation(frame,POINT_ANIMATION_FRAMES)
   const talkpose = talkingAnimation(frame,TALK_ANIMATION_FRAMES)
+  const shakePose = HeadShakeAnimation(frame,HEAD_SHAKE_ANIMATION_FRAMES)
   return (
     
     <AbsoluteFill
@@ -58,7 +61,7 @@ rightArmSwing={talkpose.rightArmSwing}
 leftElbowRotation={talkpose.leftElbowRotation}
 rightElbowRotation={talkpose.leftElbowRotation}
 leftHandRotation={talkpose.leftHandRotation}
-headRotation={talkpose.headRotation}
+headRotation={shakePose.headRotation}
 eyeScaleY={blinkPose.eyeScaleY}
 // leftHandPose={pointPose.leftHandPose}
      
