@@ -16,9 +16,14 @@ leftHandRotation:number
 headRotation:number
 eyeScaleY:number
 leftHandPose: "open" | "point"
+eyeLLookX: number
+eyeLLookY: number
+eyeRLookX: number
+eyeRLookY: number
+
 
 }
-export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose}:Props){
+export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY}:Props){
     return (
         <div style={{position:"relative", width: 500,height: 1050,transform: `translateY(${bodyY}px)`,}} >
             <div style={{  position: "absolute",
@@ -50,7 +55,8 @@ export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotati
         <div
  
 >
-  <YusufHead  headRotation={headRotation} eyeScaleY={eyeScaleY}
+  <YusufHead  headRotation={headRotation} eyeScaleY={eyeScaleY} eyeLLookX={eyeLLookX} eyeRLookX={eyeRLookX} eyeRLookY={eyeRLookY}
+eyeLLookY={eyeLLookY}
   />
 </div>
         

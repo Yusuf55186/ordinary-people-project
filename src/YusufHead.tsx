@@ -1,8 +1,12 @@
 type Props = {
     headRotation:number
     eyeScaleY:number
+    eyeLLookX:number
+    eyeLLookY:number
+    eyeRLookX:number
+    eyeRLookY:number
 }
-export function YusufHead({headRotation,eyeScaleY}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX}:Props){
     return (
 <svg
   style={{
@@ -77,7 +81,9 @@ export function YusufHead({headRotation,eyeScaleY}:Props){
   `}
 >
     <path className="st2" d="M34.15,75.29l-6.46-.07c-3.39-.04-6.06-3.63-5.96-8.02h0c.1-4.39,2.92-7.93,6.32-7.89l6.46.07c3.39.04,6.06,3.63,5.96,8.02h0c-.1,4.39-2.92,7.93-6.32,7.89Z"/>
+    <g transform={`translate(${eyeRLookX} ${eyeRLookY})`}>
     <ellipse className="st1" cx="30.96" cy="69.64" rx="1.38" ry="1.07" transform="translate(-39.83 97.88) rotate(-87.78)"/>
+    </g>
     <path className="st3" d="M40.04,63.67l-17.84.06s1.47-4.54,7.53-4l5.51.13s3.99.38,4.8,3.82Z"/>
   </g>
   <g id="Eye_x5F_L"
@@ -88,7 +94,9 @@ export function YusufHead({headRotation,eyeScaleY}:Props){
   `}
   >
     <path className="st2" d="M75.76,75.29l-6.46-.07c-3.39-.04-6.06-3.63-5.96-8.02h0c.1-4.39,2.92-7.93,6.31-7.89l6.46.07c3.39.04,6.06,3.63,5.96,8.02h0c-.1,4.39-2.92,7.93-6.31,7.89Z"/>
+    <g transform={`translate(${eyeLLookX} ${eyeLLookY})`}>
     <ellipse className="st1" cx="72.57" cy="69.64" rx="1.38" ry="1.07" transform="translate(.18 139.47) rotate(-87.78)"/>
+    </g>
     <path className="st3" d="M81.65,63.76l-17.83.06s1.46-4.64,7.53-4.09l5.51.13s3.99.38,4.8,3.9Z"/>
   </g>
   <g id="Glasses" className="st6">
