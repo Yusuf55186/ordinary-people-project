@@ -13,6 +13,7 @@ import { pointAnimation } from "./animations/PointingAnimation";
 import { talkingAnimation } from "./animations/TalkingAnimation";
 import { HeadShakeAnimation } from "./animations/HeadShakeAnimation";
 import { eyeLookingAnimation } from "./animations/EyeLookAnimation";
+import { eyeBrowAnimation } from "./animations/eyebrowAnimation";
 
 type Props = {};
 
@@ -27,6 +28,7 @@ const POINT_ANIMATION_FRAMES = 60;
 const TALK_ANIMATION_FRAMES = 60;
 const HEAD_SHAKE_ANIMATION_FRAMES = 60;
 const EYE_LOOK_ANIMATION_FRAMES =60;
+const EYE_BROW_ANIMATION_FRAMES = 60;
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -43,6 +45,7 @@ const LegsScene: React.FC<Props> = () => {
   const talkpose = talkingAnimation(frame,TALK_ANIMATION_FRAMES)
   const shakePose = HeadShakeAnimation(frame,HEAD_SHAKE_ANIMATION_FRAMES)
   const lookPose = eyeLookingAnimation(frame,EYE_LOOK_ANIMATION_FRAMES)
+  const eyebrowPose = eyeBrowAnimation(frame,EYE_BROW_ANIMATION_FRAMES)
   return (
     
     <AbsoluteFill
@@ -70,6 +73,8 @@ eyeLLookX={lookPose.eyeLLookX}
 eyeLLookY={lookPose.eyeLLookY}
 eyeRLookX={lookPose.eyeRLookX}
 eyeRLookY={lookPose.eyeRLookY}
+leftEyeBrowY={eyebrowPose.leftEyeBrowY}
+rightEyeBrowY={eyebrowPose.rightEyeBrowY}
 // leftHandPose={pointPose.leftHandPose}
      
         

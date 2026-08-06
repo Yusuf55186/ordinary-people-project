@@ -5,8 +5,10 @@ type Props = {
     eyeLLookY:number
     eyeRLookX:number
     eyeRLookY:number
+    leftEyeBrowY:number
+    rightEyebrowY:number
 }
-export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY}:Props){
     return (
 <svg
   style={{
@@ -107,11 +109,11 @@ export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,
     <path className="st2" d="M84.53,70.78l12.52-12.64.5-.5s-.62-.67-1.35.15"/>
   </g>
   <g id="Eyebrows">
-    <g id="Eyebrow_L">
+    <g id="Eyebrow_L" transform={`translate(0 ${leftEyeBrowY})`}>
       <path className="st0" d="M20.88,49.13l20.43.38s1.93.13,2.07,2.27"/>
       <path className="st0" d="M22.36,49.29c-.12-.24-2.86-.42-2.78,1.21"/>
     </g>
-    <g id="Eyebrow_R">
+    <g id="Eyebrow_R" transform={`translate(0 ${rightEyebrowY})`}>
       <line className="st0" x1="63.4" y1="49.67" x2="83.79" y2="50.05"/>
       <path className="st0" d="M83.44,50.16c.13-.27,2.11-.09,1.96,1.79"/>
       <path className="st0" d="M64.1,49.79c-.12-.27-2.1-.17-2.03,1.73"/>
