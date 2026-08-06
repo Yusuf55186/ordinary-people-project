@@ -31,6 +31,7 @@ const HEAD_SHAKE_ANIMATION_FRAMES = 60;
 const EYE_LOOK_ANIMATION_FRAMES = 60;
 const EYE_BROW_ANIMATION_FRAMES = 60;
 const RUN_ANIMATION_FRAMES = 30;
+
 const LegsScene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
@@ -91,7 +92,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={RUN_ANIMATION_FRAMES}
+      durationInFrames={90}
       fps={30}
       width={1920}
       height={1080}
