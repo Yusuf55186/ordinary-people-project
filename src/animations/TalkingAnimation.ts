@@ -17,19 +17,42 @@ type MouthCue = {
     
 }
 const mouthCues : MouthCue[] =  [
+    { startFrame:79,
+    endFrame:81,
+    pose:"S"
+   },
    { startFrame:81,
     endFrame:83,
     pose:"A"
    },
    {
-    startFrame:84
-    ,endFrame:86,
+    startFrame:83,
+    endFrame:86,
+    pose:"L"
+   },
+   {
+    
+    startFrame:86
+    ,endFrame:88,
     pose:"A"}
     ,{
-        startFrame:87,
-        endFrame:89,
+        startFrame:89,
+        endFrame:92,
+        pose:"MBP"
+    }
+    ,{
+        startFrame:93,
+        endFrame:94,
         pose:"A"
     }
+    ,{
+        startFrame:94,
+        endFrame:97,
+        pose:"U"
+    }
+
+    
+
     
     
 

@@ -1,4 +1,4 @@
-export type MouthPose = "rest" | "A" | "U";
+export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L";
 
 type Props = {
     headRotation:number
@@ -71,12 +71,65 @@ export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,
     <path className="st3" d="M5.52,72.64s-3.88,4.53,1.16,5.47"/>
     <path className="st3" d="M9.32,62.94s-16.65,13.97,1.57,23.53"/>
   </g>
-  {mouthPose === 'A' ? (
-    <ellipse id="A_Mouth" style={{fill:"#161E2D"}}  className="st4" cx={50}cy={106}rx={10}ry={8}>
-    </ellipse>
- 
-        ):   <path  id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43"/> 
-        }
+  {(() => {
+  switch (mouthPose) {
+    case 'A':
+      return (
+<g id="A_Mouth_Group">
+        <defs>
+          <clipPath id="mouthClipA"><ellipse cx={50} cy={106} rx={10} ry={8} /></clipPath>
+        </defs>
+        <ellipse id="A_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={10} ry={8} />
+        {/* Boventanden */}
+        <rect x={42} y={98} width={16} height={3} fill="#FFFFFF" clipPath="url(#mouthClipA)" />
+        {/* Ondertanden */}
+        <rect x={43} y={111} width={14} height={3} fill="#FFFFFF" clipPath="url(#mouthClipA)" />
+      </g>
+    );
+    case 'L':
+  // De 'L' heeft een open mond waarbij de tong omhoog tegen de boventanden staat
+  return (
+    <g id="L_Mouth_Group">
+      <defs>
+        <clipPath id="mouthClipL"><ellipse cx={50} cy={106} rx={11} ry={6} /></clipPath>
+      </defs>
+      {/* 1. De donkere binnenkant van de mond */}
+      <ellipse id="L_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={11} ry={6} />
+      
+      {/* 2. De tong (roze ovaal die omhoog krult, geknipt door het masker) */}
+      <ellipse cx={50} cy={106} rx={8} ry={5} fill="#E26A6A" clipPath="url(#mouthClipL)" />
+      
+      {/* 3. De boventanden (staan strak voor/tegen de tong aan) */}
+      <rect x={41} y={100} width={18} height={2.5} fill="#FFFFFF" clipPath="url(#mouthClipL)" />
+    </g>
+  );
+      case "U":
+      return (
+        <ellipse id="U_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={6} ry={9} />
+      )
+      case "MBP":
+        return (
+<ellipse id="MBP_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={12} ry={1} />
+
+        )
+        case "S":
+          return(
+                  <g id="S_Mouth_Group">
+            <defs>
+          <clipPath id="mouthClipS"><ellipse cx={50} cy={106} rx={11} ry={3} /></clipPath>
+        </defs>
+            <ellipse id="S_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={11} ry={3} />
+                    <rect x={40} y={104.5} width={20} height={3} fill="#FFFFFF" clipPath="url(#mouthClipS)" />
+                    </g>
+
+            
+          )
+    default:
+      return (
+        <path id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43" />
+      );
+  }
+})()}
   <g id="Nose">
     <path className="st0" d="M49.47,90.2l.28-15.03c1.36-1.47,2.72.05,2.72.05l-.28,15.25"/>
     <path id="nostril_R" className="st0" d="M57.58,87.52s3.56,5.45-3.42,4.88"/>

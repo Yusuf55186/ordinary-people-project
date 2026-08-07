@@ -98,7 +98,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={90}
+      durationInFrames={120}
       fps={60}
       width={1920}
       height={1080}
