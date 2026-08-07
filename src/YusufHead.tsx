@@ -1,4 +1,4 @@
-export type MouthPose = "rest" | "A";
+export type MouthPose = "rest" | "A" | "U";
 
 type Props = {
     headRotation:number
@@ -74,7 +74,7 @@ export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,
   {mouthPose === 'A' ? (
     <ellipse id="A_Mouth" style={{fill:"#161E2D"}}  className="st4" cx={50}cy={106}rx={10}ry={8}>
     </ellipse>
-    
+ 
         ):   <path  id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43"/> 
         }
   <g id="Nose">

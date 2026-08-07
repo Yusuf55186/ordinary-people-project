@@ -5,5 +5,6 @@ export const RemotionRoot: React.FC = () => {
     <>
       <MyComposition />
     </>
+    
   );
 };

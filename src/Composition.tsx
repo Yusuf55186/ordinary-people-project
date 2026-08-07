@@ -15,7 +15,8 @@ import { HeadShakeAnimation } from "./animations/HeadShakeAnimation";
 import { eyeLookingAnimation } from "./animations/EyeLookAnimation";
 import { eyeBrowAnimation } from "./animations/eyebrowAnimation";
 import { RunAnimation } from "./animations/RunAnimation";
-
+import { staticFile } from "remotion";
+import { Audio } from "@remotion/media";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -52,13 +53,16 @@ const LegsScene: React.FC<Props> = () => {
   const runPose = RunAnimation(frame, RUN_ANIMATION_FRAMES);
   return (
     <AbsoluteFill
+    
       style={{
         backgroundColor: "#0f2c53",
         justifyContent: "center",
         alignItems: "center",
-      }}
-      from={-25}
+      }}      
     >
+              <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
+
+
       <YusufCharacter
         rightKneeRotation={0}
         leftKneeRotation={0}

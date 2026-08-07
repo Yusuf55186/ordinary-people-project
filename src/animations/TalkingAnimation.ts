@@ -17,18 +17,18 @@ type MouthCue = {
     
 }
 const mouthCues : MouthCue[] =  [
-   { startFrame:0,
-    endFrame:2,
-    pose:"rest"
+   { startFrame:81,
+    endFrame:83,
+    pose:"A"
    },
    {
-    startFrame:2
-    ,endFrame:4,
+    startFrame:84
+    ,endFrame:86,
     pose:"A"}
     ,{
-        startFrame:4,
-        endFrame:8,
-        pose:"rest"
+        startFrame:87,
+        endFrame:89,
+        pose:"A"
     }
     
     
