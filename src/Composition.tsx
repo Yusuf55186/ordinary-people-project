@@ -53,16 +53,14 @@ const LegsScene: React.FC<Props> = () => {
   const runPose = RunAnimation(frame, RUN_ANIMATION_FRAMES);
   return (
     <AbsoluteFill
-    
       style={{
         backgroundColor: "#0f2c53",
         justifyContent: "center",
         alignItems: "center",
-      }}      
+      }}
     >
-              <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
-
-
+      <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
+      <Audio src={staticFile("VoiceOver/FatNigger.m4a")} from={-120} />
       <YusufCharacter
         rightKneeRotation={0}
         leftKneeRotation={0}
@@ -98,7 +96,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={120}
+      durationInFrames={200}
       fps={60}
       width={1920}
       height={1080}

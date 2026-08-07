@@ -1,4 +1,4 @@
-export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L";
+export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L" | "N" | "R" | "G" | "E" | "I" | "F" | "TH" | "O";
 
 type Props = {
     headRotation:number
@@ -124,10 +124,132 @@ export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,
 
             
           )
+          case 'N':
+  // De 'N' heeft de tanden strak op elkaar geklemd, vergelijkbaar met de 'S' maar iets minder breed
+  return (
+    <g id="Mouth_N_Group">
+      <defs>
+        <clipPath id="mouthClipN"><ellipse cx={50} cy={106} rx={9.5} ry={2.5} /></clipPath>
+      </defs>
+      {/* 1. De donkere binnenkant van de mond */}
+      <ellipse id="N_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={9.5} ry={2.5} />
+      
+      {/* 2. De tanden die de smalle opening vullen */}
+      <rect x={41} y={104.5} width={18} height={3} fill="#FFFFFF" clipPath="url(#mouthClipN)" />
+    </g>
+  );
+  case 'G': // en ook 'K', 'CH'
+  // De 'G' is een halfopen mond. De kaken zijn iets van elkaar gescheiden, tanden zijn deels zichtbaar
+  return (
+    <g id="Mouth_G_Group">
+      <defs>
+        <clipPath id="mouthClipG"><ellipse cx={50} cy={106} rx={10} ry={4.5} /></clipPath>
+      </defs>
+      <ellipse id="G_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={10} ry={4.5} />
+      {/* Alleen de boventanden zijn hier subtiel zichtbaar aan de bovenkant */}
+      <rect x={41} y={101.5} width={18} height={2.5} fill="#FFFFFF" clipPath="url(#mouthClipG)" />
+    </g>
+  );
+  case 'I': // of 'EE' / 'IE'
+  // De 'I' is een zeer brede, platte 'grijns' waarbij de tanden heel dicht op elkaar staan
+  return (
+    <g id="Mouth_I_Group">
+      <defs>
+        <clipPath id="mouthClipI"><ellipse cx={50} cy={106} rx={13} ry={2} /></clipPath>
+      </defs>
+      <ellipse id="I_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={13} ry={2} />
+      <rect x={38} y={105} width={24} height={2} fill="#FFFFFF" clipPath="url(#mouthClipI)" />
+    </g>
+  );
+  case 'E': // of 'EH'
+  // De 'E' zit qua vorm precies tussen de grote open 'A' en de platte 'I' in
+  return (
+    <g id="Mouth_E_Group">
+      <defs>
+        <clipPath id="mouthClipE"><ellipse cx={50} cy={106} rx={11} ry={5.5} /></clipPath>
+      </defs>
+      <ellipse id="E_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={11} ry={5.5} />
+      {/* Zowel boven- als ondertanden zijn lichtjes zichtbaar door de opening */}
+      <rect x={41} y={100.5} width={18} height={2.5} fill="#FFFFFF" clipPath="url(#mouthClipE)" />
+      <rect x={42} y={109} width={16} height={2.5} fill="#FFFFFF" clipPath="url(#mouthClipE)" />
+    </g>
+  );
+case 'R': // en ook 'W'
+  // De 'R' heeft een lichte pucker (getuit), groter dan de 'U' maar kleiner dan de 'O'
+  return (
+    <g id="Mouth_R_Group">
+      <defs>
+        <clipPath id="mouthClipR"><ellipse cx={50} cy={106} rx={7.5} ry={6.5} /></clipPath>
+      </defs>
+      <ellipse id="R_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={7.5} ry={6.5} />
+      {/* Subtiele boventanden zichtbaar in de ronde opening */}
+      <rect x={44} y={101.5} width={12} height={2.5} fill="#FFFFFF" clipPath="url(#mouthClipR)" />
+    </g>
+  );
+  case 'F': // en ook 'V'
+  // De 'F' waarbij de boventanden duidelijk op de onderlip rusten
+  return (
+    <g id="Mouth_F_Group">
+      <defs>
+        <clipPath id="mouthClipF"><ellipse cx={50} cy={106} rx={11} ry={3.5} /></clipPath>
+      </defs>
+      {/* 1. De donkere binnenkant van de mond */}
+      <ellipse id="F_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={11} ry={3.5} />
+      
+      {/* 2. De tanden die bewust iets lager zijn geplaatst (tot y=108) zodat ze op de onderlip drukken */}
+      <rect x={41} y={103.5} width={18} height={4.5} fill="#FFFFFF" clipPath="url(#mouthClipF)" />
+    </g>
+  );
+  case 'O': // en ook 'W' (aan het begin van een woord, zoals "wie")
+  // De 'O' is een grote, perfect ronde koker. Groter dan de 'U', perfect cirkelvormig.
+  return (
+    <g id="Mouth_O_Group">
+      <defs>
+        <clipPath id="mouthClipO"><ellipse cx={50} cy={106} rx={7.5} ry={8.5} /></clipPath>
+      </defs>
+      <ellipse id="O_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={7.5} ry={8.5} />
+      {/* Subtiele boventanden die dieper in de mondholte liggen */}
+      <rect x={44} y={99.5} width={12} height={2} fill="#FFFFFF" clipPath="url(#mouthClipO)" />
+    </g>
+  );
+
+case 'TH': // en zachte Engelse klanken, of een slissende 'S'
+  // De tong steekt heel even subtiel tussen de boven- en ondertanden door.
+  return (
+    <g id="Mouth_TH_Group">
+      <defs>
+        <clipPath id="mouthClipTH"><ellipse cx={50} cy={106} rx={10.5} ry={4} /></clipPath>
+      </defs>
+      {/* 1. Mondopening */}
+      <ellipse id="TH_Mouth" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={106} rx={10.5} ry={4} />
+      {/* 2. De tong (roze) die in het midden over de tanden heen ligt */}
+      <ellipse cx={50} cy={107} rx={7} ry={2.5} fill="#E26A6A" clipPath="url(#mouthClipTH)" />
+      {/* 3. De boventanden die net boven de tong hangen */}
+      <rect x={41} y={103} width={18} height={2} fill="#FFFFFF" clipPath="url(#mouthClipTH)" />
+    </g>
+  );
+
     default:
-      return (
-        <path id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43" />
-      );
+  // De 'Rest/Smile' stand: een ontspannen glimlach opgebouwd uit pure ellipsen
+  return (
+    <g id="Mouth_Smile_Rest_Group">
+      <defs>
+        {/* Het masker zorgt ervoor dat de binnenmond netjes binnen de lippen blijft */}
+        <clipPath id="mouthClipRest"><ellipse cx={50} cy={105.5} rx={10} ry={2.5} /></clipPath>
+      </defs>
+
+      {/* 1. De donkere binnenkant van de mondopening */}
+    <ellipse id="rest" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={105.5} rx={10} ry={2.5} />
+
+      {/* 2. De glimlachende lippen (een iets grotere ellipse erachter die de 'smile'-curve geeft) */}
+      {/* Tip: Verander #b63c2c naar jouw gewenste lip- of schaduwkleur indien nodig */}
+      <ellipse 
+        cx={50} cy={105.5} rx={10} ry={2.5}
+        fill="none" 
+       
+      />
+    </g>
+  );
   }
 })()}
   <g id="Nose">

@@ -17,6 +17,42 @@ type MouthCue = {
     
 }
 const mouthCues : MouthCue[] =  [
+    { startFrame:5,
+    endFrame:7,
+    pose:"N"
+   },
+   { startFrame:8,
+    endFrame:10,
+    pose:"I"
+   },
+   { startFrame:11,
+    endFrame:12,
+    pose:"G"
+   },
+   { startFrame:13,
+    endFrame:14,
+    pose:"G"
+   },
+   { startFrame:15,
+    endFrame:17,
+    pose:"E"
+   },
+   { startFrame:18,
+    endFrame:20,
+    pose:"R"
+   },
+   { startFrame:46,
+    endFrame:48,
+    pose:"E"
+   },
+   { startFrame:49,
+    endFrame:51,
+    pose:"E"
+   },
+   { startFrame:52,
+    endFrame:54,
+    pose:"S"
+   },
     { startFrame:79,
     endFrame:81,
     pose:"S"
@@ -33,11 +69,11 @@ const mouthCues : MouthCue[] =  [
    {
     
     startFrame:86
-    ,endFrame:88,
+    ,endFrame:89,
     pose:"A"}
     ,{
         startFrame:89,
-        endFrame:92,
+        endFrame:93,
         pose:"MBP"
     }
     ,{
@@ -45,11 +81,7 @@ const mouthCues : MouthCue[] =  [
         endFrame:94,
         pose:"A"
     }
-    ,{
-        startFrame:94,
-        endFrame:97,
-        pose:"U"
-    }
+    
 
     
 
@@ -73,7 +105,7 @@ const rightElbowRotation = interpolate(frame,[0,quarterFrame,middleFrame,threeQu
 const activeCue = mouthCues.find((cue) => {
   return cue.startFrame <= frame && frame < cue.endFrame;
 });
-const mouthPose:MouthPose = activeCue ? activeCue.pose : "rest";
+const mouthPose:MouthPose = activeCue ? activeCue.pose : "MBP";
 // interpolate returns a generic value; ensure it's typed as MouthPose
      
     return {
