@@ -49,7 +49,7 @@ const LegsScene: React.FC<Props> = () => {
   const shakePose = HeadShakeAnimation(frame, HEAD_SHAKE_ANIMATION_FRAMES);
   const lookPose = eyeLookingAnimation(frame, EYE_LOOK_ANIMATION_FRAMES);
   const eyebrowPose = eyeBrowAnimation(frame, EYE_BROW_ANIMATION_FRAMES);
-  const runPose = RunAnimation(frame,RUN_ANIMATION_FRAMES);
+  const runPose = RunAnimation(frame, RUN_ANIMATION_FRAMES);
   return (
     <AbsoluteFill
       style={{
@@ -57,6 +57,7 @@ const LegsScene: React.FC<Props> = () => {
         justifyContent: "center",
         alignItems: "center",
       }}
+      from={-25}
     >
       <YusufCharacter
         rightKneeRotation={0}
@@ -75,12 +76,13 @@ const LegsScene: React.FC<Props> = () => {
         eyeLLookY={0}
         eyeRLookX={0}
         eyeRLookY={0}
-        leftEyeBrowY={0}
-        rightEyeBrowY={0}
+        leftEyeBrowY={eyebrowPose.rightEyeBrowY}
+        rightEyeBrowY={eyebrowPose.leftEyeBrowY}
         leftLegScaleY={runPose.leftLegScaleY}
         rightLegScaleY={runPose.rightLegScaleY}
         leftArmScaleY={runPose.leftArmScaleY}
         rightArmScaleY={runPose.rightArmScaleY}
+        mouthPose={talkpose.mouthPose}
         // leftHandPose={pointPose.leftHandPose}
       />
     </AbsoluteFill>
@@ -93,7 +95,7 @@ export const MyComposition = () => {
       id="MyComp"
       component={LegsScene}
       durationInFrames={90}
-      fps={30}
+      fps={60}
       width={1920}
       height={1080}
       calculateMetadata={calculateMetadata}

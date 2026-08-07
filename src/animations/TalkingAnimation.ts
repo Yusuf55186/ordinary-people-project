@@ -1,4 +1,5 @@
 import { interpolate } from "remotion"
+import { MouthPose } from "../YusufHead"
 type TalkPose = {
     headRotation:number
     bodyY:number
@@ -7,9 +8,35 @@ type TalkPose = {
     leftElbowRotation:number
     rightElbowRotation:number
     leftHandRotation:number
+    mouthPose:MouthPose
 }
+type MouthCue = {
+    startFrame: number
+    endFrame:number
+    pose:MouthPose
+    
+}
+const mouthCues : MouthCue[] =  [
+   { startFrame:0,
+    endFrame:2,
+    pose:"rest"
+   },
+   {
+    startFrame:2
+    ,endFrame:4,
+    pose:"A"}
+    ,{
+        startFrame:4,
+        endFrame:8,
+        pose:"rest"
+    }
+    
+    
+
+]
+
 export const talkingAnimation = (frame:number,talkFrames:number):TalkPose => {
-    const middleFrame = talkFrames * 0.5;
+const middleFrame = talkFrames * 0.5;
 const lastFrame = talkFrames - 1;
 const threeQuarterFrame = talkFrames * 0.75;
 const quarterFrame = talkFrames * 0.25
@@ -20,7 +47,11 @@ const leftElbowRotation = interpolate(frame, [0,quarterFrame,middleFrame,threeQu
 const leftHandRotation = interpolate(frame, [0,quarterFrame,middleFrame,threeQuarterFrame,lastFrame], [0,6,6,0,0]);
 const rightArmSwing = interpolate(frame, [0,quarterFrame,middleFrame,threeQuarterFrame,lastFrame], [0,-30,-30,0,0]);
 const rightElbowRotation = interpolate(frame,[0,quarterFrame,middleFrame,threeQuarterFrame,lastFrame],[0,-2,-2,0,0])
-
+const activeCue = mouthCues.find((cue) => {
+  return cue.startFrame <= frame && frame < cue.endFrame;
+});
+const mouthPose:MouthPose = activeCue ? activeCue.pose : "rest";
+// interpolate returns a generic value; ensure it's typed as MouthPose
      
     return {
         headRotation,
@@ -30,6 +61,7 @@ const rightElbowRotation = interpolate(frame,[0,quarterFrame,middleFrame,threeQu
         leftElbowRotation,
         rightElbowRotation,
         leftHandRotation,
+        mouthPose,
 
     }
 }

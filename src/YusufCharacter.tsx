@@ -1,7 +1,8 @@
 import { YusufLegs } from "./YusufLegs"
 import { YusufTorsoPelvis } from "./YusufTorsoPelvis"
-import { YusufHead } from "./YusufHead"
+import { MouthPose, YusufHead } from "./YusufHead"
 import { YusufArms } from "./YusufArms"
+
 type Props = {
 leftKneeRotation: number
 rightKneeRotation: number
@@ -26,10 +27,10 @@ leftLegScaleY:number
 rightLegScaleY:number
 leftArmScaleY:number
 rightArmScaleY:number
-
+mouthPose: MouthPose
 
 }
-export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,leftLegScaleY,rightLegScaleY,leftArmScaleY,rightArmScaleY}:Props){
+export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,leftLegScaleY,rightLegScaleY,leftArmScaleY,rightArmScaleY,mouthPose}:Props){
     return (
         <div style={{position:"relative", width: 500,height: 1050,transform: `translateY(${bodyY}px)`,}} >
             <div style={{  position: "absolute",
@@ -64,7 +65,7 @@ export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotati
  
 >
   <YusufHead  headRotation={headRotation} eyeScaleY={eyeScaleY} eyeLLookX={eyeLLookX} eyeRLookX={eyeRLookX} eyeRLookY={eyeRLookY}
-eyeLLookY={eyeLLookY} leftEyeBrowY={leftEyeBrowY} rightEyebrowY={rightEyeBrowY}
+eyeLLookY={eyeLLookY} leftEyeBrowY={leftEyeBrowY} rightEyebrowY={rightEyeBrowY} mouthPose={mouthPose}
   />
 </div>
         

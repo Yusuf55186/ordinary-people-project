@@ -1,3 +1,5 @@
+export type MouthPose = "rest" | "A";
+
 type Props = {
     headRotation:number
     eyeScaleY:number
@@ -7,8 +9,9 @@ type Props = {
     eyeRLookY:number
     leftEyeBrowY:number
     rightEyebrowY:number
+    mouthPose:MouthPose
 }
-export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose}:Props){
     return (
 <svg
   style={{
@@ -68,7 +71,12 @@ export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,
     <path className="st3" d="M5.52,72.64s-3.88,4.53,1.16,5.47"/>
     <path className="st3" d="M9.32,62.94s-16.65,13.97,1.57,23.53"/>
   </g>
-  <path id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43"/>
+  {mouthPose === 'A' ? (
+    <ellipse id="A_Mouth" style={{fill:"#161E2D"}}  className="st4" cx={50}cy={106}rx={10}ry={8}>
+    </ellipse>
+    
+        ):   <path  id="Mouth" className="st4" d="M76.65,98.44s-32.79,8.55-52.22-1.43"/> 
+        }
   <g id="Nose">
     <path className="st0" d="M49.47,90.2l.28-15.03c1.36-1.47,2.72.05,2.72.05l-.28,15.25"/>
     <path id="nostril_R" className="st0" d="M57.58,87.52s3.56,5.45-3.42,4.88"/>

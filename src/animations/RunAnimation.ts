@@ -59,21 +59,13 @@ const rightArmScaleY = interpolate(localFrame, [0,middleFrame,lastFrame],[0.8,1,
 
 return {
 leftHipRotation,
-
 rightHipRotation,
-
 leftKneeRotation,
-
 rightKneeRotation,
-
 bodyY,
-
 leftArmSwing,
-
 rightArmSwing,
-
 leftElbowRotation,
-
 rightElbowRotation,
 headRotation,
 leftLegScaleY,
