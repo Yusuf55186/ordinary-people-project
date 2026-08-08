@@ -7,7 +7,9 @@ type idlePose = {
     headRotation: number
 }
 export const idleAnimation = (frame:number,idleFrames:number):idlePose =>{
-    const phase = (frame / idleFrames) * Math.PI * 2
+    const localFrame = frame % idleFrames;
+    
+    const phase = (localFrame / idleFrames) * Math.PI * 1
     const bodyY = Math.sin(phase) * 3
     const leftArmSwing = Math.sin(phase) * 1.5;
 const rightArmSwing = Math.sin(phase) * -1.5;
