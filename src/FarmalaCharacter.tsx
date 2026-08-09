@@ -1,8 +1,8 @@
 type Props = {
     headRotation:number
     bodyY:number
-    leftArmSwing:number
-    rightArmSwing:number
+    leftArmRotation:number
+    rightArmRotation:number
     leftElbowRotation?:number
     rightElbowRotation?:number
     leftLegRotation:number
@@ -10,11 +10,11 @@ type Props = {
     leftKneeRotation?:number
     rightKneeRotation?:number
 }
-export function FarmalaCharacter({ headRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0}: Props) {  
+export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0}: Props) {  
   const headTransform = `rotate(${headRotation} 140 384)`;
 const bodyTransform = `translate(0 ${bodyY})`;
-const leftArmTransform = `rotate(${leftArmSwing} 79 417)`;
-const rightArmTransform = `rotate(${rightArmSwing} 194 420)`;
+const leftArmTransform = `rotate(${leftArmRotation} 79 417)`;
+const rightArmTransform = `rotate(${rightArmRotation} 194 420)`;
 const leftElbowTransform = `rotate(${leftElbowRotation} 57 497)`;
 const rightElbowTransform = `rotate(${rightElbowRotation} 207 505)`;
 const leftLowerArmTransform = `${leftArmTransform} ${leftElbowTransform}`;
@@ -40,19 +40,7 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
     >
       <defs>
         <clipPath id="CLIP_HOODIE_TORSO">
-          <rect x="68" y="400" width="114" height="186" />
-        </clipPath>
-        <clipPath id="CLIP_HOODIE_UPPER_SLEEVE_L">
-          <rect x="0" y="400" width="92" height="108" />
-        </clipPath>
-        <clipPath id="CLIP_HOODIE_FOREARM_SLEEVE_L">
-          <rect x="0" y="484" width="75" height="106" />
-        </clipPath>
-        <clipPath id="CLIP_HOODIE_UPPER_SLEEVE_R">
-          <rect x="160" y="400" width="90" height="113" />
-        </clipPath>
-        <clipPath id="CLIP_HOODIE_FOREARM_SLEEVE_R">
-          <rect x="177" y="492" width="73" height="98" />
+          <polygon points="70,400 171,400 195,466 188,545 182,586 66,586 63,540 69,458" />
         </clipPath>
         <style>{`
       #Farmala_Front_RemotionReady .st0, #Farmala_Front_RemotionReady .st1, #Farmala_Front_RemotionReady .st2, #Farmala_Front_RemotionReady .st3, #Farmala_Front_RemotionReady .st4, #Farmala_Front_RemotionReady .st5, #Farmala_Front_RemotionReady .st6, #Farmala_Front_RemotionReady .st7 {
@@ -513,28 +501,75 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
                 d="M180.25,582.83l-48.76-3.26,6.52-172.21,32.19.61,29.7,8.44c4.78,1.36,9.18,3.82,12.87,7.21,30.62,28.09,17.11,150.71,14.2,160.44l-11.88,2.56c-3.68,1.35-19.07-36.3-22.16-70.56-2.19-24.3,5.02-45.87,1.67-48.83l-6.68,76.46-.4,3.53c1.86,5.63.48,12.28-1.63,17.89l-6.74,17.8"
               />
             </g>
-            <g id="UPPER_SLEEVE_L" transform={leftArmTransform} clipPath="url(#CLIP_HOODIE_UPPER_SLEEVE_L)" data-rig-parent="ARM_L">
+            <g id="SHOULDER_CLOTH_L" fill="#354ea1" data-rig-parent="TORSO">
               <path
-                className="st2"
-                d="M68.2,576.83l-4.47-18.97c-1.41-5.96-1.89-12.88.87-18.3l.09-3.62,4.06-78.21c-3.94,2.51.49,25.35-5.31,49.57-8.18,34.17-25.02,71.87-28.69,69.98l-15.86-1.58c-1.63-10.25,1.1-140.7,37.17-164.65,4.35-2.88,9.3-4.74,14.49-5.42l32.27-4.24,35.15,5.67-19.48,173.28-51.45-3.75"
+                d="M87.89,442.37l-15.95-2.41c-2.57-3.18-3.75-6.84-3.54-10.98l.8-10.74c.2-2.47,1.49-4.1,3.86-4.85l16.63-4.17,7.49,1.1-9.28,32.06h0Z"
+              />
+              <path
+                d="M76.93,431.46c-1.06,2.9-3.1,4.12-6.11,3.67l-6.23-.94c-3.4-.51-4.61-2.09-3.61-4.72l6.75-16.74c3.4-3.8,7.85-4.87,13.33-3.21,2.33.9,2.84,1.68,1.52,2.32l-5.65,19.62h0Z"
               />
             </g>
-            <g id="FOREARM_SLEEVE_L" transform={leftLowerArmTransform} clipPath="url(#CLIP_HOODIE_FOREARM_SLEEVE_L)" data-rig-parent="Forearm_L">
+            <g id="SHOULDER_CLOTH_R" fill="#354ea1" data-rig-parent="TORSO">
               <path
-                className="st2"
-                d="M68.2,576.83l-4.47-18.97c-1.41-5.96-1.89-12.88.87-18.3l.09-3.62,4.06-78.21c-3.94,2.51.49,25.35-5.31,49.57-8.18,34.17-25.02,71.87-28.69,69.98l-15.86-1.58c-1.63-10.25,1.1-140.7,37.17-164.65,4.35-2.88,9.3-4.74,14.49-5.42l32.27-4.24,35.15,5.67-19.48,173.28-51.45-3.75"
+                d="M175,411.5c12.5,.5,25.5,4.5,38,10.5l1.5,18c-4,6-10,9-15.5,12h-21l-3-40.5Z"
               />
             </g>
-            <g id="UPPER_SLEEVE_R" transform={rightArmTransform} clipPath="url(#CLIP_HOODIE_UPPER_SLEEVE_R)" data-rig-parent="ARM_R">
+            <g id="UPPER_SLEEVE_L" transform={leftArmTransform} data-rig-parent="ARM_L">
               <path
                 className="st2"
-                d="M180.25,582.83l-48.76-3.26,6.52-172.21,32.19.61,29.7,8.44c4.78,1.36,9.18,3.82,12.87,7.21,30.62,28.09,17.11,150.71,14.2,160.44l-11.88,2.56c-3.68,1.35-19.07-36.3-22.16-70.56-2.19-24.3,5.02-45.87,1.67-48.83l-6.68,76.46-.4,3.53c1.86,5.63.48,12.28-1.63,17.89l-6.74,17.8"
+                d="M58,410c9-4,20-3,29,4,5,7,6,20,4,33-2,15-11,32-23,50-4,6-14,8-22,4-5-3-7-9-5-15,6-17,9-35,11-51,1-11,2-20,6-25Z"
               />
             </g>
-            <g id="FOREARM_SLEEVE_R" transform={rightLowerArmTransform} clipPath="url(#CLIP_HOODIE_FOREARM_SLEEVE_R)" data-rig-parent="Forearm_R">
+            <g id="FOREARM_SLEEVE_L" transform={leftLowerArmTransform} data-rig-parent="Forearm_L">
               <path
                 className="st2"
-                d="M180.25,582.83l-48.76-3.26,6.52-172.21,32.19.61,29.7,8.44c4.78,1.36,9.18,3.82,12.87,7.21,30.62,28.09,17.11,150.71,14.2,160.44l-11.88,2.56c-3.68,1.35-19.07-36.3-22.16-70.56-2.19-24.3,5.02-45.87,1.67-48.83l-6.68,76.46-.4,3.53c1.86,5.63.48,12.28-1.63,17.89l-6.74,17.8"
+                d="M45,491c7-4,17-2,23,5,3,5,1,14-3,24l-22,51c-2,7-6,11-11,9l-8-2c-4-2-4-8-2-15l14-54c2-9,4-15,9-18Z"
+              />
+            </g>
+            <g id="UPPER_SLEEVE_R" transform={rightArmTransform} data-rig-parent="ARM_R">
+              <path
+                className="st2"
+                d="M184,416c10-3,21,0,28,6,6,8,7,20,8,34,2,16,3,32-1,47-2,8-10,13-18,10-6-2-10-8-11-15-3-13-9-24-10-37-1-15-1-35,4-45Z"
+              />
+            </g>
+            <g id="FOREARM_SLEEVE_R" transform={rightLowerArmTransform} data-rig-parent="Forearm_R">
+              <path
+                className="st2"
+                d="M200,499c7-4,17-2,22,4,4,5,3,14,4,23l3,51c1,7-3,13-8,14h-7c-4-1-7-7-7-14l-9-54c-1-10-1-19,2-24Z"
+              />
+            </g>
+            <g id="HOODIE_JOINT_SEAM_COVERS" fill="#354ea1" stroke="none">
+              <ellipse
+                id="SHOULDER_SEAM_COVER_L"
+                cx="79"
+                cy="422"
+                rx="7"
+                ry="5"
+                transform={leftArmTransform}
+              />
+              <ellipse
+                id="ELBOW_SEAM_COVER_L"
+                cx="57"
+                cy="497"
+                rx="9"
+                ry="6"
+                transform={leftArmTransform}
+              />
+              <ellipse
+                id="SHOULDER_SEAM_COVER_R"
+                cx="194"
+                cy="427"
+                rx="7"
+                ry="5"
+                transform={rightArmTransform}
+              />
+              <ellipse
+                id="ELBOW_SEAM_COVER_R"
+                cx="207"
+                cy="505"
+                rx="9"
+                ry="6"
+                transform={rightArmTransform}
               />
             </g>
             <ellipse

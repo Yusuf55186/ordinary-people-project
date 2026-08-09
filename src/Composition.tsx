@@ -137,15 +137,15 @@ const LegsScene: React.FC<Props> = () => {
   }}
 >
   <FarmalaCharacter
-  headRotation={runPose.headRotation}
+  headRotation={0}
   bodyY={0}
-  leftArmSwing={0}
-  rightArmSwing={0}
+  leftArmRotation={20}
+  rightArmRotation={-30}
   leftLegRotation={0}
   rightLegRotation={0}
   leftKneeRotation={0}
-  rightKneeRotation={0}
-  leftElbowRotation={20}
+  rightKneeRotation={-20}
+  leftElbowRotation={-30}
 />
 </div>
     </AbsoluteFill>
