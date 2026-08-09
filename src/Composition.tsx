@@ -85,7 +85,8 @@ const Scene: React.FC<Props> = () => {
   const adyManAnimation = {
     ...idlePose,
    ...runPose,
-    ...blinkPose
+    ...blinkPose,
+    mouthPose
   }
   const farmalaAnimation = {
     ...idlePose,
@@ -152,7 +153,7 @@ const Scene: React.FC<Props> = () => {
           width: 250,
         }}
       >
-        <FarmalaCharacter {...combinedFarmala}
+        <FarmalaCharacter {...combinedFarmala} 
         
         
           />
@@ -161,18 +162,13 @@ const Scene: React.FC<Props> = () => {
         style={{
           position: "absolute",
           left: -400,
-          top: -120,
-          width: 100,
+          top: 100,
+          width: 250,
         }}
       >
         <AdyManCharacter
          {...combinedAdyMan}
-         leftArmRotation={adyManpose.rightArmRotation}
-  rightArmRotation={adyManpose.leftArmRotation}
-  leftElbowRotation={adyManpose.rightElbowRotation}
-  rightElbowRotation={adyManpose.leftElbowRotation}
-  leftHandRotation={adyManpose.rightHandRotation}
-  rightHandRotation={adyManpose.leftHandRotation}
+         
         
         
           />
@@ -187,8 +183,8 @@ export const MyComposition = () => {
       component={Scene}
       durationInFrames={300}
       fps={60}
-      width={1920}
-      height={1080}
+      width={2048}
+      height={1440}
       calculateMetadata={calculateMetadata}
     />
   );

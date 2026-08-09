@@ -2240,7 +2240,6 @@ export function AdyManCharacter({
                     id="mouth"
                     data-role="mouth"
                     data-mouth-pose={mouthPose}
-                    style={{ display: mouthPose === "rest" ? "inline" : "none" }}
                   >
                     <path
                       id="path54"
@@ -2254,10 +2253,20 @@ export function AdyManCharacter({
                         strokeMiterlimit: 10,
                         strokeDasharray: "none",
                         strokeOpacity: 1,
+                        display: mouthPose === "rest" ? "inline" : "none",
                       }}
                       transform="matrix(1.3333333,0,0,-1.3333333,1295.3645,454.18053)"
                       clipPath="url(#clipPath55)"
                     />
+                  </g>
+                  <g
+                    id="animated_mouth"
+                    data-role="animated-mouth"
+                    transform="translate(0 5) translate(1318.3 449.5) scale(0.72) translate(-1318.3 -449.5)"
+                  >
+                    <AdyManMouth pose={mouthPose} />
+                  </g>
+                  <g id="mustache" data-role="mustache">
                     <path
                       id="path74"
                       d="M 0,0 H 23.165"
@@ -2275,7 +2284,6 @@ export function AdyManCharacter({
                       clipPath="url(#clipPath75)"
                     />
                   </g>
-                  <AdyManMouth pose={mouthPose} />
                   <g
                     id="R_eye"
                     transform={rightEyeTransform}
