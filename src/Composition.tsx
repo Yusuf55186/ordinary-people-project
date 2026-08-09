@@ -18,6 +18,7 @@ import { RunAnimation } from "./animations/RunAnimation";
 import { getMouthPose, type MouthCue } from "./animations/lipSync";
 import { staticFile } from "remotion";
 import { Audio } from "@remotion/media";
+import { FarmalaCharacter } from "./FarmalaCharacter";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -69,6 +70,7 @@ const LegsScene: React.FC<Props> = () => {
   const pose = walkCycle(frame, WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame, WAVE_ANIMATION_FRAMES);
   const idlePose = idleAnimation(frame, IDLE_ANIMATION_FRAMES);
+   const FarmalaidlePose = idleAnimation(frame, 180);
   const blinkPose = BlinkingAnimation(frame, BLINK_ANIMATION_FRAMES);
   const pointPose = pointAnimation(frame, POINT_ANIMATION_FRAMES);
   const talkpose = talkingAnimation(frame, TALK_ANIMATION_FRAMES);
@@ -87,18 +89,28 @@ const LegsScene: React.FC<Props> = () => {
     >
       <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
       <Audio src={staticFile("VoiceOver/FatNigger.m4a")} from={-124} />
+      
+      <div
+  style={{
+  position: "absolute",
+  left: 1050,
+  top: 370,
+  transform: "scale(0.60)",
+  transformOrigin: "top left",
+}}
+>
       <YusufCharacter
-        rightKneeRotation={0}
-        leftKneeRotation={0}
-        leftHipRotation={0}
-        rightHipRotation={0}
+        rightKneeRotation={runPose.rightKneeRotation}
+        leftKneeRotation={runPose.leftKneeRotation}
+        leftHipRotation={runPose.leftHipRotation}
+        rightHipRotation={runPose.rightHipRotation}
         bodyY={talkpose.bodyY}
-        leftArmSwing={talkpose.leftArmSwing}
-        rightArmSwing={talkpose.rightArmSwing}
-        leftElbowRotation={talkpose.leftElbowRotation}
-        rightElbowRotation={talkpose.leftElbowRotation}
-        leftHandRotation={talkpose.leftHandRotation}
-        headRotation={talkpose.headRotation}
+        leftArmSwing={runPose.leftArmSwing}
+        rightArmSwing={runPose.rightArmSwing}
+        leftElbowRotation={runPose.leftElbowRotation}
+        rightElbowRotation={runPose.leftElbowRotation}
+        leftHandRotation={0}
+        headRotation={runPose.headRotation}
         eyeScaleY={blinkPose.eyeScaleY}
         eyeLLookX={lookPose.eyeLLookX}
         eyeLLookY={lookPose.eyeLLookY}
@@ -112,7 +124,30 @@ const LegsScene: React.FC<Props> = () => {
         rightArmScaleY={1}
         mouthPose={mouthPose}
         // leftHandPose={pointPose.leftHandPose}
+        
       />
+      </div>
+      
+      <div
+  style={{
+    position: "absolute",
+    left: 400,
+    top: 100,
+    width: 250,
+  }}
+>
+  <FarmalaCharacter
+  headRotation={runPose.headRotation}
+  bodyY={0}
+  leftArmSwing={0}
+  rightArmSwing={0}
+  leftLegRotation={0}
+  rightLegRotation={0}
+  leftKneeRotation={0}
+  rightKneeRotation={0}
+  leftElbowRotation={20}
+/>
+</div>
     </AbsoluteFill>
   );
 };
@@ -122,7 +157,7 @@ export const MyComposition = () => {
     <Composition
       id="MyComp"
       component={LegsScene}
-      durationInFrames={200}
+      durationInFrames={300}
       fps={60}
       width={1920}
       height={1080}
