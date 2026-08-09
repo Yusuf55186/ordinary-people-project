@@ -19,6 +19,7 @@ import { getMouthPose, type MouthCue } from "./animations/lipSync";
 import { staticFile } from "remotion";
 import { Audio } from "@remotion/media";
 import { FarmalaCharacter } from "./FarmalaCharacter";
+import { farmalaPose } from "./animations/FarmalaPose";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -69,8 +70,9 @@ const LegsScene: React.FC<Props> = () => {
 
   const pose = walkCycle(frame, WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame, WAVE_ANIMATION_FRAMES);
-  const idlePose = idleAnimation(frame, IDLE_ANIMATION_FRAMES);
-   const FarmalaidlePose = idleAnimation(frame, 180);
+  
+    const idlePose = idleAnimation(frame, IDLE_ANIMATION_FRAMES);
+  
   const blinkPose = BlinkingAnimation(frame, BLINK_ANIMATION_FRAMES);
   const pointPose = pointAnimation(frame, POINT_ANIMATION_FRAMES);
   const talkpose = talkingAnimation(frame, TALK_ANIMATION_FRAMES);
@@ -79,6 +81,18 @@ const LegsScene: React.FC<Props> = () => {
   const eyebrowPose = eyeBrowAnimation(frame, EYE_BROW_ANIMATION_FRAMES);
   const runPose = RunAnimation(frame, RUN_ANIMATION_FRAMES);
   const mouthPose = getMouthPose(frame, mouthCues);
+  const wavefarmala = farmalaPose(wavePose);
+  const runfarmala = farmalaPose(runPose);
+  
+  const farmalaAnimation = {
+    ...idlePose,
+    ...wavePose,
+    ...blinkPose,
+    ...lookPose
+    
+  }
+  const combinedFarmala = farmalaPose(farmalaAnimation);
+ 
   return (
     <AbsoluteFill
       style={{
@@ -88,7 +102,6 @@ const LegsScene: React.FC<Props> = () => {
       }}
     >
       <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
-      <Audio src={staticFile("VoiceOver/FatNigger.m4a")} from={-124} />
       
       <div
   style={{
@@ -129,6 +142,7 @@ const LegsScene: React.FC<Props> = () => {
       </div>
       
       <div
+      
   style={{
     position: "absolute",
     left: 400,
@@ -136,22 +150,12 @@ const LegsScene: React.FC<Props> = () => {
     width: 250,
   }}
 >
-  <FarmalaCharacter
-  headRotation={0}
-  bodyY={0}
-  leftArmRotation={20}
-  rightArmRotation={-30}
-  leftLegRotation={0}
-  rightLegRotation={0}
-  leftKneeRotation={0}
-  rightKneeRotation={-20}
-  leftElbowRotation={-30}
-/>
-</div>
-    </AbsoluteFill>
-  );
-};
+  <FarmalaCharacter {...combinedFarmala} />
 
+</div>
+</AbsoluteFill>
+);
+};
 export const MyComposition = () => {
   return (
     <Composition

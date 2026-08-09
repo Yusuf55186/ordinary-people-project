@@ -3,14 +3,24 @@ type Props = {
     bodyY:number
     leftArmRotation:number
     rightArmRotation:number
+    leftHandRotation:number
+    rightHandRotation:number
     leftElbowRotation?:number
     rightElbowRotation?:number
     leftLegRotation:number
     rightLegRotation:number
     leftKneeRotation?:number
     rightKneeRotation?:number
+    eyeScaleY:number
+    eyeLLookX:number
+    eyeLLookY:number
+    eyeRLookX:number
+    eyeRLookY:number
+     leftEyeBrowY:number
+    rightEyeBrowY:number
+
 }
-export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0}: Props) {  
+export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0,leftHandRotation,rightHandRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY}: Props) {  
   const headTransform = `rotate(${headRotation} 140 384)`;
 const bodyTransform = `translate(0 ${bodyY})`;
 const leftArmTransform = `rotate(${leftArmRotation} 79 417)`;
@@ -21,10 +31,25 @@ const leftLowerArmTransform = `${leftArmTransform} ${leftElbowTransform}`;
 const rightLowerArmTransform = `${rightArmTransform} ${rightElbowTransform}`;
 const leftLegTransform = `rotate(${leftLegRotation} 100 596)`;
 const rightLegTransform = `rotate(${rightLegRotation} 151 596)`;
+const leftHandTransform = `rotate(${leftHandRotation} 31 579)`;
+const rightHandTransform = `rotate(${rightHandRotation} 220 589)`;
 const leftKneeTransform = `rotate(${leftKneeRotation} 89 738)`;
 const rightKneeTransform = `rotate(${rightKneeRotation} 169 734)`;
 const leftLowerLegTransform = `${leftLegTransform} ${leftKneeTransform}`;
 const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
+const leftEyeTransform =
+  `translate(123 322) scale(1 ${eyeScaleY}) translate(-123 -322) `;
+
+const rightEyeTransform =
+  `translate(159 325) scale(1 ${eyeScaleY}) translate(-159 -325)`;
+  const leftPupilTransform =
+  `${leftEyeTransform} translate(${eyeLLookX} ${eyeLLookY})`;
+
+const rightPupilTransform =
+  `${rightEyeTransform} translate(${eyeRLookX} ${eyeRLookY})`;
+  const LeftEyeBrowTransform = `translate ${leftEyeBrowY}`
+  const RightEyeBrowTransform = `translate ${rightEyeBrowY}`
+
   return (
     <svg
       id="Farmala_Front_RemotionReady"
@@ -338,7 +363,7 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
             data-source-index="15"
           />
         </g>
-        <g id="HAND_L" transform={leftLowerArmTransform} data-remotion="true" data-rig-group="left-hand" data-rig-parent="Forearm_L">
+        <g id="HAND_L"   transform={`${leftLowerArmTransform} ${leftHandTransform}`}data-remotion="true" data-rig-group="left-hand" data-rig-parent="Forearm_L">
           <path
             id="Hand_L_Palm"
             className="st19"
@@ -392,7 +417,7 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
             data-rig-part="Upper_arm_R"
             data-source-index="23"
           />
-          <g id="HAND_R" transform={rightElbowTransform} data-rig-group="right-hand" data-rig-parent="Forearm_R">
+          <g id="HAND_R"   transform={`${rightElbowTransform} ${rightHandTransform}`} data-rig-group="right-hand" data-rig-parent="Forearm_R">
           <path
             id="Hand_R_Palm"
             className="st19"
@@ -514,6 +539,24 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
                 d="M175,411.5c12.5,.5,25.5,4.5,38,10.5l1.5,18c-4,6-10,9-15.5,12h-21l-3-40.5Z"
               />
             </g>
+            <g id="HOODIE_ELBOW_BRIDGES" fill="#354ea1" stroke="#2a2418" strokeWidth="2.5">
+              <ellipse
+                id="ELBOW_BRIDGE_L"
+                cx="57"
+                cy="497"
+                rx="11"
+                ry="10"
+                transform={leftArmTransform}
+              />
+              <ellipse
+                id="ELBOW_BRIDGE_R"
+                cx="207"
+                cy="505"
+                rx="11"
+                ry="10"
+                transform={rightArmTransform}
+              />
+            </g>
             <g id="UPPER_SLEEVE_L" transform={leftArmTransform} data-rig-parent="ARM_L">
               <path
                 className="st2"
@@ -543,7 +586,7 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
                 id="SHOULDER_SEAM_COVER_L"
                 cx="79"
                 cy="422"
-                rx="7"
+                rx="9"
                 ry="5"
                 transform={leftArmTransform}
               />
@@ -551,15 +594,15 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
                 id="ELBOW_SEAM_COVER_L"
                 cx="57"
                 cy="497"
-                rx="9"
-                ry="6"
+                rx="10"
+                ry="7"
                 transform={leftArmTransform}
               />
               <ellipse
                 id="SHOULDER_SEAM_COVER_R"
                 cx="194"
                 cy="427"
-                rx="7"
+                rx="9"
                 ry="5"
                 transform={rightArmTransform}
               />
@@ -567,8 +610,8 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
                 id="ELBOW_SEAM_COVER_R"
                 cx="207"
                 cy="505"
-                rx="9"
-                ry="6"
+                rx="10"
+                ry="7"
                 transform={rightArmTransform}
               />
             </g>
@@ -886,18 +929,21 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
           />
           <path
             id="Eye_L"
+            transform={leftEyeTransform}
             className="st22"
             d="M130.59,317.63l-.34,4.86c-.24,3.44-2.25,6.11-4.5,5.95l-9.11-.64c-2.24-.16-3.86-3.08-3.62-6.52l.34-4.86,19.76,1"
             data-source-index="43"
           />
           <path
             id="Eye_R"
+            transform={rightEyeTransform}
             className="st22"
             d="M152.26,319.24l-.4,5.74c-.2,2.9,1.22,5.37,3.17,5.5l8.93.62c1.96.14,3.71-2.11,3.91-5.01l.35-5.06-19.46-2.52"
             data-source-index="44"
           />
           <circle
             id="Pupil_R"
+            transform={`${rightEyeTransform} ,${rightPupilTransform}`}
             className="st21"
             cx="159.76"
             cy="325.24"
@@ -906,6 +952,7 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
           />
           <circle
             id="Pupil_L"
+            transform={`${leftEyeTransform} ,${leftPupilTransform}`}
             className="st21"
             cx="121.27"
             cy="321.84"
@@ -914,12 +961,14 @@ const rightLowerLegTransform = `${rightLegTransform} ${rightKneeTransform}`;
           />
           <path
             id="Eyebrow_L"
+            transform={LeftEyeBrowTransform}
             className="st18"
             d="M110.44,315.69l1.42.1c1.92.13,3.84-.64,5.62-2.2,3.15-2.78,9.05-6.09,14.72.98"
             data-source-index="47"
           />
           <path
             id="Eyebrow_R"
+            transform={RightEyeBrowTransform}
             className="st18"
             d="M174.99,312.35l-1.49-.1c-2.01-.14-3.91-1.23-5.53-3.12-2.87-3.36-8.53-7.66-15.46-1.14"
             data-source-index="48"
