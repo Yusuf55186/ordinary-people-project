@@ -20,6 +20,8 @@ import { staticFile } from "remotion";
 import { Audio } from "@remotion/media";
 import { FarmalaCharacter } from "./FarmalaCharacter";
 import { farmalaPose } from "./animations/FarmalaPose";
+import { adyManPose } from "./animations/AdyManPose";
+import { AdyManCharacter } from "./adyManCharacter";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -54,7 +56,7 @@ const mouthCues: MouthCue[] = [
   { startFrame: 94, endFrame: 97, pose: "U" },
 ];
 
-const LegsScene: React.FC<Props> = () => {
+const Scene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
   //   frameLegL,
@@ -78,7 +80,13 @@ const LegsScene: React.FC<Props> = () => {
   const mouthPose = getMouthPose(frame, mouthCues);
   const wavefarmala = farmalaPose(wavePose);
   const runfarmala = farmalaPose(runPose);
-
+  const adyManpose = adyManPose(wavePose);
+  const runadyMan = adyManPose(runPose);
+  const adyManAnimation = {
+    ...idlePose,
+   ...runPose,
+    ...blinkPose
+  }
   const farmalaAnimation = {
     ...idlePose,
     ...wavePose,
@@ -88,6 +96,7 @@ const LegsScene: React.FC<Props> = () => {
     mouthPose
   };
   const combinedFarmala = farmalaPose(farmalaAnimation);
+  const combinedAdyMan = adyManPose(adyManAnimation)
 
   return (
     <AbsoluteFill
@@ -148,6 +157,26 @@ const LegsScene: React.FC<Props> = () => {
         
           />
       </div>
+      <div
+        style={{
+          position: "absolute",
+          left: -400,
+          top: -120,
+          width: 100,
+        }}
+      >
+        <AdyManCharacter
+         {...combinedAdyMan}
+         leftArmRotation={adyManpose.rightArmRotation}
+  rightArmRotation={adyManpose.leftArmRotation}
+  leftElbowRotation={adyManpose.rightElbowRotation}
+  rightElbowRotation={adyManpose.leftElbowRotation}
+  leftHandRotation={adyManpose.rightHandRotation}
+  rightHandRotation={adyManpose.leftHandRotation}
+        
+        
+          />
+      </div>
     </AbsoluteFill>
   );
 };
@@ -155,7 +184,7 @@ export const MyComposition = () => {
   return (
     <Composition
       id="MyComp"
-      component={LegsScene}
+      component={Scene}
       durationInFrames={300}
       fps={60}
       width={1920}
