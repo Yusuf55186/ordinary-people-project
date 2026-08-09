@@ -47,16 +47,11 @@ const mouthCues: MouthCue[] = [
   { startFrame: 52, endFrame: 54, pose: "S" },
   { startFrame: 79, endFrame: 81, pose: "S" },
   { startFrame: 81, endFrame: 83, pose: "A" },
-  {startFrame: 83,endFrame: 86,pose: "L",
-  },
-  {startFrame: 86,endFrame: 89,pose: "A",
-  },
-  {startFrame: 89,endFrame: 93,pose: "MBP",
-  },
-  {startFrame: 93,endFrame: 94,pose: "A",
-  },
-  {startFrame: 94,endFrame: 97,pose: "U",
-  },
+  { startFrame: 83, endFrame: 86, pose: "L" },
+  { startFrame: 86, endFrame: 89, pose: "A" },
+  { startFrame: 89, endFrame: 93, pose: "MBP" },
+  { startFrame: 93, endFrame: 94, pose: "A" },
+  { startFrame: 94, endFrame: 97, pose: "U" },
 ];
 
 const LegsScene: React.FC<Props> = () => {
@@ -70,9 +65,9 @@ const LegsScene: React.FC<Props> = () => {
 
   const pose = walkCycle(frame, WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame, WAVE_ANIMATION_FRAMES);
-  
-    const idlePose = idleAnimation(frame, IDLE_ANIMATION_FRAMES);
-  
+
+  const idlePose = idleAnimation(frame, IDLE_ANIMATION_FRAMES);
+
   const blinkPose = BlinkingAnimation(frame, BLINK_ANIMATION_FRAMES);
   const pointPose = pointAnimation(frame, POINT_ANIMATION_FRAMES);
   const talkpose = talkingAnimation(frame, TALK_ANIMATION_FRAMES);
@@ -83,78 +78,78 @@ const LegsScene: React.FC<Props> = () => {
   const mouthPose = getMouthPose(frame, mouthCues);
   const wavefarmala = farmalaPose(wavePose);
   const runfarmala = farmalaPose(runPose);
-  
+
   const farmalaAnimation = {
     ...idlePose,
     ...wavePose,
     ...blinkPose,
-    ...lookPose
-    
-  }
+    ...lookPose,
+    ...eyebrowPose,
+    mouthPose
+  };
   const combinedFarmala = farmalaPose(farmalaAnimation);
- 
+
   return (
     <AbsoluteFill
       style={{
         backgroundColor: "#0f2c53",
         justifyContent: "center",
         alignItems: "center",
+        translate: "6px 0px",
       }}
     >
       <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
-      
       <div
-  style={{
-  position: "absolute",
-  left: 1050,
-  top: 370,
-  transform: "scale(0.60)",
-  transformOrigin: "top left",
-}}
->
-      <YusufCharacter
-        rightKneeRotation={runPose.rightKneeRotation}
-        leftKneeRotation={runPose.leftKneeRotation}
-        leftHipRotation={runPose.leftHipRotation}
-        rightHipRotation={runPose.rightHipRotation}
-        bodyY={talkpose.bodyY}
-        leftArmSwing={runPose.leftArmSwing}
-        rightArmSwing={runPose.rightArmSwing}
-        leftElbowRotation={runPose.leftElbowRotation}
-        rightElbowRotation={runPose.leftElbowRotation}
-        leftHandRotation={0}
-        headRotation={runPose.headRotation}
-        eyeScaleY={blinkPose.eyeScaleY}
-        eyeLLookX={lookPose.eyeLLookX}
-        eyeLLookY={lookPose.eyeLLookY}
-        eyeRLookX={lookPose.eyeRLookX}
-        eyeRLookY={lookPose.eyeRLookY}
-        leftEyeBrowY={eyebrowPose.rightEyeBrowY}
-        rightEyeBrowY={eyebrowPose.leftEyeBrowY}
-        leftLegScaleY={1}
-        rightLegScaleY={1}
-        leftArmScaleY={1}
-        rightArmScaleY={1}
-        mouthPose={mouthPose}
-        // leftHandPose={pointPose.leftHandPose}
-        
-      />
+        style={{
+          position: "absolute",
+          left: 1050,
+          top: 370,
+          transform: "scale(0.60)",
+          transformOrigin: "top left",
+        }}
+      >
+        <YusufCharacter
+          rightKneeRotation={runPose.rightKneeRotation}
+          leftKneeRotation={runPose.leftKneeRotation}
+          leftHipRotation={runPose.leftHipRotation}
+          rightHipRotation={runPose.rightHipRotation}
+          bodyY={talkpose.bodyY}
+          leftArmSwing={runPose.leftArmSwing}
+          rightArmSwing={runPose.rightArmSwing}
+          leftElbowRotation={runPose.leftElbowRotation}
+          rightElbowRotation={runPose.leftElbowRotation}
+          leftHandRotation={0}
+          headRotation={runPose.headRotation}
+          eyeScaleY={blinkPose.eyeScaleY}
+          eyeLLookX={lookPose.eyeLLookX}
+          eyeLLookY={lookPose.eyeLLookY}
+          eyeRLookX={lookPose.eyeRLookX}
+          eyeRLookY={lookPose.eyeRLookY}
+          leftEyeBrowY={eyebrowPose.rightEyeBrowY}
+          rightEyeBrowY={eyebrowPose.leftEyeBrowY}
+          leftLegScaleY={1}
+          rightLegScaleY={1}
+          leftArmScaleY={1}
+          rightArmScaleY={1}
+          mouthPose={mouthPose}
+          // leftHandPose={pointPose.leftHandPose}
+        />
       </div>
-      
       <div
-      
-  style={{
-    position: "absolute",
-    left: 400,
-    top: 100,
-    width: 250,
-  }}
->
-  <FarmalaCharacter {...combinedFarmala} />
-
-</div>
-</AbsoluteFill>
-);
+        style={{
+          position: "absolute",
+          left: 400,
+          top: 100,
+          width: 250,
+        }}
+      >
+        <FarmalaCharacter {...combinedFarmala}
+        
+        
+          />
+      </div>
+    </AbsoluteFill>
+  );
 };
 export const MyComposition = () => {
   return (

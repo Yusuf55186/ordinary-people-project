@@ -1,3 +1,246 @@
+
+
+
+import type { MouthCue } from "./animations/lipSync";
+
+type MouthPose = MouthCue["pose"];
+
+const FarmalaMouth = ({ pose }: { pose: MouthPose }) => {
+  const mouthDark = "#2a2418";
+  const mouthOutline = "#010101";
+  const teeth = "#f5f6f6";
+  const tongue = "#b85f63";
+
+  switch (pose) {
+    case "A":
+      return (
+        <ellipse
+          id="Mouth_A"
+          cx="140"
+          cy="368"
+          rx="7"
+          ry="9"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "U":
+      return (
+        <ellipse
+          id="Mouth_U"
+          cx="140"
+          cy="368"
+          rx="4.5"
+          ry="5.5"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "MBP":
+      return (
+        <path
+          id="Mouth_MBP"
+          d="M130,368 Q140,365.4 150,368 Q140,370.6 130,368Z"
+          fill="#b76a55"
+          stroke={mouthOutline}
+          strokeWidth="0.9"
+          strokeLinejoin="round"
+        />
+      );
+
+    case "S":
+      return (
+        <g id="Mouth_S">
+          <rect
+            x="129"
+            y="364"
+            width="22"
+            height="8"
+            rx="4"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <path
+            d="M131.5,365.2 Q140,363.9 148.5,365.2 L148,368.2 Q140,369.1 132,368.1Z"
+            fill={teeth}
+          />
+        </g>
+      );
+
+    case "L":
+      return (
+        <g id="Mouth_L_Pose">
+          <ellipse
+            cx="140"
+            cy="368"
+            rx="8"
+            ry="6.5"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <ellipse cx="140" cy="371" rx="5.2" ry="2.5" fill={tongue} />
+        </g>
+      );
+
+    case "N":
+      return (
+        <ellipse
+          id="Mouth_N"
+          cx="140"
+          cy="368"
+          rx="9"
+          ry="3.5"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "R":
+      return (
+        <ellipse
+          id="Mouth_R_Pose"
+          cx="140"
+          cy="368"
+          rx="6.5"
+          ry="6"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "G":
+      return (
+        <g id="Mouth_G">
+          <ellipse
+            cx="140"
+            cy="368"
+            rx="8.5"
+            ry="6.5"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <path
+            d="M135,372 Q140,369.8 145,372 Q140,374.4 135,372Z"
+            fill={tongue}
+          />
+        </g>
+      );
+
+    case "E":
+      return (
+        <g id="Mouth_E">
+          <rect
+            x="127.5"
+            y="363.5"
+            width="25"
+            height="9"
+            rx="4.5"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <path
+            d="M130,364.8 Q140,363.4 150,364.8 L149.2,368 Q140,369 130.8,367.9Z"
+            fill={teeth}
+          />
+        </g>
+      );
+
+    case "I":
+      return (
+        <rect
+          id="Mouth_I"
+          x="127"
+          y="365"
+          width="26"
+          height="6"
+          rx="3"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "F":
+      return (
+        <g id="Mouth_F">
+          <rect
+            x="130"
+            y="363.8"
+            width="20"
+            height="8"
+            rx="4"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <path
+            d="M132,364.8 Q140,363.8 148,364.8 L147.5,368 Q140,369 132.5,368Z"
+            fill={teeth}
+          />
+          <path
+            d="M133,370 Q140,367.8 147,370 Q140,372.4 133,370Z"
+            fill="#b76a55"
+          />
+        </g>
+      );
+
+    case "TH":
+      return (
+        <g id="Mouth_TH">
+          <rect
+            x="130"
+            y="363.5"
+            width="20"
+            height="9"
+            rx="4.5"
+            fill={mouthDark}
+            stroke={mouthOutline}
+            strokeWidth="0.8"
+          />
+          <path
+            d="M132,364.6 Q140,363.7 148,364.6 L147.5,367.4 Q140,368.3 132.5,367.4Z"
+            fill={teeth}
+          />
+          <ellipse cx="140" cy="370.2" rx="5.4" ry="2.7" fill={tongue} />
+        </g>
+      );
+
+    case "O":
+      return (
+        <ellipse
+          id="Mouth_O"
+          cx="140"
+          cy="368"
+          rx="7.5"
+          ry="8"
+          fill={mouthDark}
+          stroke={mouthOutline}
+          strokeWidth="0.8"
+        />
+      );
+
+    case "rest":
+    default:
+      return (
+        <path
+          id="Mouth_Outer"
+          className="st18"
+          d="M122.86,367.99l1.4-.34c1.25-.31,3.18-.41,5.19-.27l22.93,1.6c1.76.12,3.39.46,4.32.88l1.24.57"
+        />
+      );
+  }
+};
+
 type Props = {
     headRotation:number
     bodyY:number
@@ -18,9 +261,10 @@ type Props = {
     eyeRLookY:number
      leftEyeBrowY:number
     rightEyeBrowY:number
+    mouthPose?: MouthPose;
 
 }
-export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0,leftHandRotation,rightHandRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY}: Props) {  
+export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0,leftHandRotation,rightHandRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,mouthPose = "rest"}: Props) {  
   const headTransform = `rotate(${headRotation} 140 384)`;
 const bodyTransform = `translate(0 ${bodyY})`;
 const leftArmTransform = `rotate(${leftArmRotation} 79 417)`;
@@ -47,8 +291,8 @@ const rightEyeTransform =
 
 const rightPupilTransform =
   `${rightEyeTransform} translate(${eyeRLookX} ${eyeRLookY})`;
-  const LeftEyeBrowTransform = `translate ${leftEyeBrowY}`
-  const RightEyeBrowTransform = `translate ${rightEyeBrowY}`
+  const leftEyeBrowTransform = `translate(0 ${leftEyeBrowY})`;
+const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
 
   return (
     <svg
@@ -961,24 +1205,20 @@ const rightPupilTransform =
           />
           <path
             id="Eyebrow_L"
-            transform={LeftEyeBrowTransform}
+            transform={leftEyeBrowTransform}
             className="st18"
             d="M110.44,315.69l1.42.1c1.92.13,3.84-.64,5.62-2.2,3.15-2.78,9.05-6.09,14.72.98"
             data-source-index="47"
           />
           <path
             id="Eyebrow_R"
-            transform={RightEyeBrowTransform}
+            transform={rightEyeBrowTransform}
             className="st18"
             d="M174.99,312.35l-1.49-.1c-2.01-.14-3.91-1.23-5.53-3.12-2.87-3.36-8.53-7.66-15.46-1.14"
             data-source-index="48"
           />
-          <path
-            id="Mouth_Outer"
-            className="st18"
-            d="M122.86,367.99l1.4-.34c1.25-.31,3.18-.41,5.19-.27l22.93,1.6c1.76.12,3.39.46,4.32.88l1.24.57"
-            data-source-index="49"
-          />
+          <FarmalaMouth pose={mouthPose} />
+          
           <path
             id="Mouth_R"
             className="st20"
