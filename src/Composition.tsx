@@ -22,6 +22,8 @@ import { FarmalaCharacter } from "./FarmalaCharacter";
 import { farmalaPose } from "./animations/FarmalaPose";
 import { adyManPose } from "./animations/AdyManPose";
 import { AdyManCharacter } from "./adyManCharacter";
+import { SceneMaster } from "./scenes/sceneCharacter";
+import { YusufRoom } from "./scenes/rooms/YusufRoom";
 type Props = {};
 
 const calculateMetadata: CalculateMetadataFunction<Props> = () => {
@@ -64,7 +66,11 @@ const Scene: React.FC<Props> = () => {
   //   [0,50,0]
   // );
   const frame = useCurrentFrame();
-
+  const sceneLayout = {
+    farmala: { x: 100, y: -20, width: 250, scale: 1.2, zIndex: 0 },
+    adyMan: { x: 270, y: 290, width: 250, scale: 1, zIndex: 0 },
+    yusuf: { x: 1050, y: 300, width: 500, scale: 0.7, zIndex: 0 },
+  };
   const pose = walkCycle(frame, WALK_CYCLE_FRAMES);
   const wavePose = WaveAnimation(frame, WAVE_ANIMATION_FRAMES);
 
@@ -82,22 +88,30 @@ const Scene: React.FC<Props> = () => {
   const runfarmala = farmalaPose(runPose);
   const adyManpose = adyManPose(wavePose);
   const runadyMan = adyManPose(runPose);
+
   const adyManAnimation = {
     ...idlePose,
-   ...runPose,
+    ...runPose,
     ...blinkPose,
-    mouthPose
-  }
+    mouthPose,
+  };
+  const facialAnimation = {
+    ...blinkPose,
+    ...lookPose,
+    ...eyebrowPose,
+    ...talkpose,
+    mouthPose,
+  };
+  const adyManFace = adyManPose(facialAnimation);
   const farmalaAnimation = {
     ...idlePose,
     ...wavePose,
     ...blinkPose,
     ...lookPose,
     ...eyebrowPose,
-    mouthPose
   };
   const combinedFarmala = farmalaPose(farmalaAnimation);
-  const combinedAdyMan = adyManPose(adyManAnimation)
+  const combinedAdyMan = adyManPose(adyManAnimation);
 
   return (
     <AbsoluteFill
@@ -106,6 +120,7 @@ const Scene: React.FC<Props> = () => {
         justifyContent: "center",
         alignItems: "center",
         translate: "6px 0px",
+        color: "#ffffff",
       }}
     >
       <Audio src={staticFile("VoiceOver/Asalam Aleykoum.m4a")} />
@@ -117,7 +132,29 @@ const Scene: React.FC<Props> = () => {
           transform: "scale(0.60)",
           transformOrigin: "top left",
         }}
-      >
+      ></div>
+      <div
+        style={{
+          position: "absolute",
+          left: 400,
+          top: 100,
+          width: 250,
+        }}
+      ></div>
+      <div
+        style={{
+          position: "absolute",
+          left: -400,
+          top: 0,
+          width: 250,
+        }}
+      ></div>
+      <>
+      <YusufRoom />
+      <SceneMaster {...sceneLayout.adyMan}>
+        <AdyManCharacter {...adyManFace} />
+      </SceneMaster>
+      <SceneMaster {...sceneLayout.yusuf}>
         <YusufCharacter
           rightKneeRotation={runPose.rightKneeRotation}
           leftKneeRotation={runPose.leftKneeRotation}
@@ -127,6 +164,7 @@ const Scene: React.FC<Props> = () => {
           leftArmSwing={runPose.leftArmSwing}
           rightArmSwing={runPose.rightArmSwing}
           leftElbowRotation={runPose.leftElbowRotation}
+          // Deliberately offset for a more natural run
           rightElbowRotation={runPose.leftElbowRotation}
           leftHandRotation={0}
           headRotation={runPose.headRotation}
@@ -142,37 +180,12 @@ const Scene: React.FC<Props> = () => {
           leftArmScaleY={1}
           rightArmScaleY={1}
           mouthPose={mouthPose}
-          // leftHandPose={pointPose.leftHandPose}
         />
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          left: 400,
-          top: 100,
-          width: 250,
-        }}
-      >
-        <FarmalaCharacter {...combinedFarmala} 
-        
-        
-          />
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          left: -400,
-          top: 100,
-          width: 250,
-        }}
-      >
-        <AdyManCharacter
-         {...combinedAdyMan}
-         
-        
-        
-          />
-      </div>
+      </SceneMaster>
+      <SceneMaster {...sceneLayout.farmala}>
+        <FarmalaCharacter {...combinedFarmala}></FarmalaCharacter>
+      </SceneMaster>
+      </>
     </AbsoluteFill>
   );
 };
@@ -183,8 +196,8 @@ export const MyComposition = () => {
       component={Scene}
       durationInFrames={300}
       fps={60}
-      width={2048}
-      height={1440}
+      width={1920}
+      height={1080}
       calculateMetadata={calculateMetadata}
     />
   );

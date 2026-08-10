@@ -66,7 +66,7 @@ export const humanoidPose = (
   bodyY: animation.bodyY ?? 0,
 
   leftArmRotation:
-    animation.leftArmRotation ?? animation.leftArmSwing ?? 0,
+    animation.leftArmRotation ?? (animation.leftArmSwing) ?? 0,
   rightArmRotation:
     animation.rightArmRotation ?? animation.rightArmSwing ?? 0,
 

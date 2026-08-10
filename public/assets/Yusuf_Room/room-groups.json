@@ -1,0 +1,29 @@
+
+{
+  "name": "YUSUF_ROOM",
+  "viewBox": "0 0 1920 1080",
+  "source": "public/assets/yusuf-room/Yusuf_Room_RemotionReady.svg",
+  "groups": {
+    "BACKGROUND": "static",
+    "WINDOW": "static",
+    "WALL_DECOR": "static",
+    "DESK": {
+      "DESK_WORKSPACE": {
+        "DESK_STRUCTURE": "static",
+        "MONITORS": "animatable-target",
+        "DESK_LAMP": "animatable-target",
+        "DESK_SURFACE_PROPS": "static",
+        "PEN_HOLDER": "static"
+      }
+    },
+    "FURNITURE": {
+      "CHAIR": "animatable-target",
+      "CABINET": "static",
+      "BEANBAG": "static"
+    },
+    "LIGHTING": {
+      "LIGHTING_SYSTEM": "static",
+      "LIGHTING_CONTROLS": "future-target"
+    }
+  }
+}

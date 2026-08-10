@@ -272,9 +272,9 @@ export function AdyManCharacter({
     <svg
       xmlns="http://www.w3.org/2000/svg"
       id="svg1"
-      width={2560}
-      height={1440}
-      viewBox="0 0 2560 1440"
+      width={1280}
+      height={780}
+      viewBox="1100 250 600 950"
     >
       <defs id="defs1">
         <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2">
