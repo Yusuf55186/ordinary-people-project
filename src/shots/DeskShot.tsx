@@ -7,11 +7,12 @@ import { ShotCamera } from "../ShotCamera";
 import { useCurrentFrame,interpolate } from "remotion";
 export const YusufDeskShot = () => {
   const frame = useCurrentFrame();
-  const camerazoom = interpolate(frame,[0,300],[1,1.2],
-)
+  const cameraZoom = interpolate(frame,[0,90],[1,1.2])
+  const cameraPanX = interpolate(frame,[0,90],[0,-220])
+  const cameraPanY = interpolate(frame,[0,90],[0,-80])
     const seatedYusuf = yusufPose(yusufDeskRestPose);
    return (
-  <ShotCamera panX={0} panY={0} zoom={camerazoom}>
+  <ShotCamera panX={cameraPanX} panY={cameraPanY} zoom={cameraZoom}>
     <YusufRoom />
 
     <SceneMaster x={1020} y={300} width={500} scale={0.7}>
