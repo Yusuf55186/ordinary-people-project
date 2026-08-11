@@ -26,7 +26,7 @@ import { SceneMaster } from "./scenes/sceneCharacter";
 import { YusufRoom } from "./scenes/rooms/YusufRoom";
 type Props = {};
 
-const calculateMetadata: CalculateMetadataFunction<Props> = () => {
+export const calculateMetadata: CalculateMetadataFunction<Props> = () => {
   return {};
 };
 const WALK_CYCLE_FRAMES = 60;
@@ -58,7 +58,7 @@ const mouthCues: MouthCue[] = [
   { startFrame: 94, endFrame: 97, pose: "U" },
 ];
 
-const Scene: React.FC<Props> = () => {
+export const Scene: React.FC<Props> = () => {
   // const frameLegL = useCurrentFrame();
   // const kneeRotation_L = interpolate(
   //   frameLegL,

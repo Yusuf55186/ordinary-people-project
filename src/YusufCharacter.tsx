@@ -3,7 +3,7 @@ import { YusufTorsoPelvis } from "./YusufTorsoPelvis"
 import { MouthPose, YusufHead } from "./YusufHead"
 import { YusufArms } from "./YusufArms"
 
-type Props = {
+export type YusufCharacterProps = {
 leftKneeRotation: number
 rightKneeRotation: number
 leftHipRotation: number
@@ -30,7 +30,7 @@ rightArmScaleY:number
 mouthPose: MouthPose
 
 }
-export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,leftLegScaleY,rightLegScaleY,leftArmScaleY,rightArmScaleY,mouthPose}:Props){
+export function YusufCharacter({leftKneeRotation,rightKneeRotation,leftHipRotation,rightHipRotation,bodyY,leftArmSwing,rightArmSwing,leftElbowRotation,rightElbowRotation,leftHandRotation,headRotation,eyeScaleY,leftHandPose,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,leftLegScaleY,rightLegScaleY,leftArmScaleY,rightArmScaleY,mouthPose}:YusufCharacterProps){
     return (
         <div style={{position:"relative", width: 500,height: 1050,transform: `translateY(${bodyY}px)`,}} >
             <div style={{  position: "absolute",
