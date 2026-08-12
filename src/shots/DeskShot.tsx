@@ -6,9 +6,12 @@ import { YusufBackDeskRestPose } from "../poses/yusufBackDeskRestPose";
 import { ShotCamera } from "../ShotCamera";
 import  { cameraMove } from "../animations/cameraMove";
 import { useCurrentFrame, } from "remotion";
-
-export const YusufDeskShot = () => {
-  const frame = useCurrentFrame();
+import type { ReactNode } from "react";
+type YusufDeskShotProps = {
+  children?:ReactNode;
+}
+export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
+    const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   const seatedIdle = {
      bodyY: breathe * 2,
@@ -42,6 +45,7 @@ export const YusufDeskShot = () => {
       <YusufBackCharacter {...seatedYusuf}
       lowerBodyPose="deskSeated" />
     </SceneMaster>
+    {children}
     <YusufRoomDeskForeground />
     
   </ShotCamera>
