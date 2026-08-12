@@ -10,12 +10,18 @@ import { talkingAnimation } from "../../animations/TalkingAnimation";
 import { staticFile } from "remotion";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
+import { Camera } from "../../components/Camera";
+import { eyeBrowAnimation } from "../../animations/eyebrowAnimation";
+import { eyeLookingAnimation } from "../../animations/EyeLookAnimation";
 export const Episode1Scene = () => {
     const frame = useCurrentFrame();
     const idlePose = idleAnimation(frame,120);
-    
-    const talkTalkMotion = talkingAnimation(frame - 345,60)
-    const farmalaMouthCues: MouthCue[] = [
+    const actingFrame = Math.max(0, frame - 345);
+const eyebrowPose = eyeBrowAnimation(actingFrame, 60);
+const eyeLookPose = eyeLookingAnimation(actingFrame, 60);
+const talkTalkMotion = talkingAnimation(actingFrame, 60);
+        
+const farmalaMouthCues: MouthCue[] = [
   { startFrame: 367, endFrame: 372, pose: "rest" },
 
   { startFrame: 372, endFrame: 377, pose: "E" },
@@ -51,6 +57,8 @@ export const Episode1Scene = () => {
     const farmalaTalking = {
         ...farmalaIdle,
         ...talkTalkMotion,
+        ...eyebrowPose,
+        ...eyeLookPose,
         mouthPose: farmalaMouthPose,
         
     }
@@ -65,6 +73,43 @@ const settleAmount = interpolate(frame,[330,345],[1,0],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp",
 });
+const scene1Camera = {
+  pushIn: {
+    startFrame: 0,
+    endFrame: 180,
+    startScale: 1,
+    endScale: 1.08,
+  },
+  farmalaFocus: {
+    startFrame: 240,
+    holdStartFrame:180,
+    endFrame: 329,
+    startX: 0,
+    endX: 60,
+  },
+};
+const cameraScale = interpolate(frame, [scene1Camera.pushIn.startFrame, scene1Camera.pushIn.endFrame], [scene1Camera.pushIn.startScale, scene1Camera.pushIn.endScale], {
+  extrapolateRight: "clamp",
+});
+const cameraX = interpolate(
+  frame,
+ [
+  scene1Camera.farmalaFocus.holdStartFrame,
+  scene1Camera.farmalaFocus.startFrame,
+  scene1Camera.farmalaFocus.endFrame,
+  345,
+]
+  ,[
+    scene1Camera.farmalaFocus.startX,
+    scene1Camera.farmalaFocus.startX,
+    scene1Camera.farmalaFocus.endX,
+    scene1Camera.farmalaFocus.endX,
+  ],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  },
+);
 const farmalaSettling = {
   ...farmalaWalk,
   leftKneeRotation: farmalaWalk.leftKneeRotation * settleAmount,
@@ -84,13 +129,17 @@ fromX: 1750,
 toX: 1180,
     });
     
+    
     return (
-        <YusufDeskShot>
-            <Sequence from={345}>
+        <>
+        <Sequence from={345}>
               <Audio
                src={staticFile("VoiceOver/Farmala_Takes/No one cares.m4a")}
               />
             </Sequence>
+        <Camera x={cameraX} y={0} scale={cameraScale}>
+        <YusufDeskShot>
+            
                 
             {frame >= 240 && frame < 330 &&(
             <SceneMaster x={farmalaX} y={120} width={260} scale={0.9} zIndex={1}>
@@ -109,5 +158,7 @@ toX: 1180,
 )}
 
         </YusufDeskShot>
+        </Camera>
+        </>
     )
 }
