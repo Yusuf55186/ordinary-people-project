@@ -5,17 +5,58 @@ import { yusufPose } from "../animations/yusufPose";
 import { YusufBackDeskRestPose } from "../poses/yusufBackDeskRestPose";
 import { ShotCamera } from "../ShotCamera";
 import  { cameraMove } from "../animations/cameraMove";
-import { useCurrentFrame, } from "remotion";
+import { interpolate, useCurrentFrame, } from "remotion";
 import type { ReactNode } from "react";
+
 type YusufDeskShotProps = {
   children?:ReactNode;
 }
 export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
-    const frame = useCurrentFrame();
+  const frame = useCurrentFrame();
+  
+  const YusufNoticeProgress = interpolate(frame,
+          [220,300],
+          [0,1],
+          {
+              extrapolateLeft:"clamp",
+              extrapolateRight:"clamp",
+          },
+      );
+      const yusufNoticeFarmala = {
+           headRotation:6,
+    bodyY: -2,
+    rightArmSwing: -4,
+    rightElbowRotation: 5,
+      }
+      const yusufNoticeState = {
+    headRotation: interpolate(
+      YusufNoticeProgress,
+      [0, 1],
+      [0, yusufNoticeFarmala.headRotation],
+    ),
+    bodyY: interpolate(
+      YusufNoticeProgress,
+      [0,1],
+      [0,yusufNoticeFarmala.bodyY],
+      
+    ),
+    rightArmSwing: interpolate(
+      YusufNoticeProgress,
+      [0,1],
+      [0,yusufNoticeFarmala.rightArmSwing]
+    ),
+    rightElbowRotation: interpolate(
+      YusufNoticeProgress,
+      [0,1],
+      [0,yusufNoticeFarmala.rightElbowRotation]
+    )
+  };
+  
   const breathe = Math.sin(frame / 30);
+  
   const seatedIdle = {
      bodyY: breathe * 2,
-     headRotation : breathe* -0.8
+     headRotation : breathe * -0.8
   }
   const seatedYusuf = yusufPose({ ...YusufBackDeskRestPose , ...seatedIdle })
   const cameraPose = cameraMove({
@@ -42,8 +83,10 @@ export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
     <YusufRoom />
 
     <SceneMaster x={880} y={300} width={500} scale={0.7}>
-      <YusufBackCharacter {...seatedYusuf}
+      <YusufBackCharacter {...seatedYusuf} {...yusufNoticeState}
       lowerBodyPose="deskSeated" />
+      
+      
     </SceneMaster>
     {children}
     <YusufRoomDeskForeground />

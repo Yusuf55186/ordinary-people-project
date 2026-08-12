@@ -14,13 +14,46 @@ import { Camera } from "../../components/Camera";
 import { eyeBrowAnimation } from "../../animations/eyebrowAnimation";
 import { eyeLookingAnimation } from "../../animations/EyeLookAnimation";
 export const Episode1Scene = () => {
+  
     const frame = useCurrentFrame();
     const idlePose = idleAnimation(frame,120);
+    const farmalaScene1Timing = {
+  enterStart: 240,
+  enterEnd: 330,
+  talkStart: 345,
+  finalX: 1180,
+};
+const farmalaPauseProgress = interpolate(
+  frame,
+  [474, 482, 517, 525],
+  [0, 1, 1, 0],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  },
+);
+
     const actingFrame = Math.max(0, frame - 345);
 const eyebrowPose = eyeBrowAnimation(actingFrame, 60);
 const eyeLookPose = eyeLookingAnimation(actingFrame, 60);
 const talkTalkMotion = talkingAnimation(actingFrame, 60);
-        
+        const farmalaPauseReaction = {
+  headRotation: interpolate(
+    farmalaPauseProgress,
+    [0, 1],
+    [-4, -7],
+  ),
+  eyeLLookX: interpolate(
+    farmalaPauseProgress,
+    [0, 1],
+    [eyeLookPose.eyeLLookX, -2],
+  ),
+  eyeRLookX: interpolate(
+    farmalaPauseProgress,
+    [0, 1],
+    [eyeLookPose.eyeRLookX, -2],
+  ),
+};
 const farmalaMouthCues: MouthCue[] = [
   { startFrame: 367, endFrame: 372, pose: "rest" },
 
@@ -53,22 +86,45 @@ const farmalaMouthCues: MouthCue[] = [
 ];
     // const walkPose = walkCycle(frame,240)
     const farmalaIdle = farmalaPose(idlePose); 
+    
+    const farmalaDismissiveGesture = {
+  rightArmRotation: interpolate(
+    frame,
+    [345, 357, 382, 400],
+    [0, -12, -12, 0],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  ),
+};
+
+    
     const farmalaMouthPose = getMouthPose(frame,farmalaMouthCues) 
     const farmalaTalking = {
         ...farmalaIdle,
         ...talkTalkMotion,
         ...eyebrowPose,
         ...eyeLookPose,
+        ...farmalaPauseReaction,
         mouthPose: farmalaMouthPose,
-        
+        headRotation: -4,
+        ...farmalaDismissiveGesture
     }
     
-const farmalaWalk = walkCycle(frame - 240, 60,{
-    kneeAmplitude: 12,
-  hipAmplitude: 0.6,
-  bodyBounce: 2,
-  armSwingAmplitude: 5,
-});
+
+    
+    
+const farmalaWalk = {
+  ...farmalaIdle,
+  ...walkCycle(frame - 240, 40, {
+    kneeAmplitude: 16,
+    hipAmplitude: 1,
+    bodyBounce: 2,
+    armSwingAmplitude: 7,
+    
+  }),
+};
 const settleAmount = interpolate(frame,[330,345],[1,0],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp",
@@ -88,6 +144,7 @@ const scene1Camera = {
     endX: 60,
   },
 };
+
 const cameraScale = interpolate(frame, [scene1Camera.pushIn.startFrame, scene1Camera.pushIn.endFrame], [scene1Camera.pushIn.startScale, scene1Camera.pushIn.endScale], {
   extrapolateRight: "clamp",
 });
@@ -119,6 +176,12 @@ const farmalaSettling = {
   bodyY: farmalaWalk.bodyY * settleAmount,
   leftArmSwing: farmalaWalk.leftArmSwing * settleAmount,
   rightArmSwing: farmalaWalk.rightArmSwing * settleAmount,
+  headRotation: interpolate(settleAmount, [0, 1], [-4,0]),
+  eyeLLookX: interpolate(settleAmount,[0,1],[0,8]),
+eyeRLookX: interpolate(settleAmount,[0,1],[0,8]),
+eyeLLookY: 0,
+eyeRLookY: 0,
+  
 };
 
     const farmalaX = slideIn({
@@ -128,8 +191,13 @@ endFrame: 330,
 fromX: 1750,
 toX: 1180,
     });
-    
-    
+    const farmalaActivePose = 
+    frame <= farmalaScene1Timing.enterEnd 
+    ? farmalaWalk
+    : frame < farmalaScene1Timing.talkStart 
+    ? farmalaSettling
+    : farmalaTalking;
+    const farmalaActiveX = frame < farmalaScene1Timing.enterEnd ? farmalaX : farmalaScene1Timing.finalX;
     return (
         <>
         <Sequence from={345}>
@@ -139,24 +207,17 @@ toX: 1180,
             </Sequence>
         <Camera x={cameraX} y={0} scale={cameraScale}>
         <YusufDeskShot>
-            
-                
-            {frame >= 240 && frame < 330 &&(
-            <SceneMaster x={farmalaX} y={120} width={260} scale={0.9} zIndex={1}>
-                <FarmalaCharacter  {...farmalaPose(farmalaWalk)}  />
-            </SceneMaster>
-            )}
-            {frame >= 330 && frame < 345 && (
-  <SceneMaster x={1180} y={120} width={260} scale={0.9} zIndex={1}>
-    <FarmalaCharacter {...farmalaPose(farmalaSettling)} />
+            {frame >= farmalaScene1Timing.enterStart && (
+  <SceneMaster
+    x={farmalaActiveX}
+    y={120}
+    width={260}
+    scale={0.9}
+    zIndex={1}
+  >
+    <FarmalaCharacter {...farmalaActivePose} />
   </SceneMaster>
 )}
-{frame >= 345 && (
-  <SceneMaster x={1180} y={120} width={260} scale={0.9} zIndex={1}>
-    <FarmalaCharacter {...farmalaTalking} />
-  </SceneMaster>
-)}
-
         </YusufDeskShot>
         </Camera>
         </>
