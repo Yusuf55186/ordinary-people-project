@@ -11,6 +11,7 @@ export type YusufBackCharacterProps = {
   rightHipRotation?: number;
   leftKneeRotation?: number;
   rightKneeRotation?: number;
+  lowerBodyPose?: "standing" | "deskSeated";
 };
 
 export const YusufBackCharacter = ({
@@ -26,7 +27,10 @@ export const YusufBackCharacter = ({
   rightHipRotation = 0,
   leftKneeRotation = 0,
   rightKneeRotation = 0,
+  lowerBodyPose = "standing",
 }: YusufBackCharacterProps) => {
+  const isDeskSeated = lowerBodyPose === "deskSeated";
+
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id="YUSUF_BACK_SVG" width="100%" height="auto" viewBox="220 500 430 900" version="1.1" preserveAspectRatio="xMidYMid meet" data-rig-view="back">
       <defs id="YB_DEF__defs1">
@@ -3416,6 +3420,8 @@ export const YusufBackCharacter = ({
         </clipPath>
       </defs>
       <g id="YUSUF_BACK_RIG" transform={`translate(0 ${bodyY})`} data-rig-part="character-back">
+        {!isDeskSeated && (
+          <>
         <g id="HIP_L_BACK" transform={`rotate(${leftHipRotation} 391 1025)`} data-rig-parent="YUSUF_BACK_RIG" data-rig-part="hip-l">
           <g id="THIGH_L_BACK" data-rig-parent="HIP_L_BACK" data-rig-part="thigh-l">
             <g id="PANTS_THIGH_L_BACK" data-rig-parent="THIGH_L_BACK" data-rig-part="pants-thigh-l">
@@ -3476,6 +3482,8 @@ export const YusufBackCharacter = ({
             </g>
           </g>
         </g>
+          </>
+        )}
         <g id="TORSO_PELVIS_BACK" data-rig-parent="YUSUF_BACK_RIG" data-rig-part="torso-pelvis">
           <g id="NECK_BACK" data-rig-parent="TORSO_PELVIS_BACK" data-rig-part="neck">
             <use id="YB_NECK_SKIN" href="#YB_DEF__YUSUF_BACK_RIG__path846" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path846" />

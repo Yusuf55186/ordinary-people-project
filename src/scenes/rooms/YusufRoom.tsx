@@ -27,7 +27,10 @@ export const YusufRoomDeskForeground = () => {
     }}
     
     >
-      <use href={`${YusufRoomSvg}#DESK`} />
+      
+      <use href={`${YusufRoomSvg}#DESK_TOP_FOREGROND,#MONITORS`} />
+      <use href={`${YusufRoomSvg}#CHAIR`} />
+
       
     </svg>
   )
