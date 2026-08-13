@@ -15,8 +15,8 @@ export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
   
   const YusufNoticeProgress = interpolate(frame,
-          [220,300],
-          [0,1],
+          [250,268,296,345],
+          [0,1,1,0],
           {
               extrapolateLeft:"clamp",
               extrapolateRight:"clamp",

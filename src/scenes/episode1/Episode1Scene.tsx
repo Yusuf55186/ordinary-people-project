@@ -21,17 +21,25 @@ export const Episode1Scene = () => {
   enterStart: 240,
   enterEnd: 330,
   talkStart: 345,
+  pauseStart: 474,
+  pauseEnd: 525,
   finalX: 1180,
 };
 const farmalaPauseProgress = interpolate(
   frame,
-  [474, 482, 517, 525],
+  [
+    farmalaScene1Timing.pauseStart,
+    farmalaScene1Timing.pauseStart + 8,
+    farmalaScene1Timing.pauseEnd - 8,
+    farmalaScene1Timing.pauseEnd,
+  ],
   [0, 1, 1, 0],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   },
 );
+
 
     const actingFrame = Math.max(0, frame - 345);
 const eyebrowPose = eyeBrowAnimation(actingFrame, 60);
@@ -53,7 +61,18 @@ const talkTalkMotion = talkingAnimation(actingFrame, 60);
     [0, 1],
     [eyeLookPose.eyeRLookX, -2],
   ),
+  leftEyeBrowY: interpolate(
+  farmalaPauseProgress,
+  [0, 1],
+  [eyebrowPose.leftEyeBrowY, eyebrowPose.leftEyeBrowY - 3],
+),
+rightEyeBrowY: interpolate(
+  farmalaPauseProgress,
+  [0, 1],
+  [eyebrowPose.rightEyeBrowY, eyebrowPose.rightEyeBrowY + 1],
+),
 };
+
 const farmalaMouthCues: MouthCue[] = [
   { startFrame: 367, endFrame: 372, pose: "rest" },
 
@@ -141,7 +160,7 @@ const scene1Camera = {
     holdStartFrame:180,
     endFrame: 329,
     startX: 0,
-    endX: 60,
+    endX: 30,
   },
 };
 
@@ -209,9 +228,13 @@ toX: 1180,
         <YusufDeskShot>
             {frame >= farmalaScene1Timing.enterStart && (
   <SceneMaster
+  integration={{ contactShadow : true, keyLight : 'deskLamp',ambientLight:"room",rimLight:"window"
+
+  }}
     x={farmalaActiveX}
     y={120}
     width={260}
+    
     scale={0.9}
     zIndex={1}
   >

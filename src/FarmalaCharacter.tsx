@@ -1,6 +1,3 @@
-
-
-
 import type { MouthCue } from "./animations/lipSync";
 
 type MouthPose = MouthCue["pose"];
@@ -305,12 +302,59 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
         height: "auto",
         display: "block",
         overflow: "visible",
+        
       }}
     >
       <defs>
+        <linearGradient
+          id="FARMALA_HOODIE_LAMP_LIGHT"
+          gradientUnits="userSpaceOnUse"
+          x1="63"
+          y1="0"
+          x2="195"
+          y2="0"
+        >
+          <stop offset="0%" stopColor="#E5A45A" stopOpacity="0.28" />
+          <stop offset="55%" stopColor="#E5A45A" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#E5A45A" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient
+          id="FARMALA_HOODIE_WINDOW_RIM"
+          gradientUnits="userSpaceOnUse"
+          x1="195"
+          y1="0"
+          x2="63"
+          y2="0"
+        >
+          <stop offset="0%" stopColor="#7EA9E6" stopOpacity="0.15" />
+          <stop offset="26%" stopColor="#7EA9E6" stopOpacity="0.035" />
+          <stop offset="100%" stopColor="#7EA9E6" stopOpacity="0" />
+        </linearGradient>
         <clipPath id="CLIP_HOODIE_TORSO">
           <polygon points="70,400 171,400 195,466 188,545 182,586 66,586 63,540 69,458" />
         </clipPath>
+        <filter
+  id="FARMALA_ROOM_AMBIENT"
+  x="-10%"
+  y="-5%"
+  width="120%"
+  height="110%"
+  colorInterpolationFilters="sRGB"
+>
+  
+
+  <feColorMatrix
+    
+    type="matrix"
+    values="
+      0.93 0.02 0.00 0 0.012
+      0.01 0.90 0.01 0 0.008
+      0.00 0.02 0.88 0 0.004
+      0    0    0    1 0
+    "
+  />
+</filter>
+
         <style>{`
       #Farmala_Front_RemotionReady .st0, #Farmala_Front_RemotionReady .st1, #Farmala_Front_RemotionReady .st2, #Farmala_Front_RemotionReady .st3, #Farmala_Front_RemotionReady .st4, #Farmala_Front_RemotionReady .st5, #Farmala_Front_RemotionReady .st6, #Farmala_Front_RemotionReady .st7 {
         fill: #354ea1;
@@ -472,7 +516,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
       }
     `}</style>
       </defs>
-      <g id="FARMALA_CHARACTER" transform={bodyTransform} data-character="Farmala">
+      <g id="FARMALA_CHARACTER" transform={bodyTransform} data-character="Farmala" filter="url(#FARMALA_ROOM_AMBIENT)">
         <g id="HAIR_AND_HOOD_BASE" transform={headTransform} data-remotion="true" data-rig-group="head">
           <g id="Hood_Root" data-source-index="0">
             <path
@@ -770,6 +814,24 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
                 d="M180.25,582.83l-48.76-3.26,6.52-172.21,32.19.61,29.7,8.44c4.78,1.36,9.18,3.82,12.87,7.21,30.62,28.09,17.11,150.71,14.2,160.44l-11.88,2.56c-3.68,1.35-19.07-36.3-22.16-70.56-2.19-24.3,5.02-45.87,1.67-48.83l-6.68,76.46-.4,3.53c1.86,5.63.48,12.28-1.63,17.89l-6.74,17.8"
               />
             </g>
+            <rect
+              x="63"
+              y="400"
+              width="132"
+              height="186"
+              fill="url(#FARMALA_HOODIE_LAMP_LIGHT)"
+              clipPath="url(#CLIP_HOODIE_TORSO)"
+              pointerEvents="none"
+            />
+            <rect
+              x="63"
+              y="400"
+              width="132"
+              height="186"
+              fill="url(#FARMALA_HOODIE_WINDOW_RIM)"
+              clipPath="url(#CLIP_HOODIE_TORSO)"
+              pointerEvents="none"
+            />
             <g id="SHOULDER_CLOTH_L" fill="#354ea1" data-rig-parent="TORSO">
               <path
                 d="M87.89,442.37l-15.95-2.41c-2.57-3.18-3.75-6.84-3.54-10.98l.8-10.74c.2-2.47,1.49-4.1,3.86-4.85l16.63-4.17,7.49,1.1-9.28,32.06h0Z"
