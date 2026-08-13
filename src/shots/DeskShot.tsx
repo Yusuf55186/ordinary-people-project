@@ -10,12 +10,24 @@ import type { ReactNode } from "react";
 
 type YusufDeskShotProps = {
   children?:ReactNode;
+  hesitation?:number;
 }
-export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
+export const YusufDeskShot = ({ children,hesitation=0 }: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
+  const breathe = Math.sin(frame / 30);
+  
+  const seatedIdle = {
+     bodyY: breathe * 2,
+     headRotation : breathe * -0.8
+  }
+  const hesitateIdle = {
+    bodyY: seatedIdle.bodyY + hesitation * 2,
+    headRotation: seatedIdle.headRotation + hesitation * 3,
+  }
+  const seatedYusuf = yusufPose({ ...YusufBackDeskRestPose , ...seatedIdle, ...hesitateIdle })
   
   const YusufNoticeProgress = interpolate(frame,
-          [250,268,296,345],
+          [250,268,296,316],
           [0,1,1,0],
           {
               extrapolateLeft:"clamp",
@@ -29,17 +41,17 @@ export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
     rightElbowRotation: 5,
       }
       const yusufNoticeState = {
-    headRotation: interpolate(
-      YusufNoticeProgress,
-      [0, 1],
-      [0, yusufNoticeFarmala.headRotation],
-    ),
-    bodyY: interpolate(
-      YusufNoticeProgress,
-      [0,1],
-      [0,yusufNoticeFarmala.bodyY],
-      
-    ),
+   headRotation: seatedIdle.headRotation + interpolate(
+  YusufNoticeProgress,
+  [0, 1],
+  [0, yusufNoticeFarmala.headRotation],
+),
+
+bodyY: seatedIdle.bodyY + interpolate(
+  YusufNoticeProgress,
+  [0, 1],
+  [0, yusufNoticeFarmala.bodyY],
+),
     rightArmSwing: interpolate(
       YusufNoticeProgress,
       [0,1],
@@ -52,13 +64,7 @@ export const YusufDeskShot = ({ children }: YusufDeskShotProps) => {
     )
   };
   
-  const breathe = Math.sin(frame / 30);
   
-  const seatedIdle = {
-     bodyY: breathe * 2,
-     headRotation : breathe * -0.8
-  }
-  const seatedYusuf = yusufPose({ ...YusufBackDeskRestPose , ...seatedIdle })
   const cameraPose = cameraMove({
     frame,
     startFrame:0,

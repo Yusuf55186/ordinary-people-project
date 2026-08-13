@@ -1,7 +1,7 @@
 import { Composition } from "remotion";
 import { Scene, calculateMetadata } from "./Composition";
 import { YusufDeskShot } from "./shots/DeskShot";
-import { Episode1Scene } from "./scenes/episode1/Episode1Scene";
+import { Episode1Master } from "./scenes/episode1/Episode1Master";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -25,12 +25,14 @@ export const RemotionRoot: React.FC = () => {
           />
           <Composition
             id="Episode1"
-            component={Episode1Scene}
-            durationInFrames={630}
+            component={Episode1Master}
+            durationInFrames={830}
             fps={60}
             width={1920}
             height={1080}
           />
+          
+          
 
     </>
     

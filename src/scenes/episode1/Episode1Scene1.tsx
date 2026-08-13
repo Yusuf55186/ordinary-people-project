@@ -13,7 +13,7 @@ import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { Camera } from "../../components/Camera";
 import { eyeBrowAnimation } from "../../animations/eyebrowAnimation";
 import { eyeLookingAnimation } from "../../animations/EyeLookAnimation";
-export const Episode1Scene = () => {
+export const Episode1Scene1 = () => {
   
     const frame = useCurrentFrame();
     const idlePose = idleAnimation(frame,120);
@@ -137,10 +137,10 @@ const farmalaMouthCues: MouthCue[] = [
 const farmalaWalk = {
   ...farmalaIdle,
   ...walkCycle(frame - 240, 40, {
-    kneeAmplitude: 16,
-    hipAmplitude: 1,
-    bodyBounce: 2,
-    armSwingAmplitude: 7,
+    kneeAmplitude: 20,
+    hipAmplitude: 2,
+    bodyBounce: 4,
+    armSwingAmplitude: 6,
     
   }),
 };
