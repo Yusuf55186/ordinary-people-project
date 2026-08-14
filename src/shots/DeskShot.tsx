@@ -76,9 +76,9 @@ bodyY: seatedIdle.bodyY + interpolate(
       zoom:1,
     },
     to:{
-      panX:-220,
-      panY:-80,
-      zoom:1.2,
+      panX:0,
+      panY:0,
+      zoom:1,
     },
   });
 
