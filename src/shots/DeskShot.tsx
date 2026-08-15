@@ -11,8 +11,9 @@ import type { ReactNode } from "react";
 type YusufDeskShotProps = {
   children?:ReactNode;
   hesitation?:number;
+  retreat?:number;
 }
-export const YusufDeskShot = ({ children,hesitation=0 }: YusufDeskShotProps) => {
+export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0}: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -24,6 +25,7 @@ export const YusufDeskShot = ({ children,hesitation=0 }: YusufDeskShotProps) => 
     bodyY: seatedIdle.bodyY + hesitation * 2,
     headRotation: seatedIdle.headRotation + hesitation * 3,
   }
+ 
   const seatedYusuf = yusufPose({ ...YusufBackDeskRestPose , ...seatedIdle, ...hesitateIdle })
   
   const YusufNoticeProgress = interpolate(frame,
@@ -63,7 +65,15 @@ bodyY: seatedIdle.bodyY + interpolate(
       [0,yusufNoticeFarmala.rightElbowRotation]
     )
   };
-  
+   const retreatIdle = {
+    headRotation: seatedIdle.headRotation
+  + interpolate(YusufNoticeProgress, [0, 1], [0, yusufNoticeFarmala.headRotation])
+  + retreat * 10,
+
+bodyY: seatedIdle.bodyY
+  + interpolate(YusufNoticeProgress, [0, 1], [0, yusufNoticeFarmala.bodyY])
+  + retreat * 14,
+  }
   
   const cameraPose = cameraMove({
     frame,
@@ -89,7 +99,7 @@ bodyY: seatedIdle.bodyY + interpolate(
     <YusufRoom />
 
     <SceneMaster x={880} y={300} width={500} scale={0.7}>
-      <YusufBackCharacter {...seatedYusuf} {...yusufNoticeState}
+      <YusufBackCharacter {...seatedYusuf} {...yusufNoticeState} {...retreatIdle} 
       lowerBodyPose="deskSeated" />
       
       
