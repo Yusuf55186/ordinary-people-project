@@ -27,6 +27,7 @@ const defaultTalkingProfile: TalkingProfile = {
   rightArmSwing: [0, -30, -30, 0, 0],
   rightElbowRotation: [0, -2, -2, 0, 0],
 };
+
 export const talkingAnimation = (
   frame: number,
   talkFrames: number,
