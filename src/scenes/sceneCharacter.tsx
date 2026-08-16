@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import {ReactNode } from "react";
 type Characterintegration = {
     contactShadow?:boolean;
     ambientLight?:"room";
@@ -12,6 +12,7 @@ type Props = {
     width:number;
     scale?:number;
     zIndex?:number;
+    
     children:ReactNode;
      integration?:Characterintegration;
 }
@@ -29,6 +30,7 @@ export const SceneMaster = ({
     return (
         <div
   style={{
+    
     position: "absolute",
     top: 0,
     left: 0,
@@ -61,7 +63,7 @@ backgroundColor: "rgba(39, 21, 12, 0.30)",
   
   
 
-  <div style={{ position: "relative", zIndex: 1,filter:ambientFilter }}>
+  <div style={{ position: "relative", zIndex: 1,filter:ambientFilter  }}>
     {children}
   </div>
 </div>
