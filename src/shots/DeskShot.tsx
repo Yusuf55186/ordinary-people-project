@@ -1,4 +1,4 @@
-import { YusufRoom,YusufRoomDeskForeground } from "../scenes/rooms/YusufRoom";
+import { YusufRoom,YusufRoomBeanbagForeground,YusufRoomDeskForeground } from "../scenes/rooms/YusufRoom";
 import { SceneMaster } from "../scenes/sceneCharacter";
 import { YusufBackCharacter } from "../YusufBackCharacter";
 import { yusufPose } from "../animations/yusufPose";
@@ -12,8 +12,9 @@ type YusufDeskShotProps = {
   children?:ReactNode;
   hesitation?:number;
   retreat?:number;
+  beanbagForeground?: boolean;
 }
-export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0}: YusufDeskShotProps) => {
+export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0,beanbagForeground = false}: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -105,6 +106,7 @@ bodyY: seatedIdle.bodyY
       
     </SceneMaster>
     {children}
+    {beanbagForeground && <YusufRoomBeanbagForeground />}
     <YusufRoomDeskForeground />
     
   </ShotCamera>

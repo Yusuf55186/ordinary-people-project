@@ -35,3 +35,21 @@ export const YusufRoomDeskForeground = () => {
     </svg>
   );
 };
+export const YusufRoomBeanbagForeground = () => {
+  return (
+    <svg
+      viewBox="0 0 1920 1080"
+      preserveAspectRatio="xMidYMid slice"
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        pointerEvents: "none",
+      }}
+    >
+      <use href={`${YusufRoomSvg}#BEANBAG`} />
+    </svg>
+  );
+};

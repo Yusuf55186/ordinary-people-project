@@ -259,9 +259,18 @@ type Props = {
      leftEyeBrowY:number
     rightEyeBrowY:number
     mouthPose?: MouthPose;
+    lowerBodyPose?: "standing" | "beanbagSeated";
 
 }
-export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0,leftHandRotation,rightHandRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,mouthPose = "rest"}: Props) {  
+export function FarmalaCharacter({ headRotation,bodyY,leftArmRotation,rightArmRotation,leftElbowRotation = 0,rightElbowRotation = 0,leftLegRotation,rightLegRotation,leftKneeRotation = 0,rightKneeRotation = 0,leftHandRotation,rightHandRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookX,eyeRLookY,leftEyeBrowY,rightEyeBrowY,mouthPose = "rest",lowerBodyPose = "standing",}: Props) {
+  const isBeanbagSeated = lowerBodyPose === "beanbagSeated";
+  const activeLeftLegRotation = isBeanbagSeated
+  ? -72
+  : leftLegRotation;
+
+const activeRightLegRotation = isBeanbagSeated
+  ? 72
+  : rightLegRotation;
   const headTransform = `rotate(${headRotation} 140 384)`;
 const bodyTransform = `translate(0 ${bodyY})`;
 const leftArmTransform = `rotate(${leftArmRotation} 79 417)`;
@@ -270,8 +279,8 @@ const leftElbowTransform = `rotate(${leftElbowRotation} 57 497)`;
 const rightElbowTransform = `rotate(${rightElbowRotation} 207 505)`;
 const leftLowerArmTransform = `${leftArmTransform} ${leftElbowTransform}`;
 const rightLowerArmTransform = `${rightArmTransform} ${rightElbowTransform}`;
-const leftLegTransform = `rotate(${leftLegRotation} 100 596)`;
-const rightLegTransform = `rotate(${rightLegRotation} 151 596)`;
+const leftLegTransform = `rotate(${activeLeftLegRotation} 100 596)`;
+const rightLegTransform = `rotate(${activeRightLegRotation} 151 596)`;
 const leftHandTransform = `rotate(${leftHandRotation} 31 579)`;
 const rightHandTransform = `rotate(${rightHandRotation} 220 589)`;
 const leftKneeTransform = `rotate(${leftKneeRotation} 89 738)`;
@@ -573,84 +582,110 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
             />
           </g>
         </g>
-        <g
-          id="LOWER_BODY_BASE"
-          data-remotion="true"
-          data-rig-group="lower-body"
-        >
-          <path
-            id="Pelvis_Base"
-            className="st25"
-            d="M180.92,558.17h0c-.4-4.26-4.54-7.54-9.5-7.54h-91.89c-4.83,0-8.75,3.38-8.75,7.54h0"
-            data-source-index="7"
-          />
-          <line
-            id="Pelvis_Centerline"
-            className="st25"
-            x1="125.75"
-            y1="550.63"
-            x2="125.75"
-            y2="575.84"
-            data-source-index="8"
-          />
-          <path
-            id="PELVIS"
-            className="st25"
-            d="M84.86,578.8c.89-1.73,20.9-3.17,41.46-3.35,16.09-.14,32.51.48,40.39,2.34,38.23,35.52-5.78,65.59-58.29,59.4-24.59-4.95-54.87-34.37-23.56-58.39h0Z"
-            data-rig-part="PELVIS"
-            data-source-index="9"
-          />
-          <path
-            id="Calf_Visual_L_Skin"
-            className="st27"
-            transform={leftLegTransform}
-            data-rig-part="CALF_L"
-            data-rig-parent="KNEE_L"
-            d="M101.35,626.73l-.51,4.57,2.47.48s10.66.47,15.73,8.66c4.66,7.53-14.41,61.05-17.57,69.76-.28.78-.38,1.63-.3,2.46.64,6.11,3.02,32.43-2.65,35.83-6.41,3.85-14.83,3.08-21.45-2.57,0,0-.53-3.34-.81-7.92-.34-5.55.35-11.15,2-16.39,1.05-3.33,2.02-8.24,1.2-13.76-2.62-17.71-7.76-36.76-3.55-54.23,1.86-7.73,3.82-15.11,5.31-18.8,0,0,.34-5.87,19-3.69"
-            data-source-index="10"
-          />
-          <path
-            id="Calf_Visual_R_Skin"
-            className="st27"
-            transform={rightLegTransform}
-            data-rig-part="CALF_R"
-            data-rig-parent="KNEE_R"
-            d="M153.12,626.67l.51,4.57-2.47.48s-10.66.47-15.73,8.66c-4.66,7.53,14.41,61.05,17.57,69.76.28.78.38,1.63.3,2.46-.64,6.11-3.02,32.43,2.65,35.83,6.41,3.85,14.83,3.08,21.45-2.57,0,0,.53-3.34.81-7.92.34-5.55-.35-11.15-2-16.39-1.05-3.33-2.02-8.24-1.2-13.76,2.62-17.71,7.76-36.76,3.55-54.23-1.86-7.73-3.82-15.11-5.31-18.8,0,0-.34-5.87-19-3.69"
-            data-source-index="11"
-          />
-          <g id="Knee_R" transform={rightLowerLegTransform} data-rig-part="KNEE_R" data-rig-parent="PANTS_R" data-source-index="12">
-            <path
-              id="Knee"
-              className="st27"
-              d="M162.09,836.44l-3.67-40.53c-.04-.42-.11-.84-.21-1.25-1.57-6.38-14.57-61.97,8.77-62.52.37,0,.73-.04,1.1-.11,3.44-.68,24.63-2.34,9.78,64.05-.09.41-.15.83-.18,1.25l-2.7,38.95c-.19,2.76-1.7,5.18-3.92,6.25-.05.02-.1.05-.15.07-3.97,1.86-8.38-1.28-8.83-6.17h.01Z"
-            />
-          </g>
-          <g id="Knee_L" transform={leftLowerLegTransform} data-rig-part="KNEE_L" data-rig-parent="PANTS_L" data-source-index="13">
-            <path
-              id="Knee1"
-              className="st27"
-              d="M94.21,840.52l3.76-40.53c.04-.42.11-.83.21-1.24,1.6-6.34,14.97-61.98-9-62.52-.38,0-.75-.04-1.13-.11-3.53-.68-25.29-2.34-10.04,64.04.09.41.16.84.19,1.26l2.78,39.01c.19,2.62,1.6,4.98,3.75,6.06.09.04.18.09.27.13,4.12,1.94,8.75-1.14,9.21-6.1h0Z"
-            />
-          </g>
-          <path
-            id="Ankle_R_Skin"
-            className="st27"
-            transform={rightLowerLegTransform}
-            data-rig-part="ANKLE_R"
-            data-rig-parent="KNEE_R"
-            d="M163.78,846.92c1.31-5.19,6.57-7.14,11.42-5.7,4.39,1.26,9.04,2.77,13.21,4.63,2.13.95,3.98,1.97,5.92,2.93,6.49,3,16.63,5.13,21.89,9.34,2.01,1.6,2.69,4.02.68,5.31-2.47,1.36-4.82.95-8.34,1-5.05-.07-10.46-.35-15.39-1.05-6.28-.96-12.8-1.55-19.12-1.36-1.66.02-3.26.29-4.87.03-6.28-1.33-6.92-9.96-5.4-15.1v-.04h0Z"
-            data-source-index="14"
-          />
-          <path
-            id="Ankle_L_Skin"
-            className="st27"
-            transform={leftLowerLegTransform}
-            data-rig-part="ANKLE_L"
-            data-rig-parent="KNEE_L"
-            d="M98.07,845.3c-.75-5.3-5.77-7.8-10.75-6.88-4.5.79-9.28,1.79-13.62,3.2-2.22.71-4.17,1.54-6.2,2.28-6.77,2.29-17.08,3.33-22.76,6.96-2.17,1.37-3.11,3.71-1.24,5.21,2.31,1.62,4.69,1.46,8.19,1.88,5.03.47,10.44.76,15.41.59,6.34-.29,12.89-.18,19.16.69,1.64.2,3.21.63,4.84.55,6.38-.65,7.94-9.16,6.97-14.44v-.04h0Z"
-            data-source-index="15"
-          />
-        </g>
+      <g
+  id="LOWER_BODY_BASE"
+  data-remotion="true"
+  data-rig-group="lower-body"
+>
+  <path
+    id="Pelvis_Base"
+    className="st25"
+    d="M180.92,558.17h0c-.4-4.26-4.54-7.54-9.5-7.54h-91.89c-4.83,0-8.75,3.38-8.75,7.54h0"
+    data-source-index="7"
+  />
+
+  <line
+    id="Pelvis_Centerline"
+    className="st25"
+    x1="125.75"
+    y1="550.63"
+    x2="125.75"
+    y2="575.84"
+    data-source-index="8"
+  />
+
+  <path
+    id="PELVIS"
+    className="st25"
+    d="M84.86,578.8c.89-1.73,20.9-3.17,41.46-3.35,16.09-.14,32.51.48,40.39,2.34,38.23,35.52-5.78,65.59-58.29,59.4-24.59-4.95-54.87-34.37-23.56-58.39h0Z"
+    data-rig-part="PELVIS"
+    data-source-index="9"
+  />
+
+    <path
+      id="Calf_Visual_L_Skin"
+      className="st27"
+      display={isBeanbagSeated ? "none" : undefined}
+      transform={leftLegTransform}
+      data-rig-part="CALF_L"
+      data-rig-parent="KNEE_L"
+      d="M101.35,626.73l-.51,4.57,2.47.48s10.66.47,15.73,8.66c4.66,7.53-14.41,61.05-17.57,69.76-.28.78-.38,1.63-.3,2.46.64,6.11,3.02,32.43-2.65,35.83-6.41,3.85-14.83,3.08-21.45-2.57,0,0-.53-3.34-.81-7.92-.34-5.55.35-11.15,2-16.39,1.05-3.33,2.02-8.24,1.2-13.76-2.62-17.71-7.76-36.76-3.55-54.23,1.86-7.73,3.82-15.11,5.31-18.8,0,0,.34-5.87,19-3.69"
+      data-source-index="10"
+    />
+
+    <path
+      id="Calf_Visual_R_Skin"
+      className="st27"
+      display={isBeanbagSeated ? "none" : undefined}
+      transform={rightLegTransform}
+      data-rig-part="CALF_R"
+      data-rig-parent="KNEE_R"
+      d="M153.12,626.67l.51,4.57-2.47.48s-10.66.47-15.73,8.66c-4.66,7.53,14.41,61.05,17.57,69.76.28.78.38,1.63.3,2.46-.64,6.11-3.02,32.43,2.65,35.83,6.41,3.85,14.83,3.08,21.45-2.57,0,0,.53-3.34.81-7.92.34-5.55-.35-11.15-2-16.39-1.05-3.33-2.02-8.24-1.2-13.76,2.62-17.71,7.76-36.76,3.55-54.23-1.86-7.73-3.82-15.11-5.31-18.8,0,0-.34-5.87-19-3.69"
+      data-source-index="11"
+    />
+
+    <g
+      id="Knee_R"
+      transform={rightLowerLegTransform}
+      display={isBeanbagSeated ? "none" : undefined}
+      data-rig-part="KNEE_R"
+      data-rig-parent="PANTS_R"
+      data-source-index="12"
+    >
+      <path
+        id="Knee"
+        className="st27"
+        d="M162.09,836.44l-3.67-40.53c-.04-.42-.11-.84-.21-1.25-1.57-6.38-14.57-61.97,8.77-62.52.37,0,.73-.04,1.1-.11,3.44-.68,24.63-2.34,9.78,64.05-.09.41-.15.83-.18,1.25l-2.7,38.95c-.19,2.76-1.7,5.18-3.92,6.25-.05.02-.1.05-.15.07-3.97,1.86-8.38-1.28-8.83-6.17h.01Z"
+      />
+    </g>
+
+    <g
+      id="Knee_L"
+      transform={leftLowerLegTransform}
+      display={isBeanbagSeated ? "none" : undefined}
+      data-rig-part="KNEE_L"
+      data-rig-parent="PANTS_L"
+      data-source-index="13"
+    >
+      <path
+        id="Knee1"
+        className="st27"
+        d="M94.21,840.52l3.76-40.53c.04-.42.11-.83.21-1.24,1.6-6.34,14.97-61.98-9-62.52-.38,0-.75-.04-1.13-.11-3.53-.68-25.29-2.34-10.04,64.04.09.41.16.84.19,1.26l2.78,39.01c.19,2.62,1.6,4.98,3.75,6.06.09.04.18.09.27.13,4.12,1.94,8.75-1.14,9.21-6.1h0Z"
+      />
+    </g>
+
+    <path
+      id="Ankle_R_Skin"
+      className="st27"
+      display={isBeanbagSeated ? "none" : undefined}
+      transform={rightLowerLegTransform}
+      data-rig-part="ANKLE_R"
+      data-rig-parent="KNEE_R"
+      d="M163.78,846.92c1.31-5.19,6.57-7.14,11.42-5.7,4.39,1.26,9.04,2.77,13.21,4.63,2.13.95,3.98,1.97,5.92,2.93,6.49,3,16.63,5.13,21.89,9.34,2.01,1.6,2.69,4.02.68,5.31-2.47,1.36-4.82.95-8.34,1-5.05-.07-10.46-.35-15.39-1.05-6.28-.96-12.8-1.55-19.12-1.36-1.66.02-3.26.29-4.87.03-6.28-1.33-6.92-9.96-5.4-15.1v-.04h0Z"
+      data-source-index="14"
+    />
+
+    <path
+      id="Ankle_L_Skin"
+      className="st27"
+      display={isBeanbagSeated ? "none" : undefined}
+      transform={leftLowerLegTransform}
+      data-rig-part="ANKLE_L"
+      data-rig-parent="KNEE_L"
+      d="M98.07,845.3c-.75-5.3-5.77-7.8-10.75-6.88-4.5.79-9.28,1.79-13.62,3.2-2.22.71-4.17,1.54-6.2,2.28-6.77,2.29-17.08,3.33-22.76,6.96-2.17,1.37-3.11,3.71-1.24,5.21,2.31,1.62,4.69,1.46,8.19,1.88,5.03.47,10.44.76,15.41.59,6.34-.29,12.89-.18,19.16.69,1.64.2,3.21.63,4.84.55,6.38-.65,7.94-9.16,6.97-14.44v-.04h0Z"
+      data-source-index="15"
+    />
+        
         <g id="HAND_L"   transform={`${leftLowerArmTransform} ${leftHandTransform}`}data-remotion="true" data-rig-group="left-hand" data-rig-parent="Forearm_L">
           <path
             id="Hand_L_Palm"
@@ -1196,6 +1231,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
             />
           </g>
         </g>
+        
         <g id="BODY_SHADOWS" data-remotion="true" data-rig-group="shadows">
           <path
             id="Shadow_L"
@@ -1310,8 +1346,12 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
             data-source-index="54"
           />
         </g>
-        <g id="PANTS" data-remotion="true" data-rig-group="pants">
-          <g id="PANTS_R" transform={rightLegTransform} data-rig-part="PANTS_R" data-rig-parent="LEG_R" data-source-index="55">
+        <g
+          id="PANTS"
+          data-remotion="true"
+          data-rig-group="pants"
+        >
+          <g id="PANTS_R" transform={rightLegTransform} display={isBeanbagSeated ? "none" : undefined} data-rig-part="PANTS_R" data-rig-parent="LEG_R" data-source-index="55">
             <path
               className="st34"
               d="M134.47,596.12l45.06.02c3.78,0,1.21-4.96,1.64-1.31,3.27,27.39,8.73,61.51,4.93,86.93-.04.24-.06.48-.07.73l-2.88,48.8c-.14,3.88-3.43,6.95-7.42,6.95l-10.12.63c-3.96,0-13.56,7.64-13.75,3.79l-10.03-33.06c-.19-3.84-3.45-6.87-7.41-6.87h0c-4.1,0-6.31-67.39-6.31-71.37l-.11-31.78c0-3.98,2.37-3.46,6.47-3.46h0Z"
@@ -1321,7 +1361,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
               d="M132.86,596.32l43.56.02c3.56,0,6.6,2.64,7.08,6.2,1.51,11.11,2.02,21.66,1.54,31.63-.19,3.85-3.33,6.89-7.15,6.88l-45.05-.02c-3.95,0-7.15-3.23-7.15-7.21v-30.29c.02-3.98,3.22-7.21,7.17-7.2h0Z"
             />
           </g>
-          <g id="PANTS_L" transform={leftLegTransform} data-rig-part="PANTS_L" data-rig-parent="LEG_L" data-source-index="56">
+          <g id="PANTS_L" transform={leftLegTransform} display={isBeanbagSeated ? "none" : undefined} data-rig-part="PANTS_L" data-rig-parent="LEG_L" data-source-index="56">
             <path
               className="st34"
               d="M117.36,594.44l-44.93-.02c-3.77,0-7.72-3.82-8.15-.18-3.28,27.38-2.25,60.36,1.52,85.79.04.24.06.48.07.73l7.51,53.74c.14,3.88,3.41,6.95,7.39,6.95l14.16,2.44c3.95,0,9.58,8.97,10.02-9.29l4.96-26.68c.19-3.84,3.45-6.86,7.4-6.86h0c4.09,0,9.2-59.64,9.2-63.62l1.31-38.95c0-3.98-6.37-4.04-10.46-4.04h0Z"
@@ -1334,6 +1374,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
           <ellipse
             id="Pants_Shadow"
             className="st33"
+            display={isBeanbagSeated ? "none" : undefined}
             cx="128.13"
             cy="599.06"
             rx="4.57"
@@ -1343,6 +1384,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
           <path
             id="Leg_Highlight"
             className="st12"
+            display={isBeanbagSeated ? "none" : undefined}
             transform={rightLowerLegTransform}
             d="M168.92,739.21l-.71,95.5,6.95.18,1.78-24.83,1.07-17.76s8.13-35.18,2.23-53.55c-.09-.27-.18-.54-.27-.81"
             data-source-index="58"
@@ -1426,6 +1468,7 @@ const rightEyeBrowTransform = `translate(0 ${rightEyeBrowY})`;
             data-parent="FOOT_L"
           />
         </g>
+      </g>
       </g>
     </svg>
   );
