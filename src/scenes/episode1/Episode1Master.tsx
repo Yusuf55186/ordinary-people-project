@@ -8,6 +8,7 @@ import { Episode1Scene6 } from "./Episode1Scene6";
 import { Episode1Scene7 } from "./Episode1Scene7";
 import { Episode1Scene8 } from "./Episode1Scene8";
 import { Episode1Scene9 } from "./Episode1Scene9";
+import { Episode1Scene10 } from "./Episode1Scene10";
 export const Episode1Master = () => {
 return (
   <>
@@ -44,6 +45,9 @@ return (
 </Sequence>
 <Sequence from={2190} durationInFrames={240}>
   <Episode1Scene9 />
+</Sequence>
+<Sequence from={2430} durationInFrames={240}>
+  <Episode1Scene10 />
 </Sequence>
 </>
 );

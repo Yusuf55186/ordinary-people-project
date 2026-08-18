@@ -13,8 +13,9 @@ type YusufDeskShotProps = {
   hesitation?:number;
   retreat?:number;
   beanbagForeground?: boolean;
+  foregroundChildren?:ReactNode
 }
-export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0,beanbagForeground = false}: YusufDeskShotProps) => {
+export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false}: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -108,6 +109,7 @@ bodyY: seatedIdle.bodyY
     {children}
     {beanbagForeground && <YusufRoomBeanbagForeground />}
     <YusufRoomDeskForeground />
+    {foregroundChildren}
     
   </ShotCamera>
 );

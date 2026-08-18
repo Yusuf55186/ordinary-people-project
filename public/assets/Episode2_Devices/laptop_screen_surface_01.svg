@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<title>ordinary_people_laptop_screen_surface_01</title>
+<g id="laptop_screen_surface" data-asset-id="laptop_screen_surface_01">
+<rect id="laptop_bezel" x="0" y="0" width="1600" height="1000" rx="38" fill="#171b21"/>
+<rect id="laptop_screen" x="34" y="34" width="1532" height="888" rx="18" fill="#0b0f14"/>
+<rect id="laptop_screen_content_surface" x="34" y="34" width="1532" height="888" rx="18" fill="#fff" opacity="0"/>
+<rect id="laptop_hinge" x="430" y="942" width="740" height="18" rx="9" fill="#252b33"/>
+<circle id="laptop_camera" cx="800" cy="18" r="6" fill="#303740"/>
+</g></svg>

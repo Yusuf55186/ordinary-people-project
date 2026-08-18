@@ -1,6 +1,7 @@
 import { YusufDeskShot } from "../../shots/DeskShot";
 import { UiCursor } from "../../components/UiCursor";
 import { interpolate, useCurrentFrame } from "remotion";
+import { Camera } from "../../components/Camera";
 export const Episode1Scene5 = () => {
     const frame = useCurrentFrame();
     
@@ -9,6 +10,20 @@ export const Episode1Scene5 = () => {
     });
 const cursorY = interpolate(frame, [0, 36], [470, 420],{
     extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+});
+const cameraScale = interpolate(frame, [0, 61, 96], [1.75, 1.75, 1], {
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+});
+
+const cameraX = interpolate(frame, [0, 61, 96], [-230, -230, 0], {
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+});
+
+const cameraY = interpolate(frame, [0, 61, 96], [-70, -70, 0], {
+  extrapolateLeft: "clamp",
   extrapolateRight: "clamp",
 });
 const closeProgress = interpolate(
@@ -36,7 +51,7 @@ const cursorScale = interpolate(
 )
 
     return (
-        
+        <Camera x={cameraX} y={cameraY} scale={cameraScale}>
         <YusufDeskShot retreat={retreat}>
            <UiCursor x={cursorX} y={cursorY} scale={cursorScale} />
            
@@ -78,6 +93,7 @@ transformOrigin: "170px -20px",
   
 
          </YusufDeskShot>
+         </Camera>
        
     )
 }

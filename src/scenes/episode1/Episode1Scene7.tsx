@@ -11,6 +11,7 @@ import { walkCycle } from "../../animations/walkCycle";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { idleAnimation } from "../../animations/idleAnimation";
 import { talkingAnimation } from "../../animations/TalkingAnimation";
+import { Camera } from "../../components/Camera";
 // import { pointAnimation } from "../../animations/PointingAnimation";
 export const Episode1Scene7 = () => {
     const adyTalkingProfile = {
@@ -180,7 +181,7 @@ const adyScreenAnimated = {
     //     ...walkPose
     // }
 return (
-    
+    <Camera x={0} y={0} scale={1}>
         <YusufDeskShot retreat={1}>
             <Sequence from={60}>
   <Audio src={staticFile("VoiceOver/3adyMan_Takes/3ady-entrance-test.mp3")} />
@@ -194,6 +195,7 @@ return (
             
         
         </YusufDeskShot>
+        </Camera>
 )
 }
         

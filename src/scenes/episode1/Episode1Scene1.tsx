@@ -224,7 +224,7 @@ toX: 1180,
                src={staticFile("VoiceOver/Farmala_Takes/No one cares.m4a")}
               />
             </Sequence>
-        <Camera x={0} y={0} scale={1.2}>
+        <Camera x={cameraX} y={0} scale={cameraScale}>
         <YusufDeskShot>
             {frame >= farmalaScene1Timing.enterStart && (
   <SceneMaster

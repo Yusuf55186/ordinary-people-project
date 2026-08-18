@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="1200" viewBox="0 0 600 1200">
+<title>ordinary_people_phone_surface_01</title>
+<g id="phone_surface" data-asset-id="phone_surface_01">
+<rect id="phone_body" x="0" y="0" width="600" height="1200" rx="78" fill="#171b21"/>
+<rect id="phone_screen" x="24" y="24" width="552" height="1152" rx="54" fill="#0b0f14"/>
+<rect id="phone_screen_content_surface" x="24" y="24" width="552" height="1152" rx="54" fill="#fff" opacity="0"/>
+<rect id="phone_dynamic_island" x="220" y="42" width="160" height="42" rx="21" fill="#05070a"/>
+<circle id="phone_camera" cx="350" cy="63" r="5" fill="#222831"/>
+</g></svg>

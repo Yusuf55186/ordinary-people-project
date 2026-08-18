@@ -12,14 +12,7 @@ import { walkCycle } from "../../animations/walkCycle";
 
 export const Episode1Scene9 = () => {
     const frame = useCurrentFrame();
-    const cameraScale = interpolate(
-        frame,
-        [90,150],
-        [1,1.08],{
-            extrapolateLeft:"clamp",
-            extrapolateRight:"clamp"
-        }
-    )
+    const cameraScale = 1.08;
     const farmalaVisible = frame >= 15;
 
 const farmalaScale = interpolate(frame, [15, 23], [0.96, 1], {
@@ -44,6 +37,7 @@ const adyWalk = walkCycle(adyWalkFrame, 40, {
   bodyBounce: 1.5,
   armSwingAmplitude: 4,
 });
+
     return (
         <Camera x={0} y={0} scale={cameraScale}>
         <YusufDeskShot retreat={0}
