@@ -1,5 +1,6 @@
 import { YusufRoom,YusufRoomBeanbagForeground,YusufRoomDeskForeground } from "../scenes/rooms/YusufRoom";
 import { SceneMaster } from "../scenes/sceneCharacter";
+import type { YusufBackCharacterProps } from "../YusufBackCharacter";
 import { YusufBackCharacter } from "../YusufBackCharacter";
 import { yusufPose } from "../animations/yusufPose";
 import { YusufBackDeskRestPose } from "../poses/yusufBackDeskRestPose";
@@ -13,9 +14,10 @@ type YusufDeskShotProps = {
   hesitation?:number;
   retreat?:number;
   beanbagForeground?: boolean;
+  preformanceOffset?:Partial<YusufBackCharacterProps>;
   foregroundChildren?:ReactNode
 }
-export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false}: YusufDeskShotProps) => {
+export const YusufDeskShot = ({ children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -93,16 +95,23 @@ bodyY: seatedIdle.bodyY
       zoom:1,
     },
   });
+  const finalPose = {
+    ...seatedYusuf,
+    ...yusufNoticeState,
+    ...retreatIdle,
+    bodyY:retreatIdle.bodyY + (preformanceOffset.bodyY ?? 0),
+    headRotation:retreatIdle.headRotation + (preformanceOffset.headRotation ?? 0),
 
-
+    
+  }
 
    return (
   <ShotCamera {...cameraPose}>
     <YusufRoom />
-
+    
     <SceneMaster x={880} y={300} width={500} scale={0.7}>
-      <YusufBackCharacter {...seatedYusuf} {...yusufNoticeState} {...retreatIdle} 
-      lowerBodyPose="deskSeated" />
+      <YusufBackCharacter {...finalPose} lowerBodyPose="deskSeated" >
+       </YusufBackCharacter>
       
       
     </SceneMaster>
