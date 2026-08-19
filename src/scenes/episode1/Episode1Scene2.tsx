@@ -23,6 +23,7 @@ const cameraX = interpolate(frame, [0, 60], [30, 0], {
 return (
     <Camera x={cameraX} y={0} scale={cameraScale}>
     <YusufDeskShot
+    
      hesitation={hesitation} 
     />
     </Camera>

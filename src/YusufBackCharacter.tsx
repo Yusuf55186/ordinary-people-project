@@ -3343,11 +3343,12 @@ export const YusufBackCharacter = ({
           <rect x="260" y="740" width="105" height="60" />
         </clipPath>
         <clipPath id="YB_CLIP_ARM_L_UPPER" clipPathUnits="userSpaceOnUse">
-          <rect x="260" y="800" width="130" height="84" />
-        </clipPath>
-        <clipPath id="YB_CLIP_ARM_L_FOREARM" clipPathUnits="userSpaceOnUse">
-          <rect x="260" y="884" width="130" height="135" />
-        </clipPath>
+  <rect x="260" y="800" width="130" height="84" />
+</clipPath>
+
+<clipPath id="YB_CLIP_ARM_L_FOREARM" clipPathUnits="userSpaceOnUse">
+  <rect x="260" y="884" width="130" height="135" />
+</clipPath>
         <clipPath id="YB_CLIP_ARM_R_SHOULDER" clipPathUnits="userSpaceOnUse">
           <rect x="500" y="740" width="80" height="60" />
         </clipPath>
@@ -3401,8 +3402,8 @@ export const YusufBackCharacter = ({
           <ellipse cx="472" cy="1169" rx="18" ry="22" />
         </clipPath>
         <clipPath id="YB_CLIP_UNDERLAY_ELBOW_L" clipPathUnits="userSpaceOnUse">
-          <ellipse cx="351" cy="884" rx="18" ry="50" />
-        </clipPath>
+  <ellipse cx="351" cy="884" rx="20" ry="22" />
+</clipPath>
         <clipPath id="YB_CLIP_UNDERLAY_ELBOW_R" clipPathUnits="userSpaceOnUse">
           <ellipse cx="517" cy="884" rx="18" ry="50" />
         </clipPath>
@@ -3515,7 +3516,15 @@ export const YusufBackCharacter = ({
               <g id="UPPER_SLEEVE_L_BACK" data-rig-parent="UPPER_ARM_L_BACK" data-rig-part="upper-sleeve-l">
                 <use id="YB_L_UPPER_SLEEVE" href="#YB_DEF__YUSUF_BACK_RIG__path1108" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1108" clipPath="url(#YB_CLIP_ARM_L_UPPER)" />
               </g>
-              <use id="YB_L_ELBOW_PATCH_UPPER" href="#YB_DEF__YUSUF_BACK_RIG__path1108" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1108" clipPath="url(#YB_CLIP_UNDERLAY_ELBOW_L)" style={{ stroke: "none" }} />
+              <ellipse
+  id="YB_L_ELBOW_JOINT_UNDERLAY"
+  cx="351"
+  cy="884"
+  rx="24"
+  ry="26"
+  fill="#0053d4"
+  stroke="none"
+/>
               <g id="FOREARM_L_BACK" transform={`rotate(${leftElbowRotation} 351 884)`} data-rig-parent="UPPER_ARM_L_BACK" data-rig-part="forearm-l">
                 <use id="YB_L_ELBOW_PATCH" href="#YB_DEF__YUSUF_BACK_RIG__path1108" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1108" clipPath="url(#YB_CLIP_PATCH_ELBOW_L)" />
                 <g id="FOREARM_SLEEVE_L_BACK" data-rig-parent="FOREARM_L_BACK" data-rig-part="forearm-sleeve-l">
