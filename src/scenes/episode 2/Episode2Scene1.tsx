@@ -4,6 +4,10 @@ import { Camera } from "../../components/Camera";
 import { Easing, Img, interpolate, staticFile, useCurrentFrame} from "remotion"
 import { Audio } from "@remotion/media";
 import { UiCursor } from "../../components/UiCursor";
+import { Episode2Phone } from "../../components/Episode2DeviceStates";
+import { FarmalaCharacter } from "../../FarmalaCharacter";
+import { SceneMaster } from "../sceneCharacter";
+import { farmalaPose } from "../../animations/FarmalaPose";
 export const Episode2Scene1 = () => {
   const frame = useCurrentFrame();
   const monitorCheck = interpolate(
@@ -20,6 +24,7 @@ export const Episode2Scene1 = () => {
   const haderYaAamStart =  1325;
   const haderYa3amEnd = haderYaAamStart + 165;
 const typingStart = haderYa3amEnd + 90;
+const notificationStart = typingStart + 36;
   
   const VScodeCheck = interpolate(
     frame,
@@ -83,24 +88,15 @@ const typingStart = haderYa3amEnd + 90;
       extrapolateRight: "clamp"
     }
   )
-  const typingStrength = interpolate (
+
+  const notificationGlow = interpolate(
     frame,
-    [typingStart,typingStart + 12],
-    [0,1],{
-      extrapolateLeft:"clamp",
-      extrapolateRight:"clamp"
+    [notificationStart,notificationStart + 6,notificationStart + 18],
+    [0,1,0.35],{
+      extrapolateLeft:'clamp',
+      extrapolateRight:'clamp'
     }
   )
-  const typingPulse = Math.sin((frame - typingStart) * 1.35);
-  const typingOffset = {
-      bodyY: -0.8 * typingStrength,
-  headRotation: -0.5 * typingStrength,
-  leftArmSwing: typingPulse * 1.25 * typingStrength,
-  rightArmSwing: -typingPulse * 1.25 * typingStrength,
-  leftElbowRotation: typingPulse * 1.5 * typingStrength,
-  rightElbowRotation: -typingPulse * 1.5 * typingStrength,
-  }
-  
 
   
  
@@ -124,12 +120,8 @@ const typingStart = haderYa3amEnd + 90;
     </div>
     <YusufDeskShot yusufMode={frame >= typingStart ? "typing" : "rest"}
     preformanceOffset={{
-  bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2 + typingOffset.bodyY,
-  headRotation: imReadyStrength * 3 - letsBeginStrength * 2 + typingOffset.headRotation,
-  leftArmSwing: typingOffset.leftArmSwing,
-  rightArmSwing:typingOffset.rightArmSwing,
-  leftElbowRotation:typingOffset.leftElbowRotation,
-  rightElbowRotation:typingOffset.rightElbowRotation
+  bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
+  headRotation: imReadyStrength * 3 - letsBeginStrength * 2 
 }}
     
     hesitation={interpolate(frame,[0,20,70,120],[0,0.18,0.18,0],{
@@ -154,24 +146,56 @@ const typingStart = haderYa3amEnd + 90;
       />
     }     
     foregroundChildren={
-      <Img src={staticFile("assets/Episode2_Devices/phone_surface_01.svg")}
+  <>
+    <div
       style={{
-        position:"absolute",
-        left:1300,
-        top:550,
-        width:30,
-        height:160,
-    transform: "rotate(90deg)",
-    transformOrigin: "center",
-      
+        position: "absolute",
+        left: 1235,
+        top: 575,
+        width: 160,
+        height: 105,
+        borderRadius: "50%",
+        backgroundColor: "rgba(198, 230, 255, 0.65)",
+        filter: "blur(22px)",
+        opacity: notificationGlow,
+        pointerEvents: "none",
       }}
-    
+    />
+
+    {frame >= notificationStart ? (
+      <Episode2Phone
+        state="notification"
+        x={1275}
+        y={550}
+        width={80}
+        rotation={90}
       />
-    }
-      >
-        
-     
-    </YusufDeskShot>
-    </Camera>
-  )
+    ) : (
+      <Img
+        src={staticFile("assets/Episode2_Devices/phone_surface_01.svg")}
+        style={{
+          position: "absolute",
+          left: 1300,
+          top: 550,
+          width: 80,
+          height: 160,
+          transform: "rotate(90deg)",
+          transformOrigin: "center",
+        }}
+      />
+    )}
+  </>
 }
+
+>
+</YusufDeskShot>
+<SceneMaster x={0} y={270} scale={1} width={250}>
+  <FarmalaCharacter lowerBodyPose='beanbagSeated' />
+</SceneMaster>
+</Camera>
+  );
+};
+
+  
+    
+    
