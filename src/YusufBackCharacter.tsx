@@ -1,3 +1,4 @@
+import {BackHandPose, type HandPose } from "./components/BackHandPose";
 export type YusufBackCharacterProps = {
   bodyY?: number;
   headRotation?: number;
@@ -12,6 +13,8 @@ export type YusufBackCharacterProps = {
   leftKneeRotation?: number;
   rightKneeRotation?: number;
   lowerBodyPose?: "standing" | "deskSeated";
+  leftHandPose?:HandPose,
+  rightHandPose?:HandPose,
 };
 
 export const YusufBackCharacter = ({
@@ -28,6 +31,9 @@ export const YusufBackCharacter = ({
   leftKneeRotation = 0,
   rightKneeRotation = 0,
   lowerBodyPose = "standing",
+  leftHandPose,
+  rightHandPose,
+ 
 }: YusufBackCharacterProps) => {
   const isDeskSeated = lowerBodyPose === "deskSeated";
 
@@ -3531,6 +3537,10 @@ export const YusufBackCharacter = ({
                   <use id="YB_L_FOREARM_SLEEVE" href="#YB_DEF__YUSUF_BACK_RIG__path1108" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1108" clipPath="url(#YB_CLIP_ARM_L_FOREARM)" />
                 </g>
                 <g id="HAND_L_BACK" transform={`rotate(${leftHandRotation} 329 990)`} data-rig-parent="FOREARM_L_BACK" data-rig-part="hand-l">
+                  {leftHandPose ? (
+                    <BackHandPose side="left" pose={leftHandPose} />
+                  ):(
+                    <>
                   <use id="YB_L_HAND_00" href="#YB_DEF__YUSUF_BACK_RIG__path868" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path868" />
                   <use id="YB_L_HAND_01" href="#YB_DEF__YUSUF_BACK_RIG__path870" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path870" />
                   <use id="YB_L_HAND_02" href="#YB_DEF__YUSUF_BACK_RIG__path872" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path872" />
@@ -3538,6 +3548,8 @@ export const YusufBackCharacter = ({
                   <use id="YB_L_HAND_04" href="#YB_DEF__YUSUF_BACK_RIG__path876" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path876" />
                   <use id="YB_L_HAND_05" href="#YB_DEF__YUSUF_BACK_RIG__path878" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path878" />
                   <use id="YB_L_HAND_06" href="#YB_DEF__YUSUF_BACK_RIG__g951" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__g951" />
+                  </>
+                  )}
                 </g>
               </g>
             </g>
@@ -3559,19 +3571,26 @@ export const YusufBackCharacter = ({
                 <g id="FOREARM_SLEEVE_R_BACK" data-rig-parent="FOREARM_R_BACK" data-rig-part="forearm-sleeve-r">
                   <use id="YB_R_FOREARM_SLEEVE" href="#YB_DEF__YUSUF_BACK_RIG__path1106" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1106" clipPath="url(#YB_CLIP_ARM_R_FOREARM)" />
                 </g>
+                
                 <g id="HAND_R_BACK" transform={`rotate(${rightHandRotation} 523 991)`} data-rig-parent="FOREARM_R_BACK" data-rig-part="hand-r">
-                  <use id="YB_R_HAND_00" href="#YB_DEF__YUSUF_BACK_RIG__path884" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path884" />
-                  <use id="YB_R_HAND_01" href="#YB_DEF__YUSUF_BACK_RIG__path886" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path886" />
-                  <use id="YB_R_HAND_02" href="#YB_DEF__YUSUF_BACK_RIG__path888" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path888" />
-                  <use id="YB_R_HAND_03" href="#YB_DEF__YUSUF_BACK_RIG__path890" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path890" />
-                  <use id="YB_R_HAND_04" href="#YB_DEF__YUSUF_BACK_RIG__path892" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path892" />
-                  <use id="YB_R_HAND_05" href="#YB_DEF__YUSUF_BACK_RIG__path894" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path894" />
-                  <use id="YB_R_HAND_06" href="#YB_DEF__YUSUF_BACK_RIG__g954" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__g954" />
-                </g>
-              </g>
-            </g>
-          </g>
-        </g>
+                  {rightHandPose ? (
+                    <BackHandPose pose={rightHandPose} side="right" width={100} height={120} x={280} y={1220} viewBox="280 170 50 60"/>
+                  ):(
+                    <>
+      <use id="YB_R_HAND_00" href="#YB_DEF__YUSUF_BACK_RIG__path884" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path884" />
+      <use id="YB_R_HAND_01" href="#YB_DEF__YUSUF_BACK_RIG__path886" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path886" />
+      <use id="YB_R_HAND_02" href="#YB_DEF__YUSUF_BACK_RIG__path888" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path888" />
+      <use id="YB_R_HAND_03" href="#YB_DEF__YUSUF_BACK_RIG__path890" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path890" />
+      <use id="YB_R_HAND_04" href="#YB_DEF__YUSUF_BACK_RIG__path892" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path892" />
+      <use id="YB_R_HAND_05" href="#YB_DEF__YUSUF_BACK_RIG__path894" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path894" />
+      <use id="YB_R_HAND_06" href="#YB_DEF__YUSUF_BACK_RIG__g954" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__g954" />
+    </>
+  )}
+</g>
+</g>
+</g>
+</g>
+</g>
         <g id="HEAD_BACK" transform={`rotate(${headRotation} 436 714)`} data-rig-parent="YUSUF_BACK_RIG" data-rig-part="head">
           <g id="EAR_L_BACK" data-rig-parent="HEAD_BACK" data-rig-part="ear-left">
             <use id="YB_EAR_L_FILL" href="#YB_DEF__YUSUF_BACK_RIG__path840" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path840" />

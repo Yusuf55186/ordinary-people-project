@@ -9,22 +9,25 @@ import { FarmalaCharacter } from "../../FarmalaCharacter";
 import { SceneMaster } from "../sceneCharacter";
 import { farmalaPose } from "../../animations/FarmalaPose";
 export const Episode2Scene1 = () => {
+  const everythingReadyStart = 45;
+const monitorOnStart = 195;
+const vsCodeStart = 445;
+const imReadyStart = 625;
+const letsBeginStart = 865;
+  const haderYaAamStart =  1325;
+  const haderYa3amEnd = haderYaAamStart + 165;
+const typingStart = haderYa3amEnd + 90;
+const notificationStart = typingStart + 36;
   const frame = useCurrentFrame();
   const monitorCheck = interpolate(
     frame,
-    [300,318,360,380],[0,1,1,0],{
+    [everythingReadyStart, everythingReadyStart + 18, everythingReadyStart + 60, everythingReadyStart + 80],[0,1,1,0],{
       extrapolateLeft:"clamp",
       extrapolateRight:"clamp"
     }
     
   )
-  const vsCodeStart = 700;
-  const imReadyStart = 880;
-  const letsBeginStart = 1160;
-  const haderYaAamStart =  1325;
-  const haderYa3amEnd = haderYaAamStart + 165;
-const typingStart = haderYa3amEnd + 90;
-const notificationStart = typingStart + 36;
+  
   
   const VScodeCheck = interpolate(
     frame,
@@ -105,11 +108,11 @@ const notificationStart = typingStart + 36;
     <Camera x={cameraX} y={cameraY} scale={cameraScale}
     
     >
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-everything-ready.m4a")} from={300} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-monitor-on.m4a")} from={450} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-vscode-open.m4a")} from={700} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-im-ready.m4a")} from={880} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-lets-start.m4a")} from={1160} />
+    <Audio src={staticFile("VoiceOver/Episode2/scene1-everything-ready.m4a")} from={everythingReadyStart} />
+    <Audio src={staticFile("VoiceOver/Episode2/scene1-monitor-on.m4a")} from={monitorOnStart} />
+    <Audio src={staticFile("VoiceOver/Episode2/scene1-vscode-open.m4a")} from={vsCodeStart} />
+    <Audio src={staticFile("VoiceOver/Episode2/scene1-im-ready.m4a")} from={imReadyStart} />
+    <Audio src={staticFile("VoiceOver/Episode2/scene1-lets-start.m4a")} from={letsBeginStart} />
     <Audio src={staticFile("VoiceOver/Episode2/scene1-hader-ya-aam.m4a")} from={haderYaAamStart} />
 
     
@@ -190,7 +193,7 @@ const notificationStart = typingStart + 36;
 >
 </YusufDeskShot>
 <SceneMaster x={0} y={270} scale={1} width={250}>
-  <FarmalaCharacter lowerBodyPose='beanbagSeated' />
+  <FarmalaCharacter lowerBodyPose='beanbagSeated' {...farmalaPose(idleAnimation(frame,120))} />
 </SceneMaster>
 </Camera>
   );

@@ -9,6 +9,7 @@ import  { cameraMove } from "../animations/cameraMove";
 import { interpolate, useCurrentFrame, } from "remotion";
 import type { ReactNode } from "react";
 import {Img,staticFile} from "remotion"
+import { type HandPose } from "../components/BackHandPose";
 
 type YusufDeskShotProps = {
   children?:ReactNode;
@@ -18,6 +19,8 @@ type YusufDeskShotProps = {
   preformanceOffset?:Partial<YusufBackCharacterProps>;
   foregroundChildren?:ReactNode
   yusufMode?: "rest" | "typing";
+  rightHandPose?:HandPose
+  
 }
 export const YusufBackTypingPose = () => {
   return <Img src={staticFile("assets/Characters/Yusuf/YusufBackTypingPose.svg")}
@@ -27,7 +30,7 @@ export const YusufBackTypingPose = () => {
     }}
      />
 }
-export const YusufDeskShot = ({yusufMode="rest",children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
+export const YusufDeskShot = ({rightHandPose,yusufMode="rest",children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -125,7 +128,11 @@ bodyY: seatedIdle.bodyY
   </SceneMaster>
 ) : (
   <SceneMaster x={880} y={300} width={500} scale={0.7}>
-    <YusufBackCharacter {...finalPose} lowerBodyPose="deskSeated" />
+    <YusufBackCharacter
+  {...finalPose}
+  rightHandPose={rightHandPose}
+  lowerBodyPose="deskSeated"
+/>
   </SceneMaster>
 )}
     {children}
