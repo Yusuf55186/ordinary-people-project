@@ -18,6 +18,9 @@ y?: number;
 width?: number;
 height?: number;
 viewBox?: string;
+rotation:number
+pivotX:number
+pivotY:number
 };
 
 const handMarkup: Record<`hand-${"l" | "r"}-${HandPose}`, string> = {
@@ -34,13 +37,36 @@ const handMarkup: Record<`hand-${"l" | "r"}-${HandPose}`, string> = {
   "hand-l-typing": "<path id=\"hand-l-typing\" class=\"st2\" d=\"M89.38,46.66s-10.1-3.39-13.7,1.72l-6.93-11.82s-.91-5.99-2.79-6.15l-2.01-.03-.09-1.76s2.73-4.14,4.95-1.6,4.58,4.14,4.58,4.14c0,0,.88-.5.72-.82s-2.04-2.79-3.29-3.23,1.85-3.95,4.52-2.35l3.61,5.77s.78.28,1.16-.6-1.63-3.39-1.63-3.39c0,0,1.16-1.6,2.85-1.07s2.57,5.96,2.57,5.96c0,0,.63,1.72,2.07,1.35s.34-2.35.34-2.35c0,0-1.16-1.13-.97-1.22s2.7-1.6,3.7,1.03c1,2.63,2.85,14.02.34,16.4Z\"/>",
   "hand-r-typing": "<path id=\"hand-r-typing\" class=\"st2\" d=\"M20.26,46.77s10.1-3.39,13.7,1.72l6.93-11.82s.91-5.99,2.79-6.15l2.01-.03.09-1.76s-2.73-4.14-4.95-1.6-4.58,4.14-4.58,4.14c0,0-.88-.5-.72-.82s2.04-2.79,3.29-3.23-1.85-3.95-4.52-2.35l-3.61,5.77s-.78.28-1.16-.6,1.63-3.39,1.63-3.39c0,0-1.16-1.6-2.85-1.07s-2.57,5.96-2.57,5.96c0,0-.63,1.72-2.07,1.35s-.34-2.35-.34-2.35c0,0,1.16-1.13.97-1.22s-2.7-1.6-3.7,1.03c-1,2.63-2.85,14.02-.34,16.4Z\"/>"
 };
+const handViewBoxes: Record<
+  `hand-${"l" | "r"}-${HandPose}`,
+  string
+> = {
+  "hand-l-grab": "320 28 41 36",
+  "hand-r-grab": "272 27 41 36",
+
+  "hand-l-phone": "325 177 31 50",
+  "hand-r-phone": "285 177 31 50",
+
+  "hand-l-question": "71 227 42 47",
+  "hand-r-question": "15 227 42 47",
+
+  "hand-l-point": "71 160 49 44",
+  "hand-r-point": "10 159 52 44",
+
+  "hand-l-punch": "14 96 44 42",
+  "hand-r-punch": "66 99 44 42",
+
+  "hand-l-typing": "59 19 36 34",
+  "hand-r-typing": "14 19 37 35",
+};
+
 
 /**
  * Inline, path-preserving renderer for the canonical Yusuf back-hand library.
  * The source artwork lives in Hand_Back_Poses.svg; no external SVG fragment
  * references are used, because they are unreliable in Remotion previews.
  */
-export const BackHandPose = ({ side, pose, style,x,y,width,height,viewBox }: BackHandPoseProps) => {
+export const BackHandPose = ({ side, pose, style,x=280,y=1150,width=80,height=80,viewBox,rotation,pivotX=x+ width /2,pivotY=y+ width /2 }: BackHandPoseProps) => {
   const sideKey = side === "left" ? "l" : "r";
   const handId = `hand-${sideKey}-${pose}` as `hand-${"l" | "r"}-${HandPose}`;
 
@@ -50,8 +76,9 @@ export const BackHandPose = ({ side, pose, style,x,y,width,height,viewBox }: Bac
   y={y}
   width={width}
   height={height}
-  viewBox={viewBox ?? "0 0 379.41 562.37"}
-      xmlns="http://www.w3.org/2000/svg"
+  transform={`rotate(${rotation} ${pivotX} ${pivotY})`}
+  
+viewBox={viewBox ?? handViewBoxes[handId]}      xmlns="http://www.w3.org/2000/svg"
       style={{ display: "block", overflow: "visible", ...style }}
       dangerouslySetInnerHTML={{
         __html: `<style>

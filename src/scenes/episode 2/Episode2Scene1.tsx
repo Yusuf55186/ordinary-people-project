@@ -18,6 +18,10 @@ const letsBeginStart = 865;
   const haderYa3amEnd = haderYaAamStart + 165;
 const typingStart = haderYa3amEnd + 90;
 const notificationStart = typingStart + 36;
+const pickupStart = notificationStart + 12
+const deskPhone = { x: 636, y: 557, width: 164, rotation: -12 };
+const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
+
   const frame = useCurrentFrame();
   const monitorCheck = interpolate(
     frame,
@@ -27,6 +31,19 @@ const notificationStart = typingStart + 36;
     }
     
   )
+  const isPickingUp = frame >= pickupStart
+  const phoneX = interpolate(frame, [20, 70], [deskPhone.x, heldPhone.x],{
+    extrapolateLeft: "clamp",
+  extrapolateRight: "clamp"
+  });
+const phoneY = interpolate(frame, [20, 70], [deskPhone.y, heldPhone.y],{
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp"
+} );
+const phoneWidth = interpolate(frame, [20, 70], [deskPhone.width, heldPhone.width],{
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp"
+});
   
   
   const VScodeCheck = interpolate(
@@ -100,7 +117,7 @@ const notificationStart = typingStart + 36;
       extrapolateRight:'clamp'
     }
   )
-
+ 
   
  
   return (
@@ -122,6 +139,18 @@ const notificationStart = typingStart + 36;
     <UiCursor x={vsCodeCursorX} y={450} scale={0.2} />
     </div>
     <YusufDeskShot yusufMode={frame >= typingStart ? "typing" : "rest"}
+     heldPhone={
+  isPickingUp ? (
+    <Episode2Phone
+      state="notification"
+      x={phoneX}
+      y={phoneY}
+      width={phoneWidth}
+      rotation={0}
+      zIndex={0}
+    />
+  ) : undefined
+}
     preformanceOffset={{
   bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
   headRotation: imReadyStrength * 3 - letsBeginStrength * 2 
@@ -133,7 +162,8 @@ const notificationStart = typingStart + 36;
     })}
   
     {...CheckStrength}
-    
+    rightArmPose={isPickingUp ? "phonePose" : "rest"}
+    rightHandPose={isPickingUp ? "grab": "phone"}
     
     children={
       
@@ -164,16 +194,7 @@ const notificationStart = typingStart + 36;
         pointerEvents: "none",
       }}
     />
-
-    {frame >= notificationStart ? (
-      <Episode2Phone
-        state="notification"
-        x={1275}
-        y={550}
-        width={80}
-        rotation={90}
-      />
-    ) : (
+   
       <Img
         src={staticFile("assets/Episode2_Devices/phone_surface_01.svg")}
         style={{
@@ -186,7 +207,6 @@ const notificationStart = typingStart + 36;
           transformOrigin: "center",
         }}
       />
-    )}
   </>
 }
 

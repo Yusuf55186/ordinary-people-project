@@ -1,14 +1,4 @@
-
-import { YusufDeskShot } from "./shots/DeskShot";
-
+import { YusufPhoneReach } from "./YusufPhoneReach";
 export const HandPoseTest = () => {
-    return (
-        <YusufDeskShot rightHandPose="grab" />
-    )
-}
-      
-       
-       
-        
-       
-   
+  return <YusufPhoneReach phoneState="notification" />;
+};

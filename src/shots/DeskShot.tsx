@@ -20,6 +20,9 @@ type YusufDeskShotProps = {
   foregroundChildren?:ReactNode
   yusufMode?: "rest" | "typing";
   rightHandPose?:HandPose
+  rightArmPose?: "rest" | "phonePose";
+  leftHandPose?:HandPose
+  heldPhone?:ReactNode,
   
 }
 export const YusufBackTypingPose = () => {
@@ -30,7 +33,7 @@ export const YusufBackTypingPose = () => {
     }}
      />
 }
-export const YusufDeskShot = ({rightHandPose,yusufMode="rest",children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
+export const YusufDeskShot = ({heldPhone,leftHandPose,rightArmPose,rightHandPose,yusufMode="rest",children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   
@@ -128,11 +131,26 @@ bodyY: seatedIdle.bodyY
   </SceneMaster>
 ) : (
   <SceneMaster x={880} y={300} width={500} scale={0.7}>
+  <div
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      zIndex: 1,
+      overflow: "visible",
+    }}
+  >
+    {heldPhone}
+  </div>
+    <div style={{ position: "relative", zIndex: 2 }}>
     <YusufBackCharacter
   {...finalPose}
   rightHandPose={rightHandPose}
+  rightArmPose={rightArmPose}
+  leftHandPose={leftHandPose}
   lowerBodyPose="deskSeated"
 />
+</div>
   </SceneMaster>
 )}
     {children}
