@@ -119,40 +119,43 @@ bodyY: seatedIdle.bodyY
     bodyY:retreatIdle.bodyY + (preformanceOffset.bodyY ?? 0),
     headRotation:retreatIdle.headRotation + (preformanceOffset.headRotation ?? 0),
   }
-  
+  const shouldRenderTypingPose =
+  yusufMode === "typing" && rightArmPose !== "phonePose";
 
    return (
   <ShotCamera {...cameraPose}>
     <YusufRoom />
     
-    {yusufMode === "typing" ? (
+    {shouldRenderTypingPose ? (
   <SceneMaster x={920} y={380} width={500} scale={0.5}>
     <YusufBackTypingPose />
   </SceneMaster>
 ) : (
   <SceneMaster x={880} y={300} width={500} scale={0.7}>
-  <div
-    style={{
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: 1,
-      overflow: "visible",
-    }}
-  >
-    {heldPhone}
-  </div>
+    <div
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 1,
+        overflow: "visible",
+      }}
+    >
+      {heldPhone}
+    </div>
+
     <div style={{ position: "relative", zIndex: 2 }}>
-    <YusufBackCharacter
-  {...finalPose}
-  rightHandPose={rightHandPose}
-  rightArmPose={rightArmPose}
-  leftHandPose={leftHandPose}
-  lowerBodyPose="deskSeated"
-/>
-</div>
+      <YusufBackCharacter
+        {...finalPose}
+        rightHandPose={rightHandPose}
+        rightArmPose={rightArmPose === "rest" ? undefined : rightArmPose}
+        leftHandPose={leftHandPose}
+        lowerBodyPose="deskSeated"
+      />
+    </div>
   </SceneMaster>
 )}
+   
     {children}
     {beanbagForeground && <YusufRoomBeanbagForeground />}
     <YusufRoomDeskForeground />

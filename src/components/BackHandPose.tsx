@@ -42,10 +42,10 @@ const handViewBoxes: Record<
   string
 > = {
   "hand-l-grab": "320 28 41 36",
-  "hand-r-grab": "272 27 41 36",
+  "hand-r-grab": "264 27 41 40",
 
   "hand-l-phone": "325 177 31 50",
-  "hand-r-phone": "285 177 31 50",
+  "hand-r-phone": "290 177 31 50",
 
   "hand-l-question": "71 227 42 47",
   "hand-r-question": "15 227 42 47",
@@ -66,7 +66,7 @@ const handViewBoxes: Record<
  * The source artwork lives in Hand_Back_Poses.svg; no external SVG fragment
  * references are used, because they are unreliable in Remotion previews.
  */
-export const BackHandPose = ({ side, pose, style,x=280,y=1150,width=80,height=80,viewBox,rotation,pivotX=x+ width /2,pivotY=y+ width /2 }: BackHandPoseProps) => {
+export const BackHandPose = ({ side, pose, style,x=280,y=1150,width=80,height=80,viewBox,rotation,pivotX=x+ height /2,pivotY=y+ height /2 }: BackHandPoseProps) => {
   const sideKey = side === "left" ? "l" : "r";
   const handId = `hand-${sideKey}-${pose}` as `hand-${"l" | "r"}-${HandPose}`;
 

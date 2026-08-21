@@ -1,9 +1,11 @@
+
 type Props = {
   x?: number;
   y?: number;
   width?: number;
   height?: number;
   rotation?: number;
+  handPose?:"grab" | "phone"
 };
 
 export const YusufBackPhoneReachArm = ({
@@ -12,6 +14,8 @@ export const YusufBackPhoneReachArm = ({
   width = 129,
   height = 104,
   rotation = 0,
+  
+  
 }: Props) => {
   return (
     <svg
@@ -39,6 +43,7 @@ export const YusufBackPhoneReachArm = ({
         strokeLinejoin="round"
         d="M70.2,55.93l53.29,24.56s3.61,6.33-4.45,15.28l-74.01-15.25"
       />
+      
     </svg>
   );
 };

@@ -18,11 +18,13 @@ const letsBeginStart = 865;
   const haderYa3amEnd = haderYaAamStart + 165;
 const typingStart = haderYa3amEnd + 90;
 const notificationStart = typingStart + 36;
-const pickupStart = notificationStart + 12
-const deskPhone = { x: 636, y: 557, width: 164, rotation: -12 };
+const pickupStart = notificationStart + 50
+const pickupEnd = pickupStart + 42;
+const deskPhone = { x: 564, y: 357, width: 114, rotation: 90 };
 const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
 
   const frame = useCurrentFrame();
+const currentHandPose = frame < pickupEnd ? "grab" : "phone";
   const monitorCheck = interpolate(
     frame,
     [everythingReadyStart, everythingReadyStart + 18, everythingReadyStart + 60, everythingReadyStart + 80],[0,1,1,0],{
@@ -32,15 +34,15 @@ const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
     
   )
   const isPickingUp = frame >= pickupStart
-  const phoneX = interpolate(frame, [20, 70], [deskPhone.x, heldPhone.x],{
+  const phoneX = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.x, heldPhone.x],{
     extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
   });
-const phoneY = interpolate(frame, [20, 70], [deskPhone.y, heldPhone.y],{
+const phoneY = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.y, heldPhone.y],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
 } );
-const phoneWidth = interpolate(frame, [20, 70], [deskPhone.width, heldPhone.width],{
+const phoneWidth = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.width, heldPhone.width],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
 });
@@ -108,7 +110,12 @@ const phoneWidth = interpolate(frame, [20, 70], [deskPhone.width, heldPhone.widt
       extrapolateRight: "clamp"
     }
   )
-
+const phoneRotation = interpolate(
+  frame,
+  [pickupStart, pickupEnd],
+  [deskPhone.rotation, heldPhone.rotation],
+  { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+);
   const notificationGlow = interpolate(
     frame,
     [notificationStart,notificationStart + 6,notificationStart + 18],
@@ -123,101 +130,109 @@ const phoneWidth = interpolate(frame, [20, 70], [deskPhone.width, heldPhone.widt
   return (
     
     <Camera x={cameraX} y={cameraY} scale={cameraScale}
-    
-    >
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-everything-ready.m4a")} from={everythingReadyStart} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-monitor-on.m4a")} from={monitorOnStart} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-vscode-open.m4a")} from={vsCodeStart} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-im-ready.m4a")} from={imReadyStart} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-lets-start.m4a")} from={letsBeginStart} />
-    <Audio src={staticFile("VoiceOver/Episode2/scene1-hader-ya-aam.m4a")} from={haderYaAamStart} />
 
-    
-    <div style={{
-      opacity:VScodeCheck
-    }}>
-    <UiCursor x={vsCodeCursorX} y={450} scale={0.2} />
-    </div>
-    <YusufDeskShot yusufMode={frame >= typingStart ? "typing" : "rest"}
-     heldPhone={
-  isPickingUp ? (
-    <Episode2Phone
-      state="notification"
-      x={phoneX}
-      y={phoneY}
-      width={phoneWidth}
-      rotation={0}
-      zIndex={0}
-    />
-  ) : undefined
-}
-    preformanceOffset={{
-  bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
-  headRotation: imReadyStrength * 3 - letsBeginStrength * 2 
-}}
-    
-    hesitation={interpolate(frame,[0,20,70,120],[0,0.18,0.18,0],{
-      extrapolateLeft:"clamp",
-      extrapolateRight:"clamp"
-    })}
-  
-    {...CheckStrength}
-    rightArmPose={isPickingUp ? "phonePose" : "rest"}
-    rightHandPose={isPickingUp ? "grab": "phone"}
-    
-    children={
-      
-      <Img src={staticFile("assets/Episode2_ScreenStates/laptop_project.svg")}
-      style={{
-       position: "absolute",
-    left: 650,
-    top: 420,
-    width: 290,
-    height: 160,
-    objectFit: "cover",
-      }}
+    >
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-everything-ready.m4a")} from={everythingReadyStart} />
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-monitor-on.m4a")} from={monitorOnStart} />
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-vscode-open.m4a")} from={vsCodeStart} />
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-im-ready.m4a")} from={imReadyStart} />
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-lets-start.m4a")} from={letsBeginStart} />
+      <Audio src={staticFile("VoiceOver/Episode2/scene1-hader-ya-aam.m4a")} from={haderYaAamStart} />
+
+
+      <div style={{
+        opacity: VScodeCheck
+      }}>
+        <UiCursor x={vsCodeCursorX} y={450} scale={0.2} />
+      </div>
+      <YusufDeskShot
+  yusufMode={frame >= typingStart ? "typing" : "rest"}
+  heldPhone={
+    isPickingUp ? (
+      <Episode2Phone
+        state="notification"
+        x={phoneX}
+        y={phoneY}
+        width={phoneWidth}
+        rotation={phoneRotation}
+        zIndex={0}
       />
-    }     
-    foregroundChildren={
-  <>
-    <div
-      style={{
-        position: "absolute",
-        left: 1235,
-        top: 575,
-        width: 160,
-        height: 105,
-        borderRadius: "50%",
-        backgroundColor: "rgba(198, 230, 255, 0.65)",
-        filter: "blur(22px)",
-        opacity: notificationGlow,
-        pointerEvents: "none",
-      }}
-    />
-   
-      <Img
-        src={staticFile("assets/Episode2_Devices/phone_surface_01.svg")}
+    ) : undefined
+  }
+  preformanceOffset={{
+    bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
+    headRotation: imReadyStrength * 3 - letsBeginStrength * 2,
+  }}
+  hesitation={interpolate(frame, [0, 20, 70, 120], [0, 0.18, 0.18, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  })}
+  {...CheckStrength}
+  rightArmPose={isPickingUp ? "phonePose" : "rest"}
+  rightHandPose={isPickingUp ? currentHandPose : undefined}
+  foregroundChildren={
+    <>
+      <div
         style={{
           position: "absolute",
-          left: 1300,
-          top: 550,
-          width: 80,
-          height: 160,
-          transform: "rotate(90deg)",
-          transformOrigin: "center",
+          left: 1250,
+          top: 575,
+          width: 160,
+          height: 105,
+          borderRadius: "50%",
+          backgroundColor: "rgba(198, 230, 255, 0.65)",
+          filter: "blur(22px)",
+          opacity: notificationGlow,
+          pointerEvents: "none",
         }}
       />
-  </>
+
+      {!isPickingUp &&
+        (frame >= notificationStart ? (
+          <Episode2Phone
+            state="notification"
+            x={1275}
+            y={550}
+            width={80}
+            rotation={90}
+          />
+        ) : (
+          <Img
+            src={staticFile("assets/Episode2_Devices/phone_surface_01.svg")}
+            style={{
+              position: "absolute",
+              left: 1300,
+              top: 550,
+              width: 80,
+              height: 160,
+              transform: "rotate(90deg)",
+              transformOrigin: "center",
+            }}
+          />
+        ))}
+    </>
+  }
+>
+  <Img
+    src={staticFile("assets/Episode2_ScreenStates/laptop_project.svg")}
+    style={{
+      position: "absolute",
+      left: 650,
+      top: 420,
+      width: 290,
+      height: 160,
+      objectFit: "cover",
+    }}
+  />
+</YusufDeskShot>
+    <SceneMaster x={0} y={270} scale={1} width={250}>
+        <FarmalaCharacter lowerBodyPose='beanbagSeated' {...farmalaPose(idleAnimation(frame, 120))} />
+      </SceneMaster>
+      
+    </Camera>
+  )
 }
 
->
-</YusufDeskShot>
-<SceneMaster x={0} y={270} scale={1} width={250}>
-  <FarmalaCharacter lowerBodyPose='beanbagSeated' {...farmalaPose(idleAnimation(frame,120))} />
-</SceneMaster>
-</Camera>
-  );
-};
 
   
     

@@ -1,5 +1,32 @@
 import {BackHandPose, type HandPose } from "./components/BackHandPose";
 import { YusufBackPhoneReachArm } from "./components/YusufBackPhoneReachArm";
+type RightPhoneReachHandPose = "grab" | "phone";
+
+type HandPoseCalibration = {
+  x: number;
+  y: number;
+  rotation: number;
+  pivotX: number;
+  pivotY: number;
+};
+
+const rightPhoneReachHandCalibrations = {
+  grab: {
+    x: 480,
+    y: 750,
+    rotation: 180,
+    pivotX: 578,
+    pivotY: 807.5,
+  },
+
+  phone: {
+    x:620,       // replace after visual calibration
+    y: 809,       // replace after visual calibration
+    rotation: 0,  // phone grip will not use grab’s 180°
+    pivotX: 578,
+    pivotY: 807.5,
+  },
+} satisfies Record<RightPhoneReachHandPose, HandPoseCalibration>;
 export type YusufBackCharacterProps = {
   bodyY?: number;
   headRotation?: number;
@@ -16,8 +43,8 @@ export type YusufBackCharacterProps = {
   lowerBodyPose?: "standing" | "deskSeated";
   leftHandPose?:HandPose,
   rightHandPose?:HandPose,
-  leftArmPose? : "rest" | "phonePose";
-  rightArmPose? : "rest" | "phonePose"
+  leftArmPose? : "grab" | "phonePose";
+  rightArmPose? : "grab" | "phonePose";
 };
 
 export const YusufBackCharacter = ({
@@ -37,10 +64,11 @@ export const YusufBackCharacter = ({
   leftHandPose,
   rightHandPose,
   rightArmPose,
-  leftArmPose,
  
 }: YusufBackCharacterProps) => {
   const isDeskSeated = lowerBodyPose === "deskSeated";
+  const reachHandPose = rightHandPose === "phone" ? "phone" : "grab";
+  const handCalibration = rightPhoneReachHandCalibrations[reachHandPose]
 
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id="YUSUF_BACK_SVG" width="100%" height="auto" viewBox="220 500 430 900" version="1.1" preserveAspectRatio="xMidYMid meet" data-rig-view="back">
@@ -3563,8 +3591,8 @@ export const YusufBackCharacter = ({
         <g id="ARM_R_BACK" data-rig-parent="YUSUF_BACK_RIG" data-rig-part="arm-r">
           {rightArmPose === "phonePose"  ? ( 
           <>
-          <YusufBackPhoneReachArm   x={495} y={744} width={150} height={125} />
-          <BackHandPose pose={rightHandPose ?? "phone"} side="right" width={52} height={55} x={552} y={780} pivotX={523} pivotY={991} rotation={20} 
+          <YusufBackPhoneReachArm   x={495} y={744} width={150} height={125}/>
+          <BackHandPose pose={reachHandPose} {...handCalibration} side="right" width={52} height={55} 
           />
           </>
           ):(

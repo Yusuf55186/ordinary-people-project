@@ -4,11 +4,11 @@ import { Episode2Scene2 } from "./Episode2Scene2";
 export const Episode2Master = () => {
 return (
     <>
-    <Sequence durationInFrames={1680}>
+    <Sequence durationInFrames={2000}>
         
         <Episode2Scene1  />
     </Sequence>
-    <Sequence from={1680}>
+    <Sequence from={2000}>
         <Episode2Scene2 />
     </Sequence>
     </>
