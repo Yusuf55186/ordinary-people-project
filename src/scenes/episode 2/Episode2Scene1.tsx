@@ -17,13 +17,23 @@ const letsBeginStart = 865;
   const haderYaAamStart =  1325;
   const haderYa3amEnd = haderYaAamStart + 165;
 const typingStart = haderYa3amEnd + 90;
-const notificationStart = typingStart + 36;
+const notificationStart = typingStart + 120;
 const pickupStart = notificationStart + 50
 const pickupEnd = pickupStart + 42;
 const deskPhone = { x: 564, y: 357, width: 114, rotation: 90 };
 const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
 
   const frame = useCurrentFrame();
+  const typingtoRestProgress = interpolate(
+    frame,
+    [notificationStart, notificationStart + 8],
+    [0,1],{
+      extrapolateLeft:"clamp",
+      extrapolateRight:"clamp"
+    }
+  )
+  
+  
 const currentHandPose = frame < pickupEnd ? "grab" : "phone";
   const monitorCheck = interpolate(
     frame,
@@ -124,6 +134,11 @@ const phoneRotation = interpolate(
       extrapolateRight:'clamp'
     }
   )
+  const phoneHeadRotation = interpolate(
+     frame,[notificationStart,notificationStart + 8,notificationStart + 40,notificationStart + 90,notificationStart + 100],[0,4,2,2,2],{
+      extrapolateLeft:"clamp",
+      extrapolateRight:"clamp"
+     })
  
   
  
@@ -146,8 +161,11 @@ const phoneRotation = interpolate(
         <UiCursor x={vsCodeCursorX} y={450} scale={0.2} />
       </div>
       <YusufDeskShot
+      typingToRestProgress={typingtoRestProgress}
   yusufMode={frame >= typingStart ? "typing" : "rest"}
+  
   heldPhone={
+  
     isPickingUp ? (
       <Episode2Phone
         state="notification"
@@ -161,7 +179,8 @@ const phoneRotation = interpolate(
   }
   preformanceOffset={{
     bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
-    headRotation: imReadyStrength * 3 - letsBeginStrength * 2,
+    headRotation: imReadyStrength * 3 - letsBeginStrength * 2 + phoneHeadRotation,
+    
   }}
   hesitation={interpolate(frame, [0, 20, 70, 120], [0, 0.18, 0.18, 0], {
     extrapolateLeft: "clamp",

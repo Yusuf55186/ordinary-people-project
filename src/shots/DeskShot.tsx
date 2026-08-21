@@ -23,6 +23,7 @@ type YusufDeskShotProps = {
   rightArmPose?: "rest" | "phonePose";
   leftHandPose?:HandPose
   heldPhone?:ReactNode,
+  typingToRestProgress?:number
   
 }
 export const YusufBackTypingPose = () => {
@@ -33,10 +34,9 @@ export const YusufBackTypingPose = () => {
     }}
      />
 }
-export const YusufDeskShot = ({heldPhone,leftHandPose,rightArmPose,rightHandPose,yusufMode="rest",children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
+export const YusufDeskShot = ({heldPhone,leftHandPose,rightArmPose,rightHandPose,yusufMode="rest",typingToRestProgress=0,children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
-  
   const seatedIdle = {
      bodyY: breathe * 2,
      headRotation : breathe * -0.8
@@ -119,19 +119,29 @@ bodyY: seatedIdle.bodyY
     bodyY:retreatIdle.bodyY + (preformanceOffset.bodyY ?? 0),
     headRotation:retreatIdle.headRotation + (preformanceOffset.headRotation ?? 0),
   }
-  const shouldRenderTypingPose =
-  yusufMode === "typing" && rightArmPose !== "phonePose";
+  const typingOpacity =
+  yusufMode === "typing" ? 1 - typingToRestProgress : 0;
+
+const modularOpacity =
+  yusufMode === "typing" ? typingToRestProgress : 1;
+
 
    return (
   <ShotCamera {...cameraPose}>
     <YusufRoom />
     
-    {shouldRenderTypingPose ? (
+    
+    <>
+    <div style={{opacity:typingOpacity}}>
   <SceneMaster x={920} y={380} width={500} scale={0.5}>
     <YusufBackTypingPose />
   </SceneMaster>
-) : (
-  <SceneMaster x={880} y={300} width={500} scale={0.7}>
+  
+  </div>
+  
+ 
+  <div style={{ opacity: modularOpacity }}>
+  <SceneMaster x={858} y={343} width={500} scale={0.75}>
     <div
       style={{
         position: "absolute",
@@ -147,15 +157,18 @@ bodyY: seatedIdle.bodyY
     <div style={{ position: "relative", zIndex: 2 }}>
       <YusufBackCharacter
         {...finalPose}
-        rightHandPose={rightHandPose}
         rightArmPose={rightArmPose === "rest" ? undefined : rightArmPose}
+        rightHandPose={rightHandPose}
         leftHandPose={leftHandPose}
         lowerBodyPose="deskSeated"
       />
     </div>
   </SceneMaster>
-)}
-   
+</div>
+     
+    </>
+    
+     
     {children}
     {beanbagForeground && <YusufRoomBeanbagForeground />}
     <YusufRoomDeskForeground />
