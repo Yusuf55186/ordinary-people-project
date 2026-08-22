@@ -19,9 +19,10 @@ const letsBeginStart = 865;
 const typingStart = haderYa3amEnd + 90;
 const notificationStart = typingStart + 120;
 const pickupStart = notificationStart + 50
+const phoneContactStart = pickupStart + 18
 const pickupEnd = pickupStart + 42;
 const deskPhone = { x: 564, y: 357, width: 114, rotation: 90 };
-const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
+const heldPhone = { x: 452, y: 286, width: 72, rotation: 0 };
 
   const frame = useCurrentFrame();
   const typingtoRestProgress = interpolate(
@@ -33,7 +34,7 @@ const heldPhone = { x: 457, y: 286, width: 72, rotation: 0 };
     }
   )
   
-  
+
 const currentHandPose = frame < pickupEnd ? "grab" : "phone";
   const monitorCheck = interpolate(
     frame,
@@ -44,20 +45,41 @@ const currentHandPose = frame < pickupEnd ? "grab" : "phone";
     
   )
   const isPickingUp = frame >= pickupStart
-  const phoneX = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.x, heldPhone.x],{
+  const isPhoneContact = frame >= phoneContactStart
+  const phoneX = interpolate(frame, [phoneContactStart, pickupEnd], [deskPhone.x, heldPhone.x],{
     extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
   });
-const phoneY = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.y, heldPhone.y],{
+const phoneY = interpolate(frame, [phoneContactStart, pickupEnd], [deskPhone.y, heldPhone.y],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
 } );
-const phoneWidth = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.width, heldPhone.width],{
+const phoneWidth = interpolate(frame, [phoneContactStart, pickupEnd], [deskPhone.width, heldPhone.width],{
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp"
 });
-  
-  
+const phoneRotation = interpolate(
+  frame,
+  [phoneContactStart, pickupEnd],
+  [deskPhone.rotation, heldPhone.rotation],
+  { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+);
+const phoneReachProgress = interpolate(
+  frame,
+  [pickupStart,pickupStart + 18],[0,1],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:'clamp'
+  }
+)
+const phoneHoldProgress = interpolate(
+  frame,
+  [phoneContactStart,pickupEnd],
+  [0,1],
+  {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp'
+  }
+)
   const VScodeCheck = interpolate(
     frame,
     [vsCodeStart,vsCodeStart + 12, vsCodeStart + 42, vsCodeStart + 58],
@@ -98,11 +120,17 @@ const phoneWidth = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.width
       extrapolateRight:"clamp",
       easing:Easing.inOut(Easing.cubic)
     }
+    
   )
+  const phoneHeadRotation = interpolate(
+     frame,[notificationStart,notificationStart + 18,notificationStart + 36,notificationStart + 45,notificationStart + notificationStart + 60],[0,4,4,2,2],{
+      extrapolateLeft:"clamp",
+      extrapolateRight:"clamp"
+     })
   const idlePose = idleAnimation(frame,60)
   const CheckStrength = {
     bodyY : idlePose.bodyY - monitorCheck * 2,
-    headRotation: idlePose.headRotation - monitorCheck * 1.5
+    headRotation: idlePose.headRotation - monitorCheck * 1.5 + phoneHeadRotation,
   }
   const imReadyStrength = interpolate(
     frame,
@@ -120,12 +148,7 @@ const phoneWidth = interpolate(frame, [pickupStart, pickupEnd], [deskPhone.width
       extrapolateRight: "clamp"
     }
   )
-const phoneRotation = interpolate(
-  frame,
-  [pickupStart, pickupEnd],
-  [deskPhone.rotation, heldPhone.rotation],
-  { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-);
+
   const notificationGlow = interpolate(
     frame,
     [notificationStart,notificationStart + 6,notificationStart + 18],
@@ -134,11 +157,7 @@ const phoneRotation = interpolate(
       extrapolateRight:'clamp'
     }
   )
-  const phoneHeadRotation = interpolate(
-     frame,[notificationStart,notificationStart + 8,notificationStart + 40,notificationStart + 90,notificationStart + 100],[0,4,2,2,2],{
-      extrapolateLeft:"clamp",
-      extrapolateRight:"clamp"
-     })
+  
  
   
  
@@ -163,10 +182,11 @@ const phoneRotation = interpolate(
       <YusufDeskShot
       typingToRestProgress={typingtoRestProgress}
   yusufMode={frame >= typingStart ? "typing" : "rest"}
+  phoneReachProgress={phoneReachProgress}
+  phoneHoldProgress={phoneHoldProgress}
   
   heldPhone={
-  
-    isPickingUp ? (
+    isPhoneContact ? (
       <Episode2Phone
         state="notification"
         x={phoneX}
@@ -175,11 +195,14 @@ const phoneRotation = interpolate(
         rotation={phoneRotation}
         zIndex={0}
       />
+    
     ) : undefined
   }
+  
   preformanceOffset={{
     bodyY: imReadyStrength * 1.5 - letsBeginStrength * 2,
     headRotation: imReadyStrength * 3 - letsBeginStrength * 2 + phoneHeadRotation,
+    
     
   }}
   hesitation={interpolate(frame, [0, 20, 70, 120], [0, 0.18, 0.18, 0], {
@@ -187,8 +210,8 @@ const phoneRotation = interpolate(
     extrapolateRight: "clamp",
   })}
   {...CheckStrength}
-  rightArmPose={isPickingUp ? "phonePose" : "rest"}
-  rightHandPose={isPickingUp ? currentHandPose : undefined}
+  rightArmPose={isPhoneContact ? "phonePose" : "rest"}
+  rightHandPose={isPhoneContact ? currentHandPose : undefined}
   foregroundChildren={
     <>
       <div
@@ -206,7 +229,7 @@ const phoneRotation = interpolate(
         }}
       />
 
-      {!isPickingUp &&
+      {!isPhoneContact &&
         (frame >= notificationStart ? (
           <Episode2Phone
             state="notification"

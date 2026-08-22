@@ -10,6 +10,7 @@ type HandPoseCalibration = {
   pivotY: number;
 };
 
+
 const rightPhoneReachHandCalibrations = {
   grab: {
     x: 480,
@@ -20,8 +21,8 @@ const rightPhoneReachHandCalibrations = {
   },
 
   phone: {
-    x:620,       // replace after visual calibration
-    y: 809,       // replace after visual calibration
+    x:618,       // replace after visual calibration
+    y: 776,       // replace after visual calibration
     rotation: 0,  // phone grip will not use grab’s 180°
     pivotX: 578,
     pivotY: 807.5,
@@ -45,6 +46,8 @@ export type YusufBackCharacterProps = {
   rightHandPose?:HandPose,
   leftArmPose? : "grab" | "phonePose";
   rightArmPose? : "grab" | "phonePose";
+  phoneReachProgress?:number
+  phoneHoldProgress?:number
 };
 
 export const YusufBackCharacter = ({
@@ -64,12 +67,26 @@ export const YusufBackCharacter = ({
   leftHandPose,
   rightHandPose,
   rightArmPose,
+  phoneReachProgress=0,
+  phoneHoldProgress=0
  
 }: YusufBackCharacterProps) => {
   const isDeskSeated = lowerBodyPose === "deskSeated";
   const reachHandPose = rightHandPose === "phone" ? "phone" : "grab";
   const handCalibration = rightPhoneReachHandCalibrations[reachHandPose]
+  const restArmOpacity = 1 - phoneReachProgress;
+const reachArmOpacity = phoneReachProgress;
+const phoneElbowRotation = - 30 * phoneHoldProgress
+const grabHandCalibration = {
+  ...handCalibration,
+  x: handCalibration.x + 6,
+  y: handCalibration.y - 10,
+};
 
+const activeHandCalibration =
+  reachHandPose === "grab"
+    ? grabHandCalibration
+    : handCalibration;
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id="YUSUF_BACK_SVG" width="100%" height="auto" viewBox="220 500 430 900" version="1.1" preserveAspectRatio="xMidYMid meet" data-rig-view="back">
       <defs id="YB_DEF__defs1">
@@ -3589,14 +3606,16 @@ export const YusufBackCharacter = ({
           </g>
         </g>
         <g id="ARM_R_BACK" data-rig-parent="YUSUF_BACK_RIG" data-rig-part="arm-r">
-          {rightArmPose === "phonePose"  ? ( 
-          <>
-          <YusufBackPhoneReachArm   x={495} y={744} width={150} height={125}/>
-          <BackHandPose pose={reachHandPose} {...handCalibration} side="right" width={52} height={55} 
+          <g 
+          id="PHONE_REACH_ARM_R_BACK"
+          opacity={reachArmOpacity}>
+          <YusufBackPhoneReachArm   x={490} y={742} width={150} height={125} elbowRotation={phoneElbowRotation}/>
+          <BackHandPose pose={reachHandPose} {...handCalibration} side="right" width={52} height={55}
+ 
           />
-          </>
-          ):(
-          <g id="SHOULDER_R_BACK" transform={`rotate(${rightArmSwing} 500 774)`} data-rig-parent="ARM_R_BACK" data-rig-part="shoulder-r">
+          </g>
+          
+          <g id="SHOULDER_R_BACK" transform={`rotate(${rightArmSwing} 500 774)`} data-rig-parent="ARM_R_BACK" data-rig-part="shoulder-r" opacity={restArmOpacity}>
             <use id="YB_R_SHOULDER_PATCH" href="#YB_DEF__YUSUF_BACK_RIG__path1106" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path1106" clipPath="url(#YB_CLIP_PATCH_SHOULDER_R)" />
             <g id="SHOULDER_CLOTH_R_BACK" data-rig-parent="SHOULDER_R_BACK" data-rig-part="shoulder-cloth-r">
             
@@ -3631,7 +3650,7 @@ export const YusufBackCharacter = ({
 </g>
 </g>
 </g>
-          )}
+          
           </g>
         
         <g id="HEAD_BACK" transform={`rotate(${headRotation} 436 714)`} data-rig-parent="YUSUF_BACK_RIG" data-rig-part="head">

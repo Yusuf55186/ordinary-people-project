@@ -17,13 +17,15 @@ type YusufDeskShotProps = {
   retreat?:number;
   beanbagForeground?: boolean;
   preformanceOffset?:Partial<YusufBackCharacterProps>;
-  foregroundChildren?:ReactNode
+  foregroundChildren?:ReactNode;
   yusufMode?: "rest" | "typing";
-  rightHandPose?:HandPose
+  rightHandPose?:HandPose;
   rightArmPose?: "rest" | "phonePose";
-  leftHandPose?:HandPose
-  heldPhone?:ReactNode,
-  typingToRestProgress?:number
+  leftHandPose?:HandPose;
+  heldPhone?:ReactNode;
+  typingToRestProgress?:number;
+  phoneReachProgress?:number;
+  phoneHoldProgress?:number;
   
 }
 export const YusufBackTypingPose = () => {
@@ -34,7 +36,7 @@ export const YusufBackTypingPose = () => {
     }}
      />
 }
-export const YusufDeskShot = ({heldPhone,leftHandPose,rightArmPose,rightHandPose,yusufMode="rest",typingToRestProgress=0,children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
+export const YusufDeskShot = ({phoneHoldProgress = 0,phoneReachProgress = 0,heldPhone,leftHandPose,rightArmPose,rightHandPose,yusufMode="rest",typingToRestProgress=0,children,hesitation = 0 , retreat = 0,beanbagForeground = false,foregroundChildren = false,preformanceOffset = {}}: YusufDeskShotProps,) => {
   const frame = useCurrentFrame();
   const breathe = Math.sin(frame / 30);
   const seatedIdle = {
@@ -125,7 +127,6 @@ bodyY: seatedIdle.bodyY
 const modularOpacity =
   yusufMode === "typing" ? typingToRestProgress : 1;
 
-
    return (
   <ShotCamera {...cameraPose}>
     <YusufRoom />
@@ -151,17 +152,23 @@ const modularOpacity =
         overflow: "visible",
       }}
     >
+     
+      </div>
       {heldPhone}
-    </div>
-
+    
     <div style={{ position: "relative", zIndex: 2 }}>
       <YusufBackCharacter
+      
         {...finalPose}
         rightArmPose={rightArmPose === "rest" ? undefined : rightArmPose}
         rightHandPose={rightHandPose}
         leftHandPose={leftHandPose}
         lowerBodyPose="deskSeated"
+        phoneReachProgress={phoneReachProgress}
+        phoneHoldProgress={phoneHoldProgress}
+        
       />
+      
     </div>
   </SceneMaster>
 </div>

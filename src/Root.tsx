@@ -3,6 +3,7 @@ import { Scene, calculateMetadata } from "./Composition";
 import { YusufDeskShot } from "./shots/DeskShot";
 import { Episode1Master } from "./scenes/episode1/Episode1Master";
 import { Episode2Master } from "./scenes/episode 2/Episode2Master";
+import { ElbowTestRotation } from "./ElbowTestPhoneReach";
 // import { HandPoseTest } from "./handPoseTest";
 const EPISODE_2_SCENE_1_DURATION = 3000;
 
@@ -37,11 +38,20 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="Episode2"
         component={Episode2Master}
-        durationInFrames={1999}
+        durationInFrames={EPISODE_2_SCENE_1_DURATION}
         fps={60}
         width={1920}
         height={1080}
       />
+      <Composition 
+    id="ElbowRotationTest"
+    component={ElbowTestRotation}
+    durationInFrames={70}
+    fps={60}
+    width={1920}
+    height={1080}
+    />
     </>
+    
   );
 };
