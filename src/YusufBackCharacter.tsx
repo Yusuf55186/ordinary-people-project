@@ -21,7 +21,7 @@ const rightPhoneReachHandCalibrations = {
   },
 
   phone: {
-    x:618,       // replace after visual calibration
+    x:619,       // replace after visual calibration
     y: 776,       // replace after visual calibration
     rotation: 0,  // phone grip will not use grab’s 180°
     pivotX: 578,
@@ -74,9 +74,10 @@ export const YusufBackCharacter = ({
   const isDeskSeated = lowerBodyPose === "deskSeated";
   const reachHandPose = rightHandPose === "phone" ? "phone" : "grab";
   const handCalibration = rightPhoneReachHandCalibrations[reachHandPose]
+  const phoneElbowRotation =  reachHandPose === "phone" ? -30 : 0;
   const restArmOpacity = 1 - phoneReachProgress;
 const reachArmOpacity = phoneReachProgress;
-const phoneElbowRotation = - 30 * phoneHoldProgress
+
 const grabHandCalibration = {
   ...handCalibration,
   x: handCalibration.x + 6,
