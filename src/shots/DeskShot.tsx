@@ -113,6 +113,7 @@ bodyY: seatedIdle.bodyY
       zoom:1,
     },
   });
+ 
   const finalPose = {
     ...seatedYusuf,
     ...yusufNoticeState,
@@ -121,6 +122,7 @@ bodyY: seatedIdle.bodyY
     bodyY:retreatIdle.bodyY + (preformanceOffset.bodyY ?? 0),
     headRotation:retreatIdle.headRotation + (preformanceOffset.headRotation ?? 0),
   }
+  
   const typingOpacity =
   yusufMode === "typing" ? 1 - typingToRestProgress : 0;
 
@@ -158,7 +160,6 @@ const modularOpacity =
     
     <div style={{ position: "relative", zIndex: 2 }}>
       <YusufBackCharacter
-      
         {...finalPose}
         rightArmPose={rightArmPose === "rest" ? undefined : rightArmPose}
         rightHandPose={rightHandPose}
