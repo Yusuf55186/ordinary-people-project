@@ -7,6 +7,7 @@ import { SceneMaster } from "../sceneCharacter";
 import { farmalaPose } from "../../animations/FarmalaPose";
 import { FarmalaCharacter } from "../../FarmalaCharacter";
 import { Audio } from "@remotion/media";
+import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 export const Episode2Scene5 = () => {
     const frame = useCurrentFrame();
     const yusufIdle = idleAnimation(frame, 60);
@@ -15,8 +16,48 @@ export const Episode2Scene5 = () => {
     headRotation: yusufIdle.headRotation + 4,
     bodyY: yusufIdle.bodyY,
   };
+  const scene5FarmalaMouthCues: MouthCue[] = [
+  // مفيش مشكلة
+  { startFrame: 259, endFrame: 265, pose: "MBP" },
+  { startFrame: 265, endFrame: 270, pose: "A" },
+  { startFrame: 270, endFrame: 276, pose: "F" },
+  { startFrame: 276, endFrame: 283, pose: "I" },
+  { startFrame: 283, endFrame: 289, pose: "S" },
+
+  { startFrame: 291, endFrame: 296, pose: "MBP" },
+  { startFrame: 296, endFrame: 301, pose: "O" },
+  { startFrame: 301, endFrame: 306, pose: "S" },
+  { startFrame: 306, endFrame: 311, pose: "G" },
+  { startFrame: 311, endFrame: 316, pose: "E" },
+  { startFrame: 316, endFrame: 321, pose: "L" },
+  { startFrame: 321, endFrame: 328, pose: "A" },
+
+  // آه طبعًا
+  { startFrame: 463, endFrame: 477, pose: "A" },
+  { startFrame: 478, endFrame: 481, pose: "N" },
+  { startFrame: 481, endFrame: 484, pose: "A" },
+  { startFrame: 484, endFrame: 487, pose: "MBP" },
+  { startFrame: 487, endFrame: 490, pose: "A" },
+  { startFrame: 490, endFrame: 492, pose: "N" },
+
+  // ولا حاجة خالص
+  { startFrame: 553, endFrame: 558, pose: "U" },
+  { startFrame: 558, endFrame: 563, pose: "L" },
+  { startFrame: 563, endFrame: 574, pose: "A" },
+
+  { startFrame: 577, endFrame: 582, pose: "G" },
+  { startFrame: 582, endFrame: 589, pose: "A" },
+  { startFrame: 589, endFrame: 594, pose: "A" },
+
+  { startFrame: 594, endFrame: 599, pose: "G" },
+  { startFrame: 599, endFrame: 603, pose: "A" },
+  { startFrame: 603, endFrame: 606, pose: "L" },
+  { startFrame: 606, endFrame: 610, pose: "S" },
+];
+const mouthPose = getMouthPose(frame,scene5FarmalaMouthCues)
+const noProblem
     return (
-        <Camera x={60} y={20} scale={1.5}>
+        <Camera x={0} y={0} scale={1}>
             <Audio
   src={staticFile("VoiceOver/Episode2/5_more_mintues.m4a")}
   from={0}
@@ -96,6 +137,7 @@ export const Episode2Scene5 = () => {
                 <FarmalaCharacter
                   lowerBodyPose="beanbagSeated"
                   {...farmalaPose(farmalaIdle)}
+                  mouthPose={mouthPose}
                 />
               </SceneMaster>
             </Camera>

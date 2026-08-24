@@ -12,7 +12,7 @@ export const YusufRoom = () => {
         display: "block",
         objectFit: "cover",
         scale: 1.05,
-        translate: "-1px 0px",
+        translate: "0px -6.1px",
       }}
     />
   );
