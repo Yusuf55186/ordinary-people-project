@@ -66,7 +66,9 @@ export const YusufBackCharacter = ({
   lowerBodyPose = "standing",
   leftHandPose,
   rightHandPose,
+  rightArmPose,
   phoneReachProgress=0,
+  phoneHoldProgress=0
  
 }: YusufBackCharacterProps) => {
   const isDeskSeated = lowerBodyPose === "deskSeated";
@@ -76,9 +78,16 @@ export const YusufBackCharacter = ({
   const restArmOpacity = 1 - phoneReachProgress;
 const reachArmOpacity = phoneReachProgress;
 
+const grabHandCalibration = {
+  ...handCalibration,
+  x: handCalibration.x + 6,
+  y: handCalibration.y - 10,
+};
 
-
-
+const activeHandCalibration =
+  reachHandPose === "grab"
+    ? grabHandCalibration
+    : handCalibration;
   return (
     <svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" id="YUSUF_BACK_SVG" width="100%" height="auto" viewBox="220 500 430 900" version="1.1" preserveAspectRatio="xMidYMid meet" data-rig-view="back">
       <defs id="YB_DEF__defs1">
@@ -3580,7 +3589,7 @@ const reachArmOpacity = phoneReachProgress;
                 </g>
                 <g id="HAND_L_BACK" transform={`rotate(${leftHandRotation} 329 990)`} data-rig-parent="FOREARM_L_BACK" data-rig-part="hand-l">
                   {leftHandPose ? (
-                    <BackHandPose side="left" pose={leftHandPose} x={275} y={950} width={70} height={70} rotation={90} pivotX={0} pivotY={0} />
+                    <BackHandPose side="left" pose={leftHandPose} x={275} y={950} width={70} height={70} rotation={90} />
                   ):(
                     <>
                   <use id="YB_L_HAND_00" href="#YB_DEF__YUSUF_BACK_RIG__path868" xlinkHref="#YB_DEF__YUSUF_BACK_RIG__path868" />

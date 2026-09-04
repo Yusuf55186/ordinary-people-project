@@ -7,7 +7,7 @@ import { adyManPose } from "../../animations/AdyManPose";
 // import { eyeLookingAnimation } from "../../animations/EyeLookAnimation";
 import { interpolate, Sequence, staticFile, useCurrentFrame ,  } from "remotion";
 import { Audio } from "@remotion/media";
-import { walkCycle } from "../../animations/walkCycle";
+import { walkCycle } from "../../animations/sidewalkCycle";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { idleAnimation } from "../../animations/idleAnimation";
 import { talkingAnimation } from "../../animations/TalkingAnimation";

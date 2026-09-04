@@ -1,5 +1,5 @@
 import {ReactNode } from "react";
- type Characterintegration = {
+type Characterintegration = {
     contactShadow?:boolean;
     ambientLight?:"room";
     keyLight?:"deskLamp";
@@ -12,6 +12,7 @@ type Props = {
     width:number;
     scale?:number;
     zIndex?:number;
+    
     children:ReactNode;
      integration?:Characterintegration;
 }
@@ -22,19 +23,10 @@ export const SceneMaster = ({
     ,width,scale=1
     ,zIndex=0,children,integration
 }:Props) =>{
-    const filters = [
+    const ambientFilter =
   integration?.ambientLight === "room"
-    ? "brightness(0.65) saturate(0.75) sepia(0.12)"
-    : "",
-
-  integration?.keyLight === "deskLamp"
-    ? "drop-shadow(-10px 2px 8px rgba(255, 183, 90, 0.95))"
-    : "",
-
-  integration?.rimLight === "window"
-    ? "drop-shadow(10px 0px 5px rgba(120, 185, 255, 0.95))"
-    : "",
-].filter(Boolean).join(" ");
+    ? "brightness(0.97) saturate(0.94) sepia(0.04)"
+    : undefined;
     return (
         <div
   style={{
@@ -63,7 +55,7 @@ backgroundColor: "rgba(39, 21, 12, 0.30)",
         filter: "blur(3px)",
         transform: "translateX(-50%)",
         pointerEvents: "none",
-        zIndex: 0,
+        zIndex: 1000,
         mixBlendMode: "multiply",
       }}
     />
@@ -71,7 +63,7 @@ backgroundColor: "rgba(39, 21, 12, 0.30)",
   
   
 
-  <div style={{ position: "relative", zIndex: 1,filter:filters  }}>
+  <div style={{ position: "relative", zIndex: 1,filter:ambientFilter  }}>
     {children}
   </div>
 </div>

@@ -5,7 +5,7 @@ import { Camera } from "../../components/Camera";
 import { Episode2Phone } from "../../components/Episode2DeviceStates";
 import { FarmalaCharacter } from "../../FarmalaCharacter";
 import { YusufDeskShot } from "../../shots/DeskShot";
-import { SceneMaster } from "..//..//scenes/sceneCharacter";
+import { SceneMaster } from "../sceneCharacter";
 import { Audio } from "@remotion/media";
 import { HeadShakeAnimation } from "../../animations/HeadShakeAnimation";
 import { resolveYusufDeskCamera } from "../../production/camera/yusufDeskCameraRegistry";
@@ -109,7 +109,7 @@ const dodgeReaction = interpolate(
 };
 
   return (
-    <Camera {...resolveYusufDeskCamera("camera.yusuf-desk.wide.v1")}>
+    <Camera {...resolveYusufDeskCamera("camera.yusuf-desk.phone-close.v1")}>
       <Audio
         src={staticFile("VoiceOver/Episode2/Nieuwe opname 47.m4a")}
         from={45}
@@ -202,18 +202,10 @@ const dodgeReaction = interpolate(
           }}
         />
       </YusufDeskShot>
-      <SceneMaster x={0} y={270} scale={1} integration={{
-        contactShadow:true,
-        ambientLight:"room",
-        rimLight:"window",
-        keyLight:"deskLamp"
-      }}
-        width={250}>
+      <SceneMaster x={0} y={270} scale={1} width={250}>
         <FarmalaCharacter
           {...resolveFarmalaPose("pose.farmala.front.beanbag-seated.v1")}
           {...farmalaPose(farmalaIdle)}
-          
-    
         />
       </SceneMaster>
     </Camera>

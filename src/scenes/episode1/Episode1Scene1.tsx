@@ -5,7 +5,7 @@ import { idleAnimation } from "../../animations/idleAnimation";
 import { SceneMaster } from "../sceneCharacter";
 import { interpolate, Sequence, useCurrentFrame } from "remotion";
 import { slideIn } from "../../animations/slideIn";
-import { walkCycle } from "../../animations/walkCycle";
+import { walkCycle } from "../../animations/sidewalkCycle";
 import { talkingAnimation } from "../../animations/TalkingAnimation";
 import { staticFile } from "remotion";
 import { Audio } from "@remotion/media";

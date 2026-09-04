@@ -44,7 +44,7 @@ const currentHandPose = frame < pickupEnd ? "grab" : "phone";
     }
     
   )
-
+  const isPickingUp = frame >= pickupStart
   const isPhoneContact = frame >= phoneContactStart
   const phoneX = interpolate(frame, [phoneContactStart, pickupEnd], [deskPhone.x, heldPhone.x],{
     extrapolateLeft: "clamp",

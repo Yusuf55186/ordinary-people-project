@@ -5,7 +5,7 @@ import {
   useCurrentFrame,
 } from "remotion";
 import { YusufCharacter } from "./YusufCharacter";
-import { walkCycle } from "./animations/walkCycle";
+import { walkCycle } from "./animations/sidewalkCycle";
 import { WaveAnimation } from "./animations/wave";
 import { idleAnimation } from "./animations/idleAnimation";
 import { BlinkingAnimation } from "./animations/BlinkingAnimation";

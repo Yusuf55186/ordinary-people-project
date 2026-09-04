@@ -8,7 +8,7 @@ import { Camera } from "../../components/Camera";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 import { FarmalaCharacter } from "../../FarmalaCharacter";
 import { farmalaPose } from "../../animations/FarmalaPose";
-import { walkCycle } from "../../animations/walkCycle";
+import { walkCycle } from "../../animations/sidewalkCycle";
 
 export const Episode1Scene9 = () => {
     const frame = useCurrentFrame();

@@ -67,7 +67,7 @@ const leftArmSwing = interpolate(
 const rightArmSwing = interpolate(
   cycleFrame,
   [0, middleFrame, lastFrame],
-  [armSwingAmplitude, -armSwingAmplitude, armSwingAmplitude],
+  [-armSwingAmplitude, armSwingAmplitude, -armSwingAmplitude],
 );
    
     

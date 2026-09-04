@@ -24,15 +24,7 @@ export const SceneMaster = ({
 }:Props) =>{
     const filters = [
   integration?.ambientLight === "room"
-    ? "brightness(0.65) saturate(0.75) sepia(0.12)"
-    : "",
-
-  integration?.keyLight === "deskLamp"
-    ? "drop-shadow(-10px 2px 8px rgba(255, 183, 90, 0.95))"
-    : "",
-
-  integration?.rimLight === "window"
-    ? "drop-shadow(10px 0px 5px rgba(120, 185, 255, 0.95))"
+    ? "brightness(0.96) saturate(0.93) sepia(0.12)"
     : "",
 ].filter(Boolean).join(" ");
     return (
