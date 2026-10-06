@@ -1,11 +1,18 @@
 import {ReactNode } from "react";
- type Characterintegration = {
-    contactShadow?:boolean;
-    ambientLight?:"room";
-    keyLight?:"deskLamp";
-    rimLight?:"window";
-   
-}
+ type CharacterIntegration = {
+  contactShadow?: boolean;
+
+  ambientLight?:
+     "room" | "daylight";
+
+  keyLight?:"deskLamp" | "sun";
+
+  rimLight?:
+    "window";
+
+  castShadow?:
+    "streetSun";
+};
 type Props = {
     x:number;
     y:number;
@@ -13,7 +20,7 @@ type Props = {
     scale?:number;
     zIndex?:number;
     children:ReactNode;
-     integration?:Characterintegration;
+     integration?:CharacterIntegration;
 }
 
 export const SceneMaster = ({
@@ -22,11 +29,14 @@ export const SceneMaster = ({
     ,width,scale=1
     ,zIndex=0,children,integration
 }:Props) =>{
-    const filters = [
-  integration?.ambientLight === "room"
+   const ambientFilter =
+  integration?.ambientLight === "daylight"
+    ? "brightness(0.98) saturate(0.95) sepia(0.03)"
+    : integration?.ambientLight === "room"
     ? "brightness(0.96) saturate(0.93) sepia(0.12)"
-    : "",
-].filter(Boolean).join(" ");
+    : "";
+
+const filters = [ambientFilter].filter(Boolean).join(" ");
     return (
         <div
   style={{
@@ -48,11 +58,11 @@ export const SceneMaster = ({
         position: "absolute",
         top: "97%",
         left: "50%",
-        width: "55%",
-        height: 8,
         borderRadius: "50%",
-backgroundColor: "rgba(39, 21, 12, 0.30)",
-        filter: "blur(3px)",
+        width: "62%",
+        height: 12,
+        backgroundColor: "rgba(34, 25, 18, 0.32)",
+        filter: "blur(5px)",
         transform: "translateX(-50%)",
         pointerEvents: "none",
         zIndex: 0,
@@ -60,7 +70,42 @@ backgroundColor: "rgba(39, 21, 12, 0.30)",
       }}
     />
   )}
-  
+  {integration?.castShadow === "streetSun" && (
+  <div
+    style={{
+      position: "absolute",
+      top: "92%",
+      left: "48%",
+      width: "72%",
+      height: 18,
+      borderRadius: "50%",
+      backgroundColor: "rgba(30, 22, 16, 0.20)",
+      filter: "blur(8px)",
+      transform:
+        "translateX(-50%) rotate(-15deg) skewX(-25deg) scaleX(1.4)",
+      transformOrigin: "left center",
+      mixBlendMode: "multiply",
+      pointerEvents: "none",
+      zIndex: 0,
+    }}
+  />
+)}
+{integration?.keyLight === "sun" && (
+   <div
+    style={{
+      position: "absolute",
+      inset: 0,
+      zIndex: 2,
+      pointerEvents: "none",
+
+      background:
+        "linear-gradient(115deg, rgba(255, 226, 170, 0.16) 0%, rgba(255, 226, 170, 0.06) 35%, rgba(255, 226, 170, 0) 62%)",
+
+      mixBlendMode: "soft-light",
+      opacity: 0.65,
+    }}
+    />
+)}
   
 
   <div style={{ position: "relative", zIndex: 1,filter:filters  }}>

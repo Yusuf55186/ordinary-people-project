@@ -108,7 +108,8 @@ export const Episode3Scene1 = () => {
           y={yusufY}
           scale={yusufScale}
           width={250}
-          integration={{ contactShadow: true }}
+          integration={{contactShadow:true,ambientLight:"daylight",castShadow:"streetSun", keyLight:"sun"
+          }}
           zIndex={1}
         >
           <YusufCharacter

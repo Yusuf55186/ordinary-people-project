@@ -10,6 +10,7 @@ type FrontWalkPose = {
   rightArmSwing: number;
   leftLegScaleY: number;
   rightLegScaleY: number;
+  headRotation:number;
 };
 
 type FrontWalkConfig = {
@@ -18,6 +19,7 @@ type FrontWalkConfig = {
   bodyBounce: number;
   armSwingAmplitude: number;
   legScaleDelta: number;
+  headRotationAmplitude:number;
 };
 
 const DEFAULT_FRONT_WALK_CONFIG: FrontWalkConfig = {
@@ -26,6 +28,7 @@ const DEFAULT_FRONT_WALK_CONFIG: FrontWalkConfig = {
   bodyBounce: 4,
   armSwingAmplitude: 4,
   legScaleDelta: 0.060,
+  headRotationAmplitude:0.06
 };
 
 export const frontWalkCycle = (
@@ -90,6 +93,11 @@ export const frontWalkCycle = (
       cycleFrame,
       frames,
       [1 + config.legScaleDelta, 1 - config.legScaleDelta, 1 + config.legScaleDelta],
+    ),
+     headRotation: interpolate(
+      cycleFrame,
+      frames,
+      [1 + config.headRotationAmplitude, 1 - config.headRotationAmplitude, 1 + config.headRotationAmplitude],
     ),
   };
 };
