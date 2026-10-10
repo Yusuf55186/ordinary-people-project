@@ -7,6 +7,8 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
+import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement } from "./episode3StreetMotion";
+
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
   const scene1Episode3:MouthCue[] = [
@@ -59,32 +61,19 @@ export const Episode3Scene1 = () => {
   { startFrame: 300, endFrame: 420, pose: "rest" },
   ]
   const YusufScene1 = getMouthPose(frame,scene1Episode3)
-  const walkfrontPose = frontWalkCycle(frame, 60);
-  const yusufX = interpolate(frame, [0, 415], [420, 250], {
+  const walkfrontPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
+  const placement = getStreetPlacement(frame);
+  const streetScale = interpolate(frame, [0, SCENE_1_DURATION], [1, 1.01], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const yusufY = interpolate(frame, [0, 415], [420, 500], {
+  const streetX = interpolate(frame, [0, SCENE_1_DURATION], [0, -18], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
 
-  const yusufScale = interpolate(frame, [0, 415], [0.38, 0.5], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const streetScale = interpolate(frame, [0, 415], [1, 1.01], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  const streetX = interpolate(frame, [0, 415], [0, -18], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
-  const streetY = interpolate(frame, [0, 415], [0, -8], {
+  const streetY = interpolate(frame, [0, SCENE_1_DURATION], [0, -8], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -104,15 +93,17 @@ export const Episode3Scene1 = () => {
 />
         <EgyptianStreet x={streetX} y={streetY} scale={streetScale} />
         <SceneMaster
-          x={yusufX}
-          y={yusufY}
-          scale={yusufScale}
-          width={250}
+          x={placement.x}
+          y={placement.y}
+          scale={placement.scale}
+          width={500}
+          groundY={YUSUF_GROUND_Y}
           integration={{contactShadow:true,ambientLight:"daylight",castShadow:"streetSun", keyLight:"sun"
           }}
           zIndex={1}
         >
           <YusufCharacter
+            grounded
             {...yusufPose({
               ...walkfrontPose,
               mouthPose:YusufScene1

@@ -28,7 +28,7 @@ export const yusufPose = (
         rightLegScaleY:animation.rightLegScaleY ?? 1,
         leftLegScaleY: animation.leftLegScaleY ?? 1,
         mouthPose:animation.mouthPose ?? "rest",
-        
+        smileStrength:animation.smileStrength ?? 0,
 
     }
 };

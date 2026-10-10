@@ -10,8 +10,11 @@ type Props = {
     leftEyeBrowY:number
     rightEyebrowY:number
     mouthPose:MouthPose
+    smileStrength?:number;
 }
-export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose,smileStrength}:Props){
+  const mouthRadius = 10 + smileStrength * 4
+  const smileCurveY = 105 + smileStrength * 10
     return (
 <svg
   style={{
@@ -239,12 +242,17 @@ case 'TH': // en zachte Engelse klanken, of een slissende 'S'
       </defs>
 
       {/* 1. De donkere binnenkant van de mondopening */}
-    <ellipse id="rest" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={105.5} rx={10} ry={2.5} />
-
+<path
+  d={`M 40 105 Q 50 ${smileCurveY} 60 105`}
+  stroke="#222"
+  strokeWidth={3}
+  fill="none"
+  strokeLinecap="round"
+/>
       {/* 2. De glimlachende lippen (een iets grotere ellipse erachter die de 'smile'-curve geeft) */}
       {/* Tip: Verander #b63c2c naar jouw gewenste lip- of schaduwkleur indien nodig */}
       <ellipse 
-        cx={50} cy={105.5} rx={10} ry={2.5}
+        cx={50} cy={105.5} rx={mouthRadius} ry={2.5}
         fill="none" 
        
       />

@@ -47,7 +47,7 @@ const FarmalaMouth = ({ pose }: { pose: MouthPose }) => {
           strokeWidth="0.9"
           strokeLinejoin="round"
         />
-      );
+      ); 
 
     case "S":
       return (
