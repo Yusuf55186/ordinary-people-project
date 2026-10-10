@@ -12,7 +12,7 @@ type Props = {
     mouthPose:MouthPose
     smileStrength?:number;
 }
-export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose,smileStrength}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose,smileStrength = 0}:Props){
   const mouthRadius = 10 + smileStrength * 4
   const smileCurveY = 105 + smileStrength * 10
     return (
@@ -243,7 +243,7 @@ case 'TH': // en zachte Engelse klanken, of een slissende 'S'
 
       {/* 1. De donkere binnenkant van de mondopening */}
 <path
-  d={`M 40 105 Q 50 ${smileCurveY} 60 105`}
+ d={`M 40 105 Q 50 ${smileCurveY} 60 105`}
   stroke="#222"
   strokeWidth={3}
   fill="none"
