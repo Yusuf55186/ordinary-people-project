@@ -1,6 +1,6 @@
 import { YusufLegs } from "./YusufLegs"
 import { YusufTorsoPelvis } from "./YusufTorsoPelvis"
-import { MouthPose, YusufHead } from "./YusufHead"
+import { type MouthPose, YusufHead } from "./YusufHead"
 import { YusufArms } from "./YusufArms"
 
 export type YusufCharacterProps = {

@@ -263,6 +263,7 @@ const confirmMouthCues: MouthCue[] = [
 
 const yusufAudioStart = 50;
 const confirmAudioStart = 550;
+const smileAudioStart = 615;
 const firstLineMouthPose = getMouthPose(
   frame - yusufAudioStart,
   firstLineMouthCues
@@ -274,7 +275,7 @@ const confirmMouthPose = getMouthPose(
 );
 const smileStrength = interpolate(
   frame,
-  [30,90,120,180],
+  [smileAudioStart, smileAudioStart + 15, smileAudioStart + 45, smileAudioStart + 60],
   [0,1,1,0],{
     extrapolateLeft:"clamp",
     extrapolateRight:"clamp",
