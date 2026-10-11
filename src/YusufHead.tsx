@@ -1,4 +1,4 @@
-export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L" | "N" | "R" | "G" | "E" | "I" | "F" | "TH" | "O";
+export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L" | "N" | "R" | "G" | "E" | "I" | "F" | "TH" | "O" | "grin";
 
 type Props = {
     headRotation:number
@@ -231,7 +231,46 @@ case 'TH': // en zachte Engelse klanken, of een slissende 'S'
       <rect x={41} y={103} width={18} height={2} fill="#FFFFFF" clipPath="url(#mouthClipTH)" />
     </g>
   );
+case 'grin':
+  return (
+    <g id="Mouth_Goofy_Grin">
+      <defs>
+        <clipPath id="grinClip">
+          <path d="M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z" />
+        </clipPath>
+      </defs>
 
+      {/* Asymmetric mouth opening */}
+      <path
+        d="M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z"
+        fill="#161E2D"
+        stroke="#222"
+        strokeWidth={1.5}
+      />
+
+      {/* Exaggerated upper teeth */}
+      <path
+        d="M 32 100 Q 50 108 70 97 L 69 108 Q 50 115 34 107 Z"
+        fill="#FFFFFF"
+        clipPath="url(#grinClip)"
+      />
+
+      {/* Raised cheek lines */}
+      <path
+        d="M 29 99 Q 32 96 35 98"
+        stroke="#222"
+        strokeWidth={1.5}
+        fill="none"
+      />
+      <path
+        d="M 68 96 Q 72 93 75 95"
+        stroke="#222"
+        strokeWidth={1.5}
+        fill="none"
+      />
+    </g>
+  );
+  
     default:
   // De 'Rest/Smile' stand: een ontspannen glimlach opgebouwd uit pure ellipsen
   return (
