@@ -20,8 +20,15 @@ export const Episode3Scene2 = () => {
   const placement = getStreetPlacement(SCENE_1_DURATION + approach);
   const walkStrength = getWalkStrength(frame);
   const idleBlink = BlinkingAnimation(frame,120);
+  const STOP_FRAME = 120;
+ const BACKGROUND_ZOOM_SPEED = 0.0005;
+const MAX_STREET_BLUR = 2.5;
 
-const carLookStrength = interpolate(
+const streetBlur = MAX_STREET_BLUR * walkStrength;
+const backgroundScale =
+  1 + Math.min(frame, STOP_FRAME) * BACKGROUND_ZOOM_SPEED;
+  
+  const carLookStrength = interpolate(
   frame,
   [42, 72, 166, 215],
   [0, 1, 1, 0],
@@ -345,14 +352,36 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
           translate: "-3.6px 14.4px",
         }}
       >
-        <EgyptianStreet x={-18} y={-8} scale={1.01} />
-<YellowCar
-  
+     <div
+  style={{
+    position: "absolute",
+    inset: 0,
+    overflow: "hidden",
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      transform: `scale(${backgroundScale})`,
+      transformOrigin: "50% 50%",
+      filter: "blur(2.5px)",
+    }}
+  >
+    <EgyptianStreet />
+  </div>
+</div>
+<div style={{
+        filter: `blur(${streetBlur * 2.5}px)`,
+        }}>
+<YellowCar 
   x={carX}
   y={carY}
   scale={carScale}
   width={700}
+  integration={{ contactShadow: true ,castShadow: true }}
 />
+</div>
 
 <StreetNPC
   variant="b"
