@@ -78,9 +78,28 @@ export const Episode3Scene1 = () => {
     extrapolateRight: "clamp",
   });
 
+
+
+const cameraX = interpolate(
+  placement.x,
+  [250, 420],
+  [300, 0],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+const cameraY = interpolate(
+  placement.y,
+  [420,500],
+  [0,60],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+  }
+)
   return (
     
-    <Camera x={-100} y={40} scale={1.1}>
+    <Camera x={cameraX} y={cameraY} scale={1.1}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
@@ -91,7 +110,7 @@ export const Episode3Scene1 = () => {
   src={staticFile("VoiceOver/VO_Episode_3/rest-my-head-scene-1.m4a")}
   from={0}
 />
-        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} />
+        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={cameraX} cameraY={cameraY} />
         <SceneMaster
           x={placement.x}
           y={placement.y}

@@ -1,7 +1,7 @@
 // Shared by both street scenes. Frames match the existing 60fps composition.
 export const SCENE_1_DURATION = 430;
 export const YUSUF_GROUND_Y = 1050;
-export const WALK_CYCLE_FRAMES = 60;
+export const WALK_CYCLE_FRAMES = 35;
 export const SLOW_START = 55;
 export const STOP_FRAME = 115;
 
