@@ -12,6 +12,7 @@ import { Audio } from "@remotion/media";
 import { MemoryFlash } from "../../MemoryFlash";
 import { Sequence } from "remotion";
 import { interpolate, Easing } from "remotion";
+import { Camera } from "../../components/Camera";
 
 const MEMORY_START = 122;
 export const Episode3Scene3 = () => {
@@ -23,6 +24,27 @@ export const Episode3Scene3 = () => {
   const BACKGROUND_ZOOM_SPEED = 0.0005;
   const backgroundScale = 1 + frame * BACKGROUND_ZOOM_SPEED;
   const placement = getStreetPlacement(frame);
+  const cameraProgress = Math.min(frame, MEMORY_START);
+
+const cameraX = interpolate(
+  cameraProgress,
+  [0, MEMORY_START],
+  [0, 100],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+
+const cameraY = interpolate(
+  cameraProgress,
+  [0, MEMORY_START],
+  [0, 30],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
   const walkingPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
   const grinStrength = interpolate(
     frame,
@@ -64,6 +86,7 @@ export const Episode3Scene3 = () => {
   const MemoryEnd = frame < MEMORY_START + MEMORY_DURATION;
   return (
     <>
+    <Camera x={cameraX} y={cameraY} scale={1.1}>
       {/* Egyptian Street Ambience */}
       <Audio
         src={staticFile("assets/Episode3/egyptian_street_ambience.mp3")}
@@ -109,7 +132,7 @@ export const Episode3Scene3 = () => {
             filter: `blur(${distortion * 2}px)`,
           }}
         >
-          <EgyptianStreet />
+          <EgyptianStreet cameraX={cameraX} />
         </div>
       )}
       <SceneMaster
@@ -133,6 +156,7 @@ export const Episode3Scene3 = () => {
           {...mischievousActing}
         ></YusufCharacter>
       </SceneMaster>
+      </Camera>
     </>
   );
 };

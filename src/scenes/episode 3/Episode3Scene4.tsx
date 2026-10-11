@@ -11,6 +11,7 @@ import {
   YUSUF_GROUND_Y,
   getStreetPlacement,
 } from "./episode3StreetMotion";
+import { Camera } from "../../components/Camera";
 
 
 // Temporary timings until VO is recorded
@@ -22,11 +23,29 @@ const MEMORY_END = 175;
 
 export const Episode3Scene4 = () => {
   const frame = useCurrentFrame();
-
   const walkingPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
-
   const placement = getStreetPlacement(frame);
+const cameraProgress = Math.min(frame, MEMORY_START);
 
+const cameraX = interpolate(
+  cameraProgress,
+  [0, MEMORY_START],
+  [0, 100],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+
+const cameraY = interpolate(
+  cameraProgress,
+  [0, MEMORY_START],
+  [0, 30],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
   const isInMemory =
     frame >= MEMORY_START && frame < MEMORY_END;
 
@@ -43,38 +62,43 @@ const distortion = interpolate(
   return (
     
     <>
-      <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_01.m4a")} from={0}/>
-    <Audio src={staticFile("/VoiceOver/VO_Episode_3/EP03_S04_Yusuf_02.m4a")} from={115}/>
-      {isInMemory ? <UniversityHallway /> : 
-      <div
-  style={{
-    position: "absolute",
-    inset: 0,
-    transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
-    filter: `blur(${distortion * 2}px)`,
-  }}
->
-  <EgyptianStreet />
-</div>
-      }
+    <Camera x={cameraX} y={40 + cameraY} scale={1.1}>
+  {!isInMemory && (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
+        filter: `blur(${distortion * 2}px)`,
+      }}
+    >
+      <EgyptianStreet
+        cameraX={cameraX}
+        cameraY={cameraY}
+      />
+    </div>
+  )}
 
+  <SceneMaster
+    x={placement.x}
+    y={placement.y}
+    scale={placement.scale}
+    width={500}
+    groundY={YUSUF_GROUND_Y}
+    integration={{
+      contactShadow: true,
+      ambientLight: "daylight",
+      keyLight: "sun",
+      castShadow: "streetSun",
+    }}
+    zIndex={1}
+  >
+    <YusufCharacter grounded {...walkingPose} />
+  </SceneMaster>
+</Camera>
 
-      <SceneMaster
-        x={placement.x}
-        y={placement.y}
-        scale={placement.scale}
-        width={500}
-        groundY={YUSUF_GROUND_Y}
-        integration={{
-          contactShadow: true,
-          ambientLight: "daylight",
-          keyLight: "sun",
-          castShadow: "streetSun",
-        }}
-        zIndex={1}
-      >
-        <YusufCharacter grounded {...walkingPose} />
-      </SceneMaster>
+{isInMemory && <UniversityHallway />}
     </>
+    
   );
 };

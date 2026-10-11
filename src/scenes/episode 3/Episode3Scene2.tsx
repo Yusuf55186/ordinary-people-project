@@ -336,7 +336,17 @@ eyeRLookY: memoryEyeY + carEyeLookY,
   eyeScaleY,
   smileStrength,
 };
+const cameraX = interpolate(
+  walkStrength,
+  [0, 1],
+  [-100, 0]
+);
 
+const cameraY = interpolate(
+  walkStrength,
+  [0, 1],
+  [40, 0]
+);
 const resolvedYusuf = yusufPose(scene2ActingPose);
   return (
     <>
@@ -346,7 +356,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
-    <Camera x={-100} y={40} scale={1.1}>
+    <Camera x={cameraX} y={cameraY} scale={1.1}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
@@ -368,7 +378,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
       filter: "blur(2.5px)",
     }}
   >
-    <EgyptianStreet />
+    <EgyptianStreet cameraX={cameraX} cameraY={cameraY} />
   </div>
 </div>
 <div style={{
