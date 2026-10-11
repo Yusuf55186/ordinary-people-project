@@ -1,16 +1,17 @@
-import { useCurrentFrame } from "remotion";
+import { staticFile, useCurrentFrame } from "remotion";
 import { interpolate } from "remotion";
 import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { frontWalkCycle } from "../../animations/frontWalkCycle";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { UniversityHallway } from "../../UniversityHallway";
-
+import { Audio } from "@remotion/media";
 import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
   getStreetPlacement,
 } from "./episode3StreetMotion";
+
 
 // Temporary timings until VO is recorded
 
@@ -40,7 +41,10 @@ const distortion = interpolate(
   }
 );
   return (
+    
     <>
+      <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_01.m4a")} from={0}/>
+    <Audio src={staticFile("/VoiceOver/VO_Episode_3/EP03_S04_Yusuf_02.m4a")} from={115}/>
       {isInMemory ? <UniversityHallway /> : 
       <div
   style={{
