@@ -11,19 +11,29 @@ import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
 import { StreetNPC } from "../../environments/props/StreetNpc";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT } from "./episode3StreetMotion";
+import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT, SCENE_1_END,SCENE_1_END_STREET, SCENE_1_DURATION } from "./episode3StreetMotion";
 
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
-  const approach = getTravelDistance(frame);
-  const walkfrontPose = frontWalkCycle(SCENE_1_DURATION + approach, WALK_CYCLE_FRAMES);
+  const distance = getTravelDistance(frame);
+   const walkfrontPose = frontWalkCycle( SCENE_1_END, distance + WALK_CYCLE_FRAMES);
   const walkStrength = getWalkStrength(frame);
   const idleBlink = BlinkingAnimation(frame,120);
   const STOP_FRAME = 120;
   const scene1End = SCENE_1_END_STREET_PLACEMENT;
  const BACKGROUND_ZOOM_SPEED = 0.0005;
 const MAX_STREET_BLUR = 2.5;
+const scene2Distance = getTravelDistance(frame);
 
+const streetX = SCENE_1_END_STREET.x;
+
+const streetY =
+  SCENE_1_END_STREET.y +
+  30 * scene2Distance / SCENE_1_DURATION;
+
+const streetScale =
+  SCENE_1_END_STREET.scale +
+  0.04 * scene2Distance / SCENE_1_DURATION;
 const streetBlur = MAX_STREET_BLUR * walkStrength;
 const backgroundScale =
   1 + Math.min(frame, STOP_FRAME) * BACKGROUND_ZOOM_SPEED;
@@ -357,6 +367,8 @@ const cameraY = interpolate(
   [0, 1],
   [40, 0]
 );
+
+
 const resolvedYusuf = yusufPose(scene2ActingPose);
   return (
     <>
@@ -388,7 +400,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
       filter: "blur(2.5px)",
     }}
   >
-    <EgyptianStreet cameraX={cameraX} cameraY={cameraY} />
+    <EgyptianStreet x={streetX} y={streetY} scale={streetScale}  cameraX={cameraX} cameraY={cameraY} />
   </div>
 </div>
 <div style={{

@@ -62,6 +62,11 @@ const distortion = interpolate(
   return (
     
     <>
+    <Audio 
+    src={staticFile("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_01.m4a")}></Audio>
+    <Audio from={120}
+    src={staticFile("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_02.m4a")}></Audio>
+
     <Camera x={cameraX} y={40 + cameraY} scale={1.1}>
   {!isInMemory && (
     <div

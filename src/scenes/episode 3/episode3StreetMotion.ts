@@ -29,3 +29,16 @@ export const getApproachProgress = (frame:number) =>
 export const SCENE_1_END_STREET_PLACEMENT = getStreetPlacement(
   getTravelDistance(SCENE_1_DURATION - 1)
 )
+export const SCENE_1_END = getTravelDistance(SCENE_1_DURATION - 1)
+
+export const getScene1StreetTransform = (frame:number) => {
+  const distance = getTravelDistance(frame);
+
+  return {
+    x: -18,
+    y: -8 + 43 * distance / SCENE_1_DURATION,
+    scale:1.01 + 0.065 * distance / SCENE_1_DURATION
+  };
+};
+export const SCENE_1_END_STREET =
+  getScene1StreetTransform(SCENE_1_DURATION - 1);
