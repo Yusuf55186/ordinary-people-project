@@ -143,6 +143,11 @@ export const getSceneEndState = (
 
   scale: 1.1,
 });
+export const SCENE_2_CAMERA_END = {
+  x:20,
+  y:70,
+  scale:1.35,
+}
 export const FINAL_CAMERA_Scene_1 = 
 getScene1CameraPlacement(
   getStreetPlacement(getSceneLastFrame("scene1"))

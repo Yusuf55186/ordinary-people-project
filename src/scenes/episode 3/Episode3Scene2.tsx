@@ -18,7 +18,7 @@ export const Episode3Scene2 = () => {
     const SceneLastFrame = getSceneLastFrame("scene1");
     const distance = getTravelDistance(frame);
     const scene1EndDistance = getTravelDistance(SceneLastFrame);
-  const scene1endPlacement = getStreetPlacement(scene1EndDistance);
+  const placement = getStreetPlacement(scene1EndDistance);
   const sceneEndStreet = StreetTransform(SceneLastFrame);
    const walkfrontPose = frontWalkCycle( scene1EndDistance + distance,  WALK_CYCLE_FRAMES);
   const walkStrength = getWalkStrength(frame);
@@ -379,31 +379,60 @@ eyeRLookY: memoryEyeY + carEyeLookY,
 };
 const closeUpStrength = interpolate(
   frame,
-  [215,280 ],
-  [0,1],
+  [215, 280],
+  [0, 1],
   {
-    extrapolateLeft:"clamp",
-    extrapolateRight:"clamp",
-    easing:Easing.inOut(Easing.cubic),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
   }
-)
-const cameraX = interpolate(
+);
+const closeUpX = interpolate(
   closeUpStrength,
   [0, 1],
   [FINAL_CAMERA_Scene_1.x, -40]
 );
 
-const cameraY = interpolate(
+const closeUpY = interpolate(
   closeUpStrength,
   [0, 1],
   [FINAL_CAMERA_Scene_1.y, 120]
 );
 
-const cameraScale = interpolate(
+const closeUpScale = interpolate(
   closeUpStrength,
   [0, 1],
   [FINAL_CAMERA_Scene_1.scale, 1.8]
 );
+
+const mediumShotStrength = interpolate(
+  frame,
+  [610, 670],
+  [0, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+const cameraX = interpolate(
+  mediumShotStrength,
+  [0, 1],
+  [closeUpX, 20]
+);
+
+const cameraY = interpolate(
+  mediumShotStrength,
+  [0, 1],
+  [closeUpY, 70]
+);
+
+const cameraScale = interpolate(
+  mediumShotStrength,
+  [0, 1],
+  [closeUpScale, 1.35]
+);
+
 
 const cameraBackToYusufX = interpolate(
   frame,
@@ -414,7 +443,6 @@ const cameraBackToYusufX = interpolate(
     easing: Easing.inOut(Easing.cubic),
   }
 )
-
 
 const resolvedYusuf = yusufPose(scene2ActingPose);
   return (
@@ -478,9 +506,9 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
   width={60}
 />
         <SceneMaster
-          x={scene1endPlacement.x}
-          y={scene1endPlacement.y}
-          scale={scene1endPlacement.scale}
+          x={placement.x}
+          y={placement.y + 120}
+          scale={placement.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
           integration={{ contactShadow: true, ambientLight:"daylight",keyLight:"sun",castShadow:"streetSun" }}
