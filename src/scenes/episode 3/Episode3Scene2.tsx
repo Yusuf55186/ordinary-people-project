@@ -11,73 +11,26 @@ import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
 import { StreetNPC } from "../../environments/props/StreetNpc";
+import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getApproachProgress, getWalkStrength, getStreetPlacement } from "./episode3StreetMotion";
+
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
-  const walkfrontPose = frontWalkCycle(frame,60);
-  const idleBlink = BlinkingAnimation(frame,120 );
-  const streetY = interpolate(
-  frame,
-  [0, 680],
-  [-8, 35],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.quad),
-  }
-);
-const cameraScale = interpolate(
-  frame,
-  [110, 180],
-  [1.1, 1.32],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
-  }
-);
+  const approach = getApproachProgress(frame);
+  const walkfrontPose = frontWalkCycle(SCENE_1_DURATION + approach, WALK_CYCLE_FRAMES);
+  const placement = getStreetPlacement(SCENE_1_DURATION + approach);
+  const walkStrength = getWalkStrength(frame);
+  const idleBlink = BlinkingAnimation(frame,120);
+  const STOP_FRAME = 120;
+ const BACKGROUND_ZOOM_SPEED = 0.0005;
+const MAX_STREET_BLUR = 2.5;
 
-const cameraX = interpolate(
+const streetBlur = MAX_STREET_BLUR * walkStrength;
+const backgroundScale =
+  1 + Math.min(frame, STOP_FRAME) * BACKGROUND_ZOOM_SPEED;
+  
+  const carLookStrength = interpolate(
   frame,
-  [110, 180],
-  [-100, -35],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-
-const cameraY = interpolate(
-  frame,
-  [110, 180],
-  [40, 55],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-const streetScale = interpolate(
-  frame,
-  [0, 680],
-  [1.01, 1.075],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.quad),
-  }
-);
-const walkStrength = interpolate(
-  frame,
-  [25, 50, 166, 205],
-  [1, 0.45, 0.45, 1],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-
-const carLookStrength = interpolate(
-  frame,
-  [70, 95, 166, 195],
+  [42, 72, 166, 215],
   [0, 1, 1, 0],
   {
     extrapolateLeft: "clamp",
@@ -88,12 +41,12 @@ const carLookStrength = interpolate(
 const carHeadRotation = interpolate(
   carLookStrength,
   [0, 1],
-  [0, 7]
+  [0, 4]
 );
 
 const carEyeLookStrength = interpolate(
   frame,
-  [62, 82, 166, 205],
+  [25, 40, 166, 215],
   [0, 1, 1, 0],
   {
     extrapolateLeft: "clamp",
@@ -104,10 +57,18 @@ const carEyeLookStrength = interpolate(
 const carEyeLookX = interpolate(
   carEyeLookStrength,
   [0, 1],
-  [0, 2.5]
+  [0, 4]
 );
 
 
+
+// Recognition holds, then the gaze drops slightly as the car passes.
+const carEyeLookY = interpolate(frame, [70, 140, 175, 215], [0, 0, 2, 0], {
+  extrapolateLeft: "clamp", extrapolateRight: "clamp",
+});
+const recognitionBrow = interpolate(frame, [30, 50, 100, 140], [0, -1.5, -1.5, 0], {
+  extrapolateLeft: "clamp", extrapolateRight: "clamp",
+});
 
 const carX = interpolate(
   frame,
@@ -191,8 +152,8 @@ const doubtRightBrow = interpolate(
 );
 const settleHeadRotation = interpolate(
   frame,
-  [590, 610, 635, 680],
-  [0, -1.5, -0.5, 0],
+  [610, 635, 680],
+  [0, 1, 1.5],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -318,6 +279,7 @@ const confirmMouthCues: MouthCue[] = [
 
 const yusufAudioStart = 50;
 const confirmAudioStart = 550;
+const smileAudioStart = 615;
 const firstLineMouthPose = getMouthPose(
   frame - yusufAudioStart,
   firstLineMouthCues
@@ -327,7 +289,15 @@ const confirmMouthPose = getMouthPose(
   frame - confirmAudioStart,
   confirmMouthCues
 );
-
+const smileStrength = interpolate(
+  frame,
+  [smileAudioStart, smileAudioStart + 15, smileAudioStart + 45, smileAudioStart + 60],
+  [0,1,1,0],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic),
+  }
+)
 const scene2MouthPose =
   frame >= confirmAudioStart
     ? confirmMouthPose
@@ -336,7 +306,7 @@ const scene2ActingPose = {
   ...walkfrontPose,
   mouthPose: scene2MouthPose,
   headRotation:
-    (walkfrontPose.headRotation ?? 0) 
+    (walkfrontPose.headRotation ?? 0) * walkStrength 
      + carHeadRotation + 
      memoryHeadRotation + 
      doubtHeadRotation +
@@ -358,16 +328,34 @@ leftKneeRotation:
 
 rightKneeRotation:
   (walkfrontPose.rightKneeRotation ?? 0) * walkStrength,
+  leftHipRotation: walkfrontPose.leftHipRotation * walkStrength,
+  rightHipRotation: walkfrontPose.rightHipRotation * walkStrength,
+  leftLegScaleY: 1 + (walkfrontPose.leftLegScaleY - 1) * walkStrength,
+  rightLegScaleY: 1 + (walkfrontPose.rightLegScaleY - 1) * walkStrength,
+  leftArmScaleY: 1 + (walkfrontPose.leftArmScaleY - 1) * walkStrength,
+  rightArmScaleY: 1 + (walkfrontPose.rightArmScaleY - 1) * walkStrength,
   eyeLLookX: postConfirmEyeX,
 eyeRLookX: postConfirmEyeX,
-eyeLLookY: memoryEyeY,
-eyeRLookY: memoryEyeY,
+eyeLLookY: memoryEyeY + carEyeLookY,
+eyeRLookY: memoryEyeY + carEyeLookY,
   
 
-  leftEyeBrowY: doubtLeftBrow,
-  rightEyeBrowY:doubtRightBrow,
+  leftEyeBrowY: doubtLeftBrow + recognitionBrow,
+  rightEyeBrowY:doubtRightBrow + recognitionBrow,
   eyeScaleY,
+  smileStrength,
 };
+const cameraX = interpolate(
+  walkStrength,
+  [0, 1],
+  [-100, 0]
+);
+
+const cameraY = interpolate(
+  walkStrength,
+  [0, 1],
+  [40, 0]
+);
 const resolvedYusuf = yusufPose(scene2ActingPose);
   return (
     <>
@@ -377,20 +365,42 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
-    <Camera x={cameraX} y={cameraY} scale={cameraScale}>
+    <Camera x={cameraX} y={cameraY} scale={1.1}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
         }}
       >
-        <EgyptianStreet x={-18} y={streetY} scale={streetScale} />
-<YellowCar
-  
+     <div
+  style={{
+    position: "absolute",
+    inset: 0,
+    overflow: "hidden",
+  }}
+>
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      transform: `scale(${backgroundScale})`,
+      transformOrigin: "50% 50%",
+      filter: "blur(2.5px)",
+    }}
+  >
+    <EgyptianStreet cameraX={cameraX} cameraY={cameraY} />
+  </div>
+</div>
+<div style={{
+        filter: `blur(${streetBlur * 2.5}px)`,
+        }}>
+<YellowCar 
   x={carX}
   y={carY}
   scale={carScale}
   width={700}
+  integration={{ contactShadow: true ,castShadow: true }}
 />
+</div>
 
 <StreetNPC
   variant="b"
@@ -407,14 +417,17 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
   width={60}
 />
         <SceneMaster
-          x={250}
-          y={500}
-          scale={0.62}
-          width={250}
+          x={placement.x}
+          y={placement.y}
+          scale={placement.scale}
+          width={500}
+          groundY={YUSUF_GROUND_Y}
           integration={{ contactShadow: true, ambientLight:"daylight",keyLight:"sun",castShadow:"streetSun" }}
           zIndex={1}
         >
           <YusufCharacter
+          
+          grounded
           {...resolvedYusuf}
           ></YusufCharacter>
         </SceneMaster>

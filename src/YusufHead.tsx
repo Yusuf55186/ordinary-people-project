@@ -1,4 +1,4 @@
-export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L" | "N" | "R" | "G" | "E" | "I" | "F" | "TH" | "O";
+export type MouthPose = "rest" | "A" | "U" | "MBP" | "S" | "L" | "N" | "R" | "G" | "E" | "I" | "F" | "TH" | "O" | "grin";
 
 type Props = {
     headRotation:number
@@ -10,8 +10,11 @@ type Props = {
     leftEyeBrowY:number
     rightEyebrowY:number
     mouthPose:MouthPose
+    smileStrength?:number;
 }
-export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose}:Props){
+export function YusufHead({headRotation,eyeScaleY,eyeLLookX,eyeLLookY,eyeRLookY,eyeRLookX,leftEyeBrowY,rightEyebrowY,mouthPose,smileStrength = 0}:Props){
+  const mouthRadius = 10 + smileStrength * 4
+  const smileCurveY = 105 + smileStrength * 10
     return (
 <svg
   style={{
@@ -228,7 +231,46 @@ case 'TH': // en zachte Engelse klanken, of een slissende 'S'
       <rect x={41} y={103} width={18} height={2} fill="#FFFFFF" clipPath="url(#mouthClipTH)" />
     </g>
   );
+case 'grin':
+  return (
+    <g id="Mouth_Goofy_Grin">
+      <defs>
+        <clipPath id="grinClip">
+          <path d="M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z" />
+        </clipPath>
+      </defs>
 
+      {/* Asymmetric mouth opening */}
+      <path
+        d="M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z"
+        fill="#161E2D"
+        stroke="#222"
+        strokeWidth={1.5}
+      />
+
+      {/* Exaggerated upper teeth */}
+      <path
+        d="M 32 100 Q 50 108 70 97 L 69 108 Q 50 115 34 107 Z"
+        fill="#FFFFFF"
+        clipPath="url(#grinClip)"
+      />
+
+      {/* Raised cheek lines */}
+      <path
+        d="M 29 99 Q 32 96 35 98"
+        stroke="#222"
+        strokeWidth={1.5}
+        fill="none"
+      />
+      <path
+        d="M 68 96 Q 72 93 75 95"
+        stroke="#222"
+        strokeWidth={1.5}
+        fill="none"
+      />
+    </g>
+  );
+  
     default:
   // De 'Rest/Smile' stand: een ontspannen glimlach opgebouwd uit pure ellipsen
   return (
@@ -239,12 +281,17 @@ case 'TH': // en zachte Engelse klanken, of een slissende 'S'
       </defs>
 
       {/* 1. De donkere binnenkant van de mondopening */}
-    <ellipse id="rest" style={{ fill: "#161E2D" }} className="st4" cx={50} cy={105.5} rx={10} ry={2.5} />
-
+<path
+ d={`M 40 105 Q 50 ${smileCurveY} 60 105`}
+  stroke="#222"
+  strokeWidth={3}
+  fill="none"
+  strokeLinecap="round"
+/>
       {/* 2. De glimlachende lippen (een iets grotere ellipse erachter die de 'smile'-curve geeft) */}
       {/* Tip: Verander #b63c2c naar jouw gewenste lip- of schaduwkleur indien nodig */}
       <ellipse 
-        cx={50} cy={105.5} rx={10} ry={2.5}
+        cx={50} cy={105.5} rx={mouthRadius} ry={2.5}
         fill="none" 
        
       />
