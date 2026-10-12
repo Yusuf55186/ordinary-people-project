@@ -10,6 +10,7 @@ import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
   getStreetPlacement,
+  getTravelDistance,
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 
@@ -21,9 +22,11 @@ const DISTORTION_START = 65;
 const MEMORY_START = 90;
 const MEMORY_END = 175;
 
+
 export const Episode3Scene4 = () => {
   const frame = useCurrentFrame();
-  const walkingPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
+  const distance = getTravelDistance(frame);
+  const walkingPose = frontWalkCycle( + distance, WALK_CYCLE_FRAMES);
   const placement = getStreetPlacement(frame);
 const cameraProgress = Math.min(frame, MEMORY_START);
 

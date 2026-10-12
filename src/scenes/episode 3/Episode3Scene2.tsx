@@ -11,23 +11,26 @@ import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
 import { StreetNPC } from "../../environments/props/StreetNpc";
-import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT, SCENE_1_END,SCENE_1_END_STREET, FINAL_CAMERA_Scene_1} from "./episode3StreetMotion";
+import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength,FINAL_CAMERA_Scene_1, getSceneLastFrame, getStreetPlacement, StreetTransform} from "./episode3StreetMotion";
 
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
-  const distance = getTravelDistance(frame);
-   const walkfrontPose = frontWalkCycle( SCENE_1_END + distance,  WALK_CYCLE_FRAMES);
+    const SceneLastFrame = getSceneLastFrame("scene1");
+    const distance = getTravelDistance(frame);
+    const scene1EndDistance = getTravelDistance(SceneLastFrame);
+  const scene1endPlacement = getStreetPlacement(scene1EndDistance);
+  const sceneEndStreet = StreetTransform(SceneLastFrame);
+   const walkfrontPose = frontWalkCycle( scene1EndDistance + distance,  WALK_CYCLE_FRAMES);
   const walkStrength = getWalkStrength(frame);
   const idleBlink = BlinkingAnimation(frame,120);
   // const STOP_FRAME = 120;
-  const scene1End = SCENE_1_END_STREET_PLACEMENT;
-  const scene2YusufY = scene1End.y + 100;
+  
 //  const BACKGROUND_ZOOM_SPEED = 0.0005;
 const MAX_STREET_BLUR = 2.5;
 const streetY = interpolate(
   frame,
-  [0, 680],
-  [SCENE_1_END_STREET.y, SCENE_1_END_STREET.y + 43],
+  [0,SceneLastFrame],
+  [sceneEndStreet.y, sceneEndStreet.y + 43],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -45,15 +48,15 @@ const streetBlur = interpolate(
 );
 const streetScale = interpolate(
   frame,
-  [0, 680],
-  [SCENE_1_END_STREET.scale, SCENE_1_END_STREET.scale + 0.065],
+  [0, SceneLastFrame],
+  [sceneEndStreet.scale, sceneEndStreet.scale + 0.065],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: Easing.inOut(Easing.quad),
   }
 );
-const streetX = SCENE_1_END_STREET.x;
+const streetX = sceneEndStreet.x;
 
   
   const carLookStrength = interpolate(
@@ -376,7 +379,7 @@ eyeRLookY: memoryEyeY + carEyeLookY,
 };
 const closeUpStrength = interpolate(
   frame,
-  [215,280],
+  [215,280 ],
   [0,1],
   {
     extrapolateLeft:"clamp",
@@ -475,9 +478,9 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
   width={60}
 />
         <SceneMaster
-          x={scene1End.x}
-          y={scene2YusufY}
-          scale={scene1End.scale}
+          x={scene1endPlacement.x}
+          y={scene1endPlacement.y}
+          scale={scene1endPlacement.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
           integration={{ contactShadow: true, ambientLight:"daylight",keyLight:"sun",castShadow:"streetSun" }}

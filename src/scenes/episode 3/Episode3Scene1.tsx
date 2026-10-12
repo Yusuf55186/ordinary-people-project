@@ -7,10 +7,11 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getScene1CameraPlacement } from "./episode3StreetMotion";
+import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getScene1CameraPlacement } from "./episode3StreetMotion";
 import { StreetNPC } from "../../environments/props/StreetNpc";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
+  const SCENE_1_DURATION = 800;
   const progress = getApproachProgress(frame);
   const scene1Episode3:MouthCue[] = [
     {startFrame:0, endFrame:63,pose:"rest"},

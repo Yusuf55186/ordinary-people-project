@@ -5,7 +5,11 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
+  getSceneLastFrame,
   getStreetPlacement,
+  getTravelDistance,
+  
+  
 } from "./episode3StreetMotion";
 import { useCurrentFrame, staticFile } from "remotion";
 import { Audio } from "@remotion/media";
@@ -21,9 +25,10 @@ export const Episode3Scene3 = () => {
   const GRIN_PEAK = 192;
   const GRIN_END = 225;
   const DISTORTION_START = 115;
-  const BACKGROUND_ZOOM_SPEED = 0.0005;
-  const backgroundScale = 1 + frame * BACKGROUND_ZOOM_SPEED;
-  const placement = getStreetPlacement(frame);
+  const SceneLastFrame = getSceneLastFrame("scene2");
+  const distance = getTravelDistance(frame);
+  const scene2EndDistance = getTravelDistance(SceneLastFrame);
+  const sceneStreet_End = getStreetPlacement(scene2EndDistance);
   const cameraProgress = Math.min(frame, MEMORY_START);
 
 const cameraX = interpolate(
@@ -45,7 +50,7 @@ const cameraY = interpolate(
     extrapolateRight: "clamp",
   }
 );
-  const walkingPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
+  const walkingPose = frontWalkCycle(scene2EndDistance+ distance, WALK_CYCLE_FRAMES);
   const grinStrength = interpolate(
     frame,
     [GRIN_START, GRIN_PEAK, GRIN_END - 5, GRIN_END],
@@ -130,15 +135,16 @@ const cameraY = interpolate(
             inset: 0,
             transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
             filter: `blur(${distortion * 2}px)`,
+            
           }}
         >
           <EgyptianStreet cameraX={cameraX} />
         </div>
       )}
       <SceneMaster
-        x={placement.x}
-        y={placement.y}
-        scale={placement.scale}
+        x={sceneStreet_End.x}
+        y={sceneStreet_End.y}
+        scale={sceneStreet_End.scale}
         width={500}
         groundY={YUSUF_GROUND_Y}
         integration={{
