@@ -7,6 +7,7 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
+import { StreetNPC } from "../../environments/props/StreetNpc";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
   const scene1Episode3:MouthCue[] = [
@@ -88,6 +89,15 @@ export const Episode3Scene1 = () => {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const npcAY = interpolate(frame, [0, 300], [600, 620], {
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+});
+
+const npcBY = interpolate(frame, [0, 300], [600, 620], {
+  extrapolateLeft: "clamp",
+  extrapolateRight: "clamp",
+}); 
 
   return (
     
@@ -119,6 +129,20 @@ export const Episode3Scene1 = () => {
             })}
           ></YusufCharacter>
         </SceneMaster>
+        <StreetNPC
+          variant="b"
+          x={470}
+          y={npcBY}
+          width={55}
+        />
+        
+        {/* right sidewalk */}
+        <StreetNPC
+          variant="a"
+          x={1450}
+          y={npcAY}
+          width={60}
+        />
       </AbsoluteFill>
     </Camera>
   );

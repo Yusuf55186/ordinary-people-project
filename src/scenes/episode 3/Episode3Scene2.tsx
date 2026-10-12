@@ -15,6 +15,56 @@ export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
   const walkfrontPose = frontWalkCycle(frame,60);
   const idleBlink = BlinkingAnimation(frame,120 );
+  const streetY = interpolate(
+  frame,
+  [0, 680],
+  [-8, 35],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
+const cameraScale = interpolate(
+  frame,
+  [110, 180],
+  [1.1, 1.32],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+
+const cameraX = interpolate(
+  frame,
+  [110, 180],
+  [-100, -35],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+
+const cameraY = interpolate(
+  frame,
+  [110, 180],
+  [40, 55],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+const streetScale = interpolate(
+  frame,
+  [0, 680],
+  [1.01, 1.075],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
 const walkStrength = interpolate(
   frame,
   [25, 50, 166, 205],
@@ -70,16 +120,25 @@ const carX = interpolate(
   }
 );
 
-const carY = 320;
-
-const carScale = interpolate(
+const carY = interpolate(
   frame,
-  [0,400],
-  [0.05,2],
+  [0, 80, 180, 220],
+  [320, 330, 500, 760],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing:Easing.inOut(Easing.cubic)
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+
+const carScale = interpolate(
+  frame,
+  [0, 80, 180, 220],
+  [0.05, 0.18, 0.8, 1.8],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
   }
 );
 const memoryThoughtStrength = interpolate(
@@ -132,8 +191,8 @@ const doubtRightBrow = interpolate(
 );
 const settleHeadRotation = interpolate(
   frame,
-  [610, 635, 680],
-  [-1.5, -0.5, 0],
+  [590, 610, 635, 680],
+  [0, -1.5, -0.5, 0],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -318,13 +377,13 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
-    <Camera x={-100} y={40} scale={1.1}>
+    <Camera x={cameraX} y={cameraY} scale={cameraScale}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
         }}
       >
-        <EgyptianStreet x={-18} y={-8} scale={1.01} />
+        <EgyptianStreet x={-18} y={streetY} scale={streetScale} />
 <YellowCar
   
   x={carX}
@@ -350,7 +409,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
         <SceneMaster
           x={250}
           y={500}
-          scale={0.5}
+          scale={0.62}
           width={250}
           integration={{ contactShadow: true, ambientLight:"daylight",keyLight:"sun",castShadow:"streetSun" }}
           zIndex={1}
