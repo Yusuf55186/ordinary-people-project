@@ -38,7 +38,7 @@ export const EgyptianStreet = ({ x = 0, y = 0, scale = 1, cameraX = 0, cameraY =
         zIndex: 0,
       }}
     >
-      {layers.map((layer, index) => {
+      {layers.map((layer,) => {
          const correctionX = cameraX * (1 - speed[layer]);
          return (
         <Img

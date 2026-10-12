@@ -7,7 +7,7 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress } from "./episode3StreetMotion";
+import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getScene1CameraPlacement } from "./episode3StreetMotion";
 import { StreetNPC } from "../../environments/props/StreetNpc";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
@@ -78,26 +78,7 @@ export const Episode3Scene1 = () => {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-
-
-
-const cameraX = interpolate(
-  placement.x,
-  [250, 420],
-  [300, 0],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-const cameraY = interpolate(
-  placement.y,
-  [420,500],
-  [0,60],{
-    extrapolateLeft:"clamp",
-    extrapolateRight:"clamp",
-  }
-)
+  const camera = getScene1CameraPlacement(placement);
 const npcBY = interpolate(
   frame,
   [0,300],
@@ -119,7 +100,7 @@ const npcAY = interpolate(
 
   return (
     
-    <Camera x={cameraX} y={cameraY} scale={1.1}>
+    <Camera x={camera.x} y={camera.y} scale={1.1}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
@@ -130,7 +111,7 @@ const npcAY = interpolate(
   src={staticFile("VoiceOver/VO_Episode_3/rest-my-head-scene-1.m4a")}
   from={0}
 />
-        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={cameraX} cameraY={cameraY} />
+        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={camera.x} cameraY={camera.y} />
         <SceneMaster
           x={placement.x}
           y={placement.y}

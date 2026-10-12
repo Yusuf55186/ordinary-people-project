@@ -1,4 +1,5 @@
 // Shared by both street scenes. Frames match the existing 60fps composition.
+import {interpolate} from "remotion";
 export const SCENE_1_DURATION = 430;
 export const YUSUF_GROUND_Y = 1050;
 export const WALK_CYCLE_FRAMES = 35;
@@ -42,3 +43,33 @@ export const getScene1StreetTransform = (frame:number) => {
 };
 export const SCENE_1_END_STREET =
   getScene1StreetTransform(SCENE_1_DURATION - 1);
+
+  export const getScene1CameraPlacement = (
+  placement: { x: number; y: number }
+) => ({
+  x: interpolate(
+    placement.x,
+    [250, 420],
+    [300, 0],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }
+  ),
+
+  y: interpolate(
+    placement.y,
+    [420, 500],
+    [0, 60],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }
+  ),
+
+  scale: 1.1,
+});
+export const FINAL_CAMERA_Scene_1 = 
+getScene1CameraPlacement(
+  getStreetPlacement(SCENE_1_DURATION - 1)
+)

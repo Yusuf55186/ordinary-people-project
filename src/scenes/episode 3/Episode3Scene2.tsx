@@ -11,32 +11,50 @@ import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
 import { StreetNPC } from "../../environments/props/StreetNpc";
-import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT, SCENE_1_END,SCENE_1_END_STREET, SCENE_1_DURATION } from "./episode3StreetMotion";
+import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT, SCENE_1_END,SCENE_1_END_STREET, FINAL_CAMERA_Scene_1} from "./episode3StreetMotion";
 
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
   const distance = getTravelDistance(frame);
-   const walkfrontPose = frontWalkCycle( SCENE_1_END, distance + WALK_CYCLE_FRAMES);
+   const walkfrontPose = frontWalkCycle( SCENE_1_END + distance,  WALK_CYCLE_FRAMES);
   const walkStrength = getWalkStrength(frame);
   const idleBlink = BlinkingAnimation(frame,120);
-  const STOP_FRAME = 120;
+  // const STOP_FRAME = 120;
   const scene1End = SCENE_1_END_STREET_PLACEMENT;
- const BACKGROUND_ZOOM_SPEED = 0.0005;
+  const scene2YusufY = scene1End.y + 100;
+//  const BACKGROUND_ZOOM_SPEED = 0.0005;
 const MAX_STREET_BLUR = 2.5;
-const scene2Distance = getTravelDistance(frame);
-
+const streetY = interpolate(
+  frame,
+  [0, 680],
+  [SCENE_1_END_STREET.y, SCENE_1_END_STREET.y + 43],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
+const streetBlur = interpolate(
+  frame,
+  [0, 30],
+  [0, MAX_STREET_BLUR],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+const streetScale = interpolate(
+  frame,
+  [0, 680],
+  [SCENE_1_END_STREET.scale, SCENE_1_END_STREET.scale + 0.065],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
 const streetX = SCENE_1_END_STREET.x;
 
-const streetY =
-  SCENE_1_END_STREET.y +
-  30 * scene2Distance / SCENE_1_DURATION;
-
-const streetScale =
-  SCENE_1_END_STREET.scale +
-  0.04 * scene2Distance / SCENE_1_DURATION;
-const streetBlur = MAX_STREET_BLUR * walkStrength;
-const backgroundScale =
-  1 + Math.min(frame, STOP_FRAME) * BACKGROUND_ZOOM_SPEED;
   
   const carLookStrength = interpolate(
   frame,
@@ -93,8 +111,8 @@ const carX = interpolate(
 
 const carY = interpolate(
   frame,
-  [0, 80, 180, 220],
-  [320, 330, 500, 760],
+  [0,180, 220],
+  [460, 500, 760],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -356,17 +374,43 @@ eyeRLookY: memoryEyeY + carEyeLookY,
   eyeScaleY,
   smileStrength,
 };
+const closeUpStrength = interpolate(
+  frame,
+  [215,280],
+  [0,1],
+  {
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic),
+  }
+)
 const cameraX = interpolate(
-  walkStrength,
+  closeUpStrength,
   [0, 1],
-  [-100, 0]
+  [FINAL_CAMERA_Scene_1.x, -40]
 );
 
 const cameraY = interpolate(
-  walkStrength,
+  closeUpStrength,
   [0, 1],
-  [40, 0]
+  [FINAL_CAMERA_Scene_1.y, 120]
 );
+
+const cameraScale = interpolate(
+  closeUpStrength,
+  [0, 1],
+  [FINAL_CAMERA_Scene_1.scale, 1.8]
+);
+
+const cameraBackToYusufX = interpolate(
+  frame,
+  [140,200],
+  [cameraX,-300],{
+     extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+)
 
 
 const resolvedYusuf = yusufPose(scene2ActingPose);
@@ -378,7 +422,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
-    <Camera x={cameraX} y={cameraY} scale={1.1}>
+    <Camera x={cameraBackToYusufX} y={cameraY} scale={cameraScale}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
@@ -387,7 +431,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
      <div
   style={{
     position: "absolute",
-    inset: 0,
+    inset: -200,
     overflow: "hidden",
   }}
 >
@@ -395,16 +439,17 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
     style={{
       width: "100%",
       height: "100%",
-      transform: `scale(${backgroundScale})`,
-      transformOrigin: "50% 50%",
-      filter: "blur(2.5px)",
+      // transform: `scale(${carPassScale})`,
+      // transformOrigin: "50% 50%",
+      filter: `blur(${streetBlur}px)`,
     }}
   >
+    
     <EgyptianStreet x={streetX} y={streetY} scale={streetScale}  cameraX={cameraX} cameraY={cameraY} />
   </div>
 </div>
 <div style={{
-        filter: `blur(${streetBlur * 2.5}px)`,
+         filter: `blur(${streetBlur}px)`,
         }}>
 <YellowCar 
   x={carX}
@@ -431,7 +476,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
 />
         <SceneMaster
           x={scene1End.x}
-          y={scene1End.y}
+          y={scene2YusufY}
           scale={scene1End.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
