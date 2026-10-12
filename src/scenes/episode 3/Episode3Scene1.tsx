@@ -1,4 +1,4 @@
-import { AbsoluteFill, useCurrentFrame, interpolate, staticFile } from "remotion";
+import { AbsoluteFill, useCurrentFrame, interpolate, staticFile, Easing } from "remotion";
 import { SceneMaster } from "../sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { Camera } from "../../components/Camera";
@@ -8,7 +8,7 @@ import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement } from "./episode3StreetMotion";
-
+import { StreetNPC } from "../../environments/props/StreetNpc";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
   const scene1Episode3:MouthCue[] = [
@@ -95,6 +95,24 @@ const cameraY = interpolate(
   [0,60],{
     extrapolateLeft:"clamp",
     extrapolateRight:"clamp",
+  }
+)
+const npcBY = interpolate(
+  frame,
+  [0,300],
+  [600,620],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic),
+  }
+)
+const npcAY = interpolate(
+  frame,
+  [0,300],
+  [600,620],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic),
   }
 )
   return (
