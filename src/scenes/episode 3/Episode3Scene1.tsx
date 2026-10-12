@@ -7,10 +7,11 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement } from "./episode3StreetMotion";
+import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress } from "./episode3StreetMotion";
 import { StreetNPC } from "../../environments/props/StreetNpc";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
+  const progress = getApproachProgress(frame);
   const scene1Episode3:MouthCue[] = [
     {startFrame:0, endFrame:63,pose:"rest"},
     // "تمام"
@@ -63,7 +64,7 @@ export const Episode3Scene1 = () => {
   const YusufScene1 = getMouthPose(frame,scene1Episode3)
   const walkfrontPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
   const placement = getStreetPlacement(frame);
-  const streetScale = interpolate(frame, [0, SCENE_1_DURATION], [1, 1.01], {
+  const streetScale = interpolate(progress, [0, 1], [1.01, 1.075], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -115,6 +116,7 @@ const npcAY = interpolate(
     easing:Easing.inOut(Easing.cubic),
   }
 )
+
   return (
     
     <Camera x={cameraX} y={cameraY} scale={1.1}>

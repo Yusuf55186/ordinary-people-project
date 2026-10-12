@@ -11,16 +11,16 @@ import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
 import { StreetNPC } from "../../environments/props/StreetNpc";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getApproachProgress, getWalkStrength, getStreetPlacement } from "./episode3StreetMotion";
+import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength, SCENE_1_END_STREET_PLACEMENT } from "./episode3StreetMotion";
 
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
-  const approach = getApproachProgress(frame);
+  const approach = getTravelDistance(frame);
   const walkfrontPose = frontWalkCycle(SCENE_1_DURATION + approach, WALK_CYCLE_FRAMES);
-  const placement = getStreetPlacement(SCENE_1_DURATION + approach);
   const walkStrength = getWalkStrength(frame);
   const idleBlink = BlinkingAnimation(frame,120);
   const STOP_FRAME = 120;
+  const scene1End = SCENE_1_END_STREET_PLACEMENT;
  const BACKGROUND_ZOOM_SPEED = 0.0005;
 const MAX_STREET_BLUR = 2.5;
 
@@ -209,6 +209,7 @@ const npcBY = interpolate(frame, [0, 300], [600, 620], {
   extrapolateLeft: "clamp",
   extrapolateRight: "clamp",
 });
+
 
 const eyeScaleY = Math.min(idleBlink.eyeScaleY, confirmBlink);
   const firstLineMouthCues: MouthCue[] = [
@@ -417,9 +418,9 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
   width={60}
 />
         <SceneMaster
-          x={placement.x}
-          y={placement.y}
-          scale={placement.scale}
+          x={scene1End.x}
+          y={scene1End.y}
+          scale={scene1End.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
           integration={{ contactShadow: true, ambientLight:"daylight",keyLight:"sun",castShadow:"streetSun" }}
