@@ -98,7 +98,64 @@ const uncertaintyStrength = interpolate(
   leftEyeBrowY: uncertaintyStrength * -4,
   rightEyeBrowY: uncertaintyStrength * 3,
 };
+const OVERTHINK_START = 80;
+const THOUGHTS_OVERLAP_START = 260;
+const FULL_BEND = 340;
 
+const streetBendStrength = interpolate(
+  frame,
+  [
+    OVERTHINK_START,
+    THOUGHTS_OVERLAP_START,
+    FULL_BEND,
+  ],
+  [
+    0,
+    0.25,
+    1,
+  ],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+const noodleStrength = interpolate(
+  frame,
+  [
+    FUTURE_START - 10,
+    FUTURE_START + 20,
+    FUTURE_START + 70,
+    FUTURE_START + 120,
+    FUTURE_START + 140,
+  ],
+  [0, 0.2, 0.6,0.8, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+const noodleBlurStrength = interpolate(
+    frame,
+    [
+    FUTURE_START - 10,
+    FUTURE_START + 20,
+    FUTURE_START + 70,
+    FUTURE_START + 100,
+
+    
+    ],
+    [0,3,10,0],
+    {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+        }
+    
+)
+const bend =
+  Math.sin(frame * 0.05) * 2 * noodleStrength;
 const YusufResolver =
   yusufPose(YusufActingPoseScene5);
 
@@ -117,7 +174,22 @@ return (
     src={staticFile("VoiceOver/VO_Episode_3/EP03_S05_Yusuf_04.m4a")} from={424}>
     </Audio>
            <Camera x={0} y={0} scale={1}>
-        <EgyptianStreet />
+        <div
+  style={{
+    position: "absolute",
+    inset: 0,
+    transform: `
+      perspective(1400px)
+      rotateY(${streetBendStrength * 2.2}deg)
+      skewX(${bend * 1.5}deg)
+      scaleX(${1 + bend * 0.015})
+    `,
+    filter:`blur${noodleBlurStrength}`,
+    transformOrigin: "50% 75%",
+  }}
+>
+  <EgyptianStreet groundBend={streetBendStrength} />
+</div>
     <SceneMaster
     x={placement.x}
     y={placement.y}

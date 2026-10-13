@@ -4,6 +4,7 @@ type StreetProps = {
   scale?: number;
   cameraX?: number;
   cameraY?: number;
+  groundBend?: number;
 };
 import { Img, staticFile } from "remotion";
 
@@ -28,7 +29,7 @@ export const EgyptianStreet = ({
   y = 0,
   scale = 1,
   cameraX = 0,
-  cameraY = 0,
+  groundBend = 0,
 }: StreetProps) => {
   return (
     <div
@@ -44,7 +45,17 @@ export const EgyptianStreet = ({
       }}
     >
       {layers.map((layer) => {
+        const isGround = layer === "04-ground-and-walkable-plane.png";
         const correctionX = cameraX * (1 - speed[layer]);
+        const groundTransform = isGround
+          ? `
+      translateX(${correctionX - 3}px)
+      perspective(1200px)
+      rotateX(${groundBend * 12}deg)
+      skewX(${groundBend * 8}deg)
+      scaleY(${1 + groundBend * 0.18})
+    `
+          : `translateX(${correctionX - 3}px)`;
         return (
           <Img
             key={layer}
@@ -57,9 +68,10 @@ export const EgyptianStreet = ({
               height: "100%",
               objectFit: "cover",
               pointerEvents: "none",
-              transform: `translate(${correctionX}px)`,
-              translate: "-3px 0px",
+              transform: groundTransform,
+              scale: 1.037,
             }}
+            durationInFrames={1174}
           />
         );
       })}

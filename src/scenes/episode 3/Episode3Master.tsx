@@ -4,9 +4,12 @@ import { Episode3Scene2 } from "./Episode3Scene2";
 import { Episode3Scene3 } from "./Episode3Scene3";
 import { Episode3Scene4 } from "./Episode3Scene4";
 import { Episode3Scene5}  from "./Episode3Scene5";
+import { Episode3Scene6 } from "./Episode3Scene6";
+import { Episode3Scene7} from  "./Episode3Scene7";
 export const Episode3Master = () => {
   return (
     <>
+
       <Sequence durationInFrames={430}>
         <Episode3Scene1 />
       </Sequence>
@@ -19,9 +22,18 @@ export const Episode3Master = () => {
        <Sequence from={2317} durationInFrames={1080}>
         <Episode3Scene4 />
       </Sequence>
-     <Sequence from={3400} durationInFrames={800}>
+     <Sequence from={3400} durationInFrames={1000}>
       <Episode3Scene5 />
      </Sequence>
+      <Sequence from={4406} durationInFrames={1000}>
+      <Episode3Scene6 />
+     </Sequence>
+     <Sequence from={5406} durationInFrames={1000}>
+      <Episode3Scene6 />
+     </Sequence>
+     <Sequence from={6400} durationInFrames={2000}>
+        <Episode3Scene7 />
+    </Sequence>
     </>
   );
 };
