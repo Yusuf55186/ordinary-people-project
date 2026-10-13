@@ -9,6 +9,7 @@ import { Audio } from "@remotion/media";
 import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
+  getSceneLastFrame,
   getStreetPlacement,
   getTravelDistance,
 } from "./episode3StreetMotion";
@@ -25,9 +26,20 @@ const MEMORY_END = 175;
 
 export const Episode3Scene4 = () => {
   const frame = useCurrentFrame();
-  const distance = getTravelDistance(frame);
-  const walkingPose = frontWalkCycle( + distance, WALK_CYCLE_FRAMES);
-  const placement = getStreetPlacement(frame);
+  const scene3WalkPhase = getSceneLastFrame("scene3");
+  const scene3EndDistance = getTravelDistance(scene3WalkPhase);
+  const scene4Travel = Math.min(
+    frame,scene3WalkPhase
+  )
+  const scene3EndPlacement = getStreetPlacement(scene3EndDistance);
+  const walkingPose = frontWalkCycle(scene3WalkPhase + frame, WALK_CYCLE_FRAMES);
+  const placement = {
+  x: scene3EndPlacement.x - scene4Travel * 0.25,
+  y: scene3EndPlacement.y + scene4Travel * 0.13,
+  scale:
+    scene3EndPlacement.scale +
+    scene4Travel * 0.00015,
+};
 const cameraProgress = Math.min(frame, MEMORY_START);
 
 const cameraX = interpolate(
