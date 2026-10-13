@@ -12,7 +12,31 @@ export const MemoryFlash = () => {
       easing: Easing.out(Easing.cubic),
     }
   );
-  
+ const memoryWarp = interpolate(
+  frame,
+  [0, 12, 24, 36],
+  [0, 1, -0.6, 0],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+
+const memoryBlur = interpolate(
+  henedyStrength,
+  [0,0.5, 1],
+  [40,20,0.4],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
+
+const memoryRotation = interpolate(
+  memoryWarp,
+  [-1, 1],
+  [-0.8, 0.8]
+);
     const imageUrl = staticFile("assets/Flash_Images/henedy_flashback.png");
     return (
         <>
@@ -30,7 +54,16 @@ export const MemoryFlash = () => {
     width: 500,
     objectFit: "contain",
     opacity: henedyStrength,
-    transform: `scale(${0.96 + henedyStrength * 0.04})`,
+
+    transform: `
+      scaleX(${1 + memoryWarp * 0.45})
+      scaleY(${1 - memoryWarp * 0.25})
+      rotate(${memoryRotation}deg)
+    `,
+
+    filter: `
+      blur(${memoryBlur}px)`,
+
     transformOrigin: "center center",
     borderRadius: 999,
   }}
