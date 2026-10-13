@@ -5,6 +5,7 @@ export const EPISODE3_SCENES = {
   scene2: { duration: 680 },
   scene3: { duration: 1020 },
   scene4: { duration: 300 },
+  scene5: {duration:  1070},
 } as const;
 
 export type Episode3SceneKey =
