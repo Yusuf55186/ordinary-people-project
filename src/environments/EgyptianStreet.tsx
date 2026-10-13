@@ -6,7 +6,7 @@ type StreetProps = {
   cameraY?: number;
   groundBend?: number;
 };
-import { Img, staticFile } from "remotion";
+import { Img, staticFile, useCurrentFrame } from "remotion";
 
 const streetPath = "assets/Environment/Egyptian_street_assets_v1";
 const speed = {
@@ -31,6 +31,11 @@ export const EgyptianStreet = ({
   cameraX = 0,
   groundBend = 0,
 }: StreetProps) => {
+    const frame = useCurrentFrame();
+    const zigzag =
+      Math.sin(frame * 0.12) *
+      8 *
+      groundBend;
   return (
     <div
       style={{
@@ -48,13 +53,13 @@ export const EgyptianStreet = ({
         const isGround = layer === "04-ground-and-walkable-plane.png";
         const correctionX = cameraX * (1 - speed[layer]);
         const groundTransform = isGround
-          ? `
-      translateX(${correctionX - 3}px)
-      perspective(1200px)
-      rotateX(${groundBend * 12}deg)
-      skewX(${groundBend * 8}deg)
-      scaleY(${1 + groundBend * 0.18})
-    `
+          ?  `
+  translateX(${correctionX - 3}px)
+  perspective(1200px)
+  rotateX(${groundBend * 12}deg)
+  skewX(${groundBend * 8 + zigzag}deg)
+  scaleY(${1 + groundBend * 0.18})
+`
           : `translateX(${correctionX - 3}px)`;
         return (
           <Img
@@ -71,7 +76,7 @@ export const EgyptianStreet = ({
               transform: groundTransform,
               scale: 1.037,
             }}
-            durationInFrames={1174}
+            durationInFrames={3494}
           />
         );
       })}

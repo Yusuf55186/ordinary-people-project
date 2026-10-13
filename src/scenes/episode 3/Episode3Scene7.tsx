@@ -1,8 +1,9 @@
-import {  staticFile, useCurrentFrame } from "remotion";
+import {  Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { frontWalkCycle } from "../../animations/frontWalkCycle";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
+
 import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
@@ -42,6 +43,59 @@ const YusufFrontWalk = frontWalkCycle(
   scene6LastFrame + frame,
   WALK_CYCLE_FRAMES
 );
+
+const unstableWalkStrength = interpolate(
+  frame,
+  [180, 260, 420, 520],
+  [0, 0.35, 0.7, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+const unstableHead =
+  Math.sin(frame * 0.18) *
+  3 *
+  unstableWalkStrength;
+
+const unstableBodyY =
+  Math.sin(frame * 0.22) *
+  3 *
+  unstableWalkStrength;
+const scene7ActingPose = {
+    ...YusufFrontWalk,
+    headRotation:(YusufFrontWalk.headRotation ?? 0) + unstableHead,
+    
+    bodyY: (YusufFrontWalk.bodyY ?? 0) + unstableBodyY
+}
+const zigzagStrength = interpolate(
+  frame,
+  [
+    0,
+    120,
+    220,
+    320,
+    420,
+    520,
+    620,
+  ],
+  [
+    0,
+    0.1,
+    0.2,
+    0.35,
+    0.5,
+    0.7,
+    1,
+  ],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+
 return (
     <>
     <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_01.m4a")} />
@@ -58,7 +112,9 @@ return (
     <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_12.m4a")} from={1600} />
     <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_13.m4a")} from={1800} />
 <Camera x={0} y={0} scale={1}>
-  <EgyptianStreet />
+  <EgyptianStreet
+  groundBend={zigzagStrength}
+   />
 
   <SceneMaster
     x={placement.x}
@@ -75,7 +131,7 @@ return (
   >
     <YusufCharacter
       grounded
-      {...YusufFrontWalk}
+      {...scene7ActingPose}
     />
   </SceneMaster>
 </Camera>
