@@ -48,8 +48,8 @@ const streetBlur = interpolate(
 );
 const streetScale = interpolate(
   frame,
-  [0, SceneLastFrame],
-  [sceneEndStreet.scale, sceneEndStreet.scale + 0.065],
+  [0, SceneLastFrame,],
+  [sceneEndStreet.scale, sceneEndStreet.scale + 0.0065],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",

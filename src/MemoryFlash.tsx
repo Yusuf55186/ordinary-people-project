@@ -1,9 +1,43 @@
-import { Img,staticFile } from "remotion";
+import { Img,staticFile,interpolate,Easing,useCurrentFrame } from "remotion";
 export const MemoryFlash = () => {
+    const frame = useCurrentFrame();
+    const HENEDY_APPEAR = 23;
+      const henedyStrength = interpolate(
+    frame,
+    [15,HENEDY_APPEAR,45,60],
+    [0, 0.5,0.8,1],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.out(Easing.cubic),
+    }
+  );
+  
     const imageUrl = staticFile("assets/Flash_Images/henedy_flashback.png");
     return (
-        <div style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",backgroundColor:"#000",display:"flex",justifyContent:"center",alignItems:"center"}}>
-            <Img src={imageUrl} style={{width:"100%",height:"100%",objectFit:"contain"}} />
-        </div>
-    )
-}
+        <>
+        
+            <div
+            style={{
+            position: "absolute",
+            left: 700,
+            top: 180,
+            }}
+            >
+           <Img
+  src={imageUrl}
+  style={{
+    width: 500,
+    objectFit: "contain",
+    opacity: henedyStrength,
+    transform: `scale(${0.96 + henedyStrength * 0.04})`,
+    transformOrigin: "center center",
+    borderRadius: 999,
+  }}
+/>
+   </div>
+  
+   </>
+   )
+   }
+            

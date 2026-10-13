@@ -34,13 +34,19 @@ const scene2EndWalkPhase =
   //  const scene2EndPlacement = getStreetPlacement(scene2EndDistance);
   const streetTransform = StreetTransform(Scene3LastFrame);
 // Scene 3's own forward travel
-const scene3TravelDistance = frame;
+const scene3Travel = Math.min(
+  frame * 0.7,Scene3LastFrame
+)
+const scene2EndPlacement =
+  getStreetPlacement(scene2EndDistance);
 
-const totalDistance =
-  scene2EndDistance + scene3TravelDistance;
-
-const placement =
-  getStreetPlacement(totalDistance);
+const placement = {
+  x: scene2EndPlacement.x - scene3Travel * 0.25,
+  y: scene2EndPlacement.y + scene3Travel * 0.13,
+  scale:
+    scene2EndPlacement.scale +
+    scene3Travel * 0.00015,
+};
 
   const walkingPose = frontWalkCycle(frame + scene2EndWalkPhase, WALK_CYCLE_FRAMES);
   const grinStrength = interpolate(
@@ -79,8 +85,9 @@ const placement =
     },
   );
   const MEMORY_DURATION = 300;
-  const isInMemory = frame >= MEMORY_START;
-  const MemoryEnd = frame < MEMORY_START + MEMORY_DURATION;
+    const MEMORY_END = MEMORY_START + MEMORY_DURATION;
+  const isInMemory = frame >= MEMORY_START
+   && frame < MEMORY_END;
 
   const streetY = interpolate(
   frame,
@@ -134,30 +141,41 @@ const streetScale = interpolate(
       />
       <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_05.m4a")} from={920} />
     
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          overflow: "hidden",
-        }}
-      ></div>
-      {isInMemory && MemoryEnd ? (
-        <Sequence from={MEMORY_START} durationInFrames={300}>
-          <MemoryFlash />
-        </Sequence>
-      ) : (
+      
         <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
-            filter: `blur(${distortion * 2}px)`,
-            
-          }}
-        >
-          <EgyptianStreet y={streetY} cameraX={SCENE_2_CAMERA_END.scale} scale={streetScale} x={streetTransform.x} />
+      style={{
+        position: "absolute",
+        inset: 0,
+        
+      }}
+    >
+      <div style={{
+        transform: `
+          scaleX(${1 + distortion * 0.025})
+          scaleY(${1 + distortion * 0.015})
+        `,
+        filter: `blur(${distortion * 2}px)`,
+      }}
+      >
         </div>
-      )}
+      <EgyptianStreet 
+        y={streetY}
+        cameraX={SCENE_2_CAMERA_END.scale}
+        scale={streetScale}
+        x={streetTransform.x}
+      />
+      </div>
+     {isInMemory && (
+      
+    <Sequence
+      from={MEMORY_START}
+      durationInFrames={MEMORY_DURATION}
+    >
+      
+      <MemoryFlash />
+    </Sequence>
+     )}
+     
       <SceneMaster
         x={placement.x}
         y={placement.y}
