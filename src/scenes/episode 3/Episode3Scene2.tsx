@@ -10,7 +10,6 @@ import { staticFile } from "remotion";
 import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
-import { StreetNPC } from "../../environments/props/StreetNpc";
 import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength,FINAL_CAMERA_Scene_1, getSceneLastFrame, getStreetPlacement, StreetTransform} from "./episode3StreetMotion";
 
 export const Episode3Scene2 = () => {
@@ -231,15 +230,7 @@ const postConfirmEyeX = interpolate(
     extrapolateRight: "clamp",
   }
 );
-const npcAY = interpolate(frame, [0, 300], [600, 620], {
-  extrapolateLeft: "clamp",
-  extrapolateRight: "clamp",
-});
 
-const npcBY = interpolate(frame, [0, 300], [600, 620], {
-  extrapolateLeft: "clamp",
-  extrapolateRight: "clamp",
-});
 
 
 const eyeScaleY = Math.min(idleBlink.eyeScaleY, confirmBlink);
@@ -491,20 +482,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
 />
 </div>
 
-<StreetNPC
-  variant="b"
-  x={470}
-  y={npcBY}
-  width={55}
-/>
 
-{/* right sidewalk */}
-<StreetNPC
-  variant="a"
-  x={1450}
-  y={npcAY}
-  width={60}
-/>
         <SceneMaster
           x={placement.x}
           y={placement.y + 120}

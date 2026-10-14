@@ -5,7 +5,7 @@ import { Episode3Master } from "./scenes/episode 3/Episode3Master";
 import {Episode3StreetTest} from "./environments/Episode3StreetTest"
 // import { HandPoseTest } from "./handPoseTest";
 const EPISODE_2_SCENE_1_DURATION = 17400;
-const EPISODE_3_DURATION = 17400;
+const EPISODE_3_DURATION = 12400;
 
 export const RemotionRoot: React.FC = () => {
   return (

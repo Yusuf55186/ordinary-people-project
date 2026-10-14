@@ -7,8 +7,7 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getScene1CameraPlacement } from "./episode3StreetMotion";
-import { StreetNPC } from "../../environments/props/StreetNpc";
+import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getSceneCameraPlacement } from "./episode3StreetMotion";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
   const SCENE_1_DURATION = 800;
@@ -68,36 +67,23 @@ export const Episode3Scene1 = () => {
   const streetScale = interpolate(progress, [0, 1], [1.01, 1.075], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+    easing:Easing.inOut(Easing.ease)
   });
 
   const streetX = interpolate(frame, [0, SCENE_1_DURATION], [0, -18], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+    easing:Easing.inOut(Easing.cubic)
   });
 
   const streetY = interpolate(frame, [0, SCENE_1_DURATION], [0, -8], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+        easing:Easing.inOut(Easing.cubic)
+
   });
-  const camera = getScene1CameraPlacement(placement);
-const npcBY = interpolate(
-  frame,
-  [0,300],
-  [600,620],{
-    extrapolateLeft:"clamp",
-    extrapolateRight:"clamp",
-    easing:Easing.inOut(Easing.cubic),
-  }
-)
-const npcAY = interpolate(
-  frame,
-  [0,300],
-  [600,620],{
-    extrapolateLeft:"clamp",
-    extrapolateRight:"clamp",
-    easing:Easing.inOut(Easing.cubic),
-  }
-)
+  const camera = getSceneCameraPlacement(placement);
+
 
   return (
     
@@ -131,20 +117,6 @@ const npcAY = interpolate(
             })}
           ></YusufCharacter>
         </SceneMaster>
-        <StreetNPC
-          variant="b"
-          x={470}
-          y={npcBY}
-          width={55}
-        />
-        
-        {/* right sidewalk */}
-        <StreetNPC
-          variant="a"
-          x={1450}
-          y={npcAY}
-          width={60}
-        />
       </AbsoluteFill>
     </Camera>
   );

@@ -20,7 +20,7 @@ import { Sequence } from "remotion";
 import { interpolate, Easing } from "remotion";
 import { Camera } from "../../components/Camera";
 
-const MEMORY_START = 122;
+const MEMORY_START = 200;
 export const Episode3Scene3 = () => {
   const frame = useCurrentFrame();
   const GRIN_START = 180;

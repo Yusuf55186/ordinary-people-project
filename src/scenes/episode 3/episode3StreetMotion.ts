@@ -124,7 +124,7 @@ export const getSceneEndState = (
 };
 
 
-  export const getScene1CameraPlacement = (
+  export const getSceneCameraPlacement = (
   placement: { x: number; y: number }
 ) => ({
   x: interpolate(
