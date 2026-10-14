@@ -155,7 +155,7 @@ export const SCENE_2_CAMERA_END = {
   scale:1.35,
 }
 export const FINAL_CAMERA_Scene_1 = 
-getScene1CameraPlacement(
+getSceneCameraPlacement(
   getStreetPlacement(getSceneLastFrame("scene1"))
 )
 export const StreetTransform = (frame:number) => {

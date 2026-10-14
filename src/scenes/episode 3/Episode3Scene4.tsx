@@ -32,7 +32,7 @@ export const Episode3Scene4 = () => {
     frame,scene3WalkPhase
   )
   const scene3EndPlacement = getStreetPlacement(scene3EndDistance);
-  const walkingPose = frontWalkCycle(scene3WalkPhase + frame, WALK_CYCLE_FRAMES);
+  const walkingPose = frontWalkCycle(scene3WalkPhase, WALK_CYCLE_FRAMES);
   const placement = {
   x: scene3EndPlacement.x - scene4Travel * 0.25,
   y: scene3EndPlacement.y + scene4Travel * 0.13,

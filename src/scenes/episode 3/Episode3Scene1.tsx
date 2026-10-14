@@ -7,7 +7,7 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getSceneCameraPlacement } from "./episode3StreetMotion";
+import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getSceneCameraPlacement} from "./episode3StreetMotion";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
   const SCENE_1_DURATION = 800;
@@ -101,7 +101,7 @@ export const Episode3Scene1 = () => {
         <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={camera.x} cameraY={camera.y} />
         <SceneMaster
           x={placement.x}
-          y={placement.y}
+          y={placement.y + 120}
           scale={placement.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
@@ -121,3 +121,4 @@ export const Episode3Scene1 = () => {
     </Camera>
   );
 };
+

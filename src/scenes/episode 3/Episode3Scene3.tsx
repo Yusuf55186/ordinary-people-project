@@ -2,14 +2,15 @@ import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { frontWalkCycle } from "../../animations/frontWalkCycle";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
+import { getScene2Camera } from "./Episode3Scene2";
 import {
   StreetTransform,
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
   getSceneLastFrame,
   getStreetPlacement,
-  getTravelDistance,
-  SCENE_2_CAMERA_END
+
+  EPISODE3_SCENES,
   
   
 } from "./episode3StreetMotion";
@@ -28,27 +29,25 @@ export const Episode3Scene3 = () => {
   const GRIN_END = 225;
   const DISTORTION_START = 115;
   const Scene3LastFrame = getSceneLastFrame("scene3");
-const scene2EndWalkPhase =
-  getSceneLastFrame("scene2"); 
-   const scene2EndDistance = getTravelDistance(Scene3LastFrame);
+  const Scene2LastFrame = getSceneLastFrame("scene2");
+  const LastSceneFrame = getSceneLastFrame("scene1");
+  const scene1EndPlacement =
+  getStreetPlacement(LastSceneFrame);
+    const scene3WalkPhase = EPISODE3_SCENES.scene2.duration;
   //  const scene2EndPlacement = getStreetPlacement(scene2EndDistance);
-  const streetTransform = StreetTransform(Scene3LastFrame);
+  const streetTransform = StreetTransform(LastSceneFrame);
 // Scene 3's own forward travel
-const scene3Travel = Math.min(
-  frame * 0.7,Scene3LastFrame
-)
-const scene2EndPlacement =
-  getStreetPlacement(scene2EndDistance);
+
+  const startPlacement = scene1EndPlacement;
 
 const placement = {
-  x: scene2EndPlacement.x - scene3Travel * 0.25,
-  y: scene2EndPlacement.y + scene3Travel * 0.13,
+  x: startPlacement.x,
+  y: startPlacement.y,
   scale:
-    scene2EndPlacement.scale +
-    scene3Travel * 0.00015,
+    startPlacement.scale
 };
 
-  const walkingPose = frontWalkCycle(frame + scene2EndWalkPhase, WALK_CYCLE_FRAMES);
+  const walkingPose = frontWalkCycle(scene3WalkPhase, WALK_CYCLE_FRAMES);
   const grinStrength = interpolate(
     frame,
     [GRIN_START, GRIN_PEAK, GRIN_END - 5, GRIN_END],
@@ -110,12 +109,10 @@ const streetScale = interpolate(
     easing: Easing.inOut(Easing.quad),
   }
 );
-
-
-
+const camera = getScene2Camera(Scene2LastFrame);
   return (
     <>
-    <Camera scale={SCENE_2_CAMERA_END.scale} x={SCENE_2_CAMERA_END.x} y={SCENE_2_CAMERA_END.y} >
+    <Camera scale={camera.scale} x={camera.x} y={camera.y} >
       {/* Egyptian Street Ambience */}
       <Audio
         src={staticFile("assets/Episode3/egyptian_street_ambience.mp3")}
@@ -160,7 +157,7 @@ const streetScale = interpolate(
         </div>
       <EgyptianStreet 
         y={streetY}
-        cameraX={SCENE_2_CAMERA_END.scale}
+        cameraX={camera.scale}
         scale={streetScale}
         x={streetTransform.x}
       />

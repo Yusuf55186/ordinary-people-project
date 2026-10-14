@@ -10,25 +10,100 @@ import { staticFile } from "remotion";
 import {getMouthPose, type MouthCue } from "../../animations/lipSync";
 import { YellowCar } from "../../environments/props/YellowCar";
 import { BlinkingAnimation } from "../../animations/BlinkingAnimation";
-import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getTravelDistance, getWalkStrength,FINAL_CAMERA_Scene_1, getSceneLastFrame, getStreetPlacement, StreetTransform} from "./episode3StreetMotion";
+import { WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getWalkStrength,FINAL_CAMERA_Scene_1, getSceneLastFrame, getStreetPlacement, StreetTransform, EPISODE3_SCENES,} from "./episode3StreetMotion";
+export const getScene2Camera = (frame: number) => {
+  const closeUpStrength = interpolate(
+  frame,
+  [215, 280],
+  [0, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+const closeUpX = interpolate(
+  closeUpStrength,
+  [0, 1],
+  [FINAL_CAMERA_Scene_1.x, -40]
+);
 
+const closeUpY = interpolate(
+  closeUpStrength,
+  [0, 1],
+  [FINAL_CAMERA_Scene_1.y, 120]
+);
+
+const closeUpScale = interpolate(
+  closeUpStrength,
+  [0, 1],
+  [FINAL_CAMERA_Scene_1.scale, 1.8]
+);
+  const mediumShotStrength = interpolate(
+    frame,
+    [610, 670],
+    [0, 1],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }
+  );
+  const x = interpolate(
+    mediumShotStrength,
+    [0, 1],
+    [closeUpX, 20]
+  );
+
+  const y = interpolate(
+    mediumShotStrength,
+    [0, 1],
+    [closeUpY, 70]
+  );
+
+  const scale = interpolate(
+    mediumShotStrength,
+    [0, 1],
+    [closeUpScale, 1.35]
+  );
+
+  return {
+    x,
+    y,
+    scale,
+  };
+};
 export const Episode3Scene2 = () => {
   const frame = useCurrentFrame();
-    const SceneLastFrame = getSceneLastFrame("scene1");
-    const distance = getTravelDistance(frame);
-    const scene1EndDistance = getTravelDistance(SceneLastFrame);
-  const placement = getStreetPlacement(scene1EndDistance);
-  const sceneEndStreet = StreetTransform(SceneLastFrame);
-   const walkfrontPose = frontWalkCycle( scene1EndDistance + distance,  WALK_CYCLE_FRAMES);
+  const Scene1LastFrame = getSceneLastFrame("scene1");
+  const Scene2LastFrame = getSceneLastFrame("scene2");
+  const scene1Endplacement = getStreetPlacement(Scene1LastFrame);
+  const sceneEndStreet = StreetTransform(Scene1LastFrame);
+  const scene2WalkPhase = EPISODE3_SCENES.scene1.duration;
+  const startPlacement = scene1Endplacement;
+  const placement = {
+    x: startPlacement.x ,
+    y: startPlacement.y ,
+    scale: startPlacement.scale,
+  }
+const walkfrontPose = frontWalkCycle(
+  scene2WalkPhase,
+  WALK_CYCLE_FRAMES
+);
   const walkStrength = getWalkStrength(frame);
+
   const idleBlink = BlinkingAnimation(frame,120);
+  
+
+  
+  
+  
   // const STOP_FRAME = 120;
   
 //  const BACKGROUND_ZOOM_SPEED = 0.0005;
 const MAX_STREET_BLUR = 2.5;
 const streetY = interpolate(
   frame,
-  [0,SceneLastFrame],
+  [0,Scene2LastFrame],
   [sceneEndStreet.y, sceneEndStreet.y + 43],
   {
     extrapolateLeft: "clamp",
@@ -38,8 +113,8 @@ const streetY = interpolate(
 );
 const streetBlur = interpolate(
   frame,
-  [0, 30],
-  [0, MAX_STREET_BLUR],
+  [0, 30,709],
+  [0, MAX_STREET_BLUR,0],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -47,7 +122,7 @@ const streetBlur = interpolate(
 );
 const streetScale = interpolate(
   frame,
-  [0, SceneLastFrame,],
+  [0, Scene2LastFrame,],
   [sceneEndStreet.scale, sceneEndStreet.scale + 0.0065],
   {
     extrapolateLeft: "clamp",
@@ -100,38 +175,40 @@ const recognitionBrow = interpolate(frame, [30, 50, 100, 140], [0, -1.5, -1.5, 0
   extrapolateLeft: "clamp", extrapolateRight: "clamp",
 });
 
+// const START_CAR_X = 300;
+// const START_CAR_Y = -300;
+// const START_CAR_SCALE = 0.1;
+
 const carX = interpolate(
   frame,
-  [0, 80, 180, 220],
-  [540, 530, 170, -140],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
+  [0,100,180],
+  [300, 260, -200],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic)
   }
-);
-
-const carY = interpolate(
-  frame,
-  [0,180, 220],
-  [460, 500, 760],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
+  
+)
+const carY = interpolate(frame,[
+  0,100,180
+  ],
+  [-300, 30, 400],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic)
   }
-);
-
+)
 const carScale = interpolate(
   frame,
-  [0, 80, 180, 220],
-  [0.05, 0.18, 0.8, 1.8],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
+  [0,100,180],
+  [0.1, 0.4, 0.7],{
+    extrapolateLeft:"clamp",
+    extrapolateRight:"clamp",
+    easing:Easing.inOut(Easing.cubic)
   }
-);
+  
+)
+
 const memoryThoughtStrength = interpolate(
   frame,
   [215, 240, 315, 340],
@@ -368,67 +445,16 @@ eyeRLookY: memoryEyeY + carEyeLookY,
   eyeScaleY,
   smileStrength,
 };
-const closeUpStrength = interpolate(
-  frame,
-  [215, 280],
-  [0, 1],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
-  }
-);
-const closeUpX = interpolate(
-  closeUpStrength,
-  [0, 1],
-  [FINAL_CAMERA_Scene_1.x, -40]
-);
 
-const closeUpY = interpolate(
-  closeUpStrength,
-  [0, 1],
-  [FINAL_CAMERA_Scene_1.y, 120]
-);
 
-const closeUpScale = interpolate(
-  closeUpStrength,
-  [0, 1],
-  [FINAL_CAMERA_Scene_1.scale, 1.8]
-);
 
-const mediumShotStrength = interpolate(
-  frame,
-  [610, 670],
-  [0, 1],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.cubic),
-  }
-);
-const cameraX = interpolate(
-  mediumShotStrength,
-  [0, 1],
-  [closeUpX, 20]
-);
-
-const cameraY = interpolate(
-  mediumShotStrength,
-  [0, 1],
-  [closeUpY, 70]
-);
-
-const cameraScale = interpolate(
-  mediumShotStrength,
-  [0, 1],
-  [closeUpScale, 1.35]
-);
+const camera = getScene2Camera(frame);
 
 
 const cameraBackToYusufX = interpolate(
   frame,
-  [140,200],
-  [cameraX,-300],{
+  [140,200,700,799],
+  [camera.x,-300,-300,camera.x],{
      extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: Easing.inOut(Easing.cubic),
@@ -444,19 +470,13 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
-    <Camera x={cameraBackToYusufX} y={cameraY} scale={cameraScale}>
+    <Camera x={cameraBackToYusufX} y={camera.y} scale={camera.scale}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
         }}
       >
-     <div
-  style={{
-    position: "absolute",
-    inset: -200,
-    overflow: "hidden",
-  }}
->
+        
   <div
     style={{
       width: "100%",
@@ -467,25 +487,37 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
     }}
   >
     
-    <EgyptianStreet x={streetX} y={streetY} scale={streetScale}  cameraX={cameraX} cameraY={cameraY} />
+    <EgyptianStreet x={streetX} y={streetY} scale={streetScale}  cameraX={camera.x} cameraY={camera.y} />
   </div>
-</div>
 <div style={{
          filter: `blur(${streetBlur}px)`,
         }}>
-<YellowCar 
-  x={carX}
-  y={carY}
-  scale={carScale}
-  width={700}
-  integration={{ contactShadow: true ,castShadow: true }}
-/>
-</div>
 
+</div>
+<div style={{
+  position:"absolute",
+  left:540,
+  top:460,
+  zIndex:9999,
+  width:700,
+  height:400,
+}}
+>
+  <YellowCar
+    x={carX}
+    y={carY}
+    scale={carScale}
+    width={700}
+    integration={{
+      contactShadow: true,
+      castShadow: true,
+    }}
+  />
+</div>
 
         <SceneMaster
           x={placement.x}
-          y={placement.y + 120}
+          y={placement.y}
           scale={placement.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}

@@ -31,16 +31,10 @@ export const EgyptianStreet = ({
   cameraX = 0,
   groundBend = 0,
 }: StreetProps) => {
-    const frame = useCurrentFrame();
-    const zigzag =
-  Math.sin(frame * 0.12) *
-  8 *
-  groundBend;
+  const frame = useCurrentFrame();
+  const zigzag = Math.sin(frame * 0.12) * 8 * groundBend;
 
-const heavyWave =
-  Math.sin(frame * 0.06) *
-  10 *
-  Math.max(0, groundBend - 1);
+  const heavyWave = Math.sin(frame * 0.06) * 10 * Math.max(0, groundBend - 1);
   return (
     <div
       style={{
@@ -58,7 +52,7 @@ const heavyWave =
         const isGround = layer === "04-ground-and-walkable-plane.png";
         const correctionX = cameraX * (1 - speed[layer]);
         const groundTransform = isGround
-  ? `
+          ? `
       translateX(${correctionX - 3}px)
       perspective(1200px)
       rotateX(${groundBend * 12 + heavyWave}deg)
@@ -66,7 +60,7 @@ const heavyWave =
       scaleY(${1 + groundBend * 0.18})
       scaleX(${1 + Math.max(0, groundBend - 1) * 0.08})
     `
-  : `translateX(${correctionX - 3}px)`;
+          : `translateX(${correctionX - 3}px)`;
         return (
           <Img
             key={layer}
@@ -80,7 +74,8 @@ const heavyWave =
               objectFit: "cover",
               pointerEvents: "none",
               transform: groundTransform,
-              scale: 1.037,
+              scale: 1.16,
+              translate: "150px 0px",
             }}
             durationInFrames={3494}
           />
