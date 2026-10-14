@@ -7,6 +7,8 @@ import { Episode3Scene5}  from "./Episode3Scene5";
 import { Episode3Scene6 } from "./Episode3Scene6";
 import { Episode3Scene7} from  "./Episode3Scene7";
 import { Episode3Scene8} from  "./Episode3Scene8";
+import { Episode3Scene9} from  "./Episode3Scene9";
+import { Episode3Scene10} from  "./Episode3Scene10";
 export const Episode3Master = () => {
   return (
     <>
@@ -38,6 +40,13 @@ export const Episode3Master = () => {
      <Sequence from={8400} durationInFrames={2000}>
         <Episode3Scene8 />
     </Sequence>
+     <Sequence from={10400} durationInFrames={1000}>
+        <Episode3Scene9 />
+    </Sequence>
+    <Sequence from={11400} durationInFrames={1000}>
+        <Episode3Scene10 />
+    </Sequence>
+
     </>
   );
 };

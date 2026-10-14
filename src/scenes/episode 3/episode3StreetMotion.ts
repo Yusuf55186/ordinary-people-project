@@ -9,6 +9,8 @@ export const EPISODE3_SCENES = {
   scene6: {duration: 1040},
   scene7: {duration: 2000},
   scene8: {duration:1200},
+  scene9: {duration: 1000},
+  scene10: {duration:1000},
 } as const;
 
 export type Episode3SceneKey =
