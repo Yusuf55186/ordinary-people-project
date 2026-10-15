@@ -2,10 +2,17 @@ import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { frontWalkCycle } from "../../animations/frontWalkCycle";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
+import { getScene2Camera } from "./Episode3Scene2";
 import {
+  StreetTransform,
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
+  getSceneLastFrame,
   getStreetPlacement,
+
+  EPISODE3_SCENES,
+  
+  
 } from "./episode3StreetMotion";
 import { useCurrentFrame, staticFile } from "remotion";
 import { Audio } from "@remotion/media";
@@ -14,38 +21,33 @@ import { Sequence } from "remotion";
 import { interpolate, Easing } from "remotion";
 import { Camera } from "../../components/Camera";
 
-const MEMORY_START = 122;
+const MEMORY_START = 200;
 export const Episode3Scene3 = () => {
   const frame = useCurrentFrame();
   const GRIN_START = 180;
   const GRIN_PEAK = 192;
   const GRIN_END = 225;
   const DISTORTION_START = 115;
-  const BACKGROUND_ZOOM_SPEED = 0.0005;
-  const backgroundScale = 1 + frame * BACKGROUND_ZOOM_SPEED;
-  const placement = getStreetPlacement(frame);
-  const cameraProgress = Math.min(frame, MEMORY_START);
+  const Scene3LastFrame = getSceneLastFrame("scene3");
+  const Scene2LastFrame = getSceneLastFrame("scene2");
+  const LastSceneFrame = getSceneLastFrame("scene1");
+  const scene1EndPlacement =
+  getStreetPlacement(LastSceneFrame);
+    const scene3WalkPhase = EPISODE3_SCENES.scene2.duration;
+  //  const scene2EndPlacement = getStreetPlacement(scene2EndDistance);
+  const streetTransform = StreetTransform(LastSceneFrame);
+// Scene 3's own forward travel
 
-const cameraX = interpolate(
-  cameraProgress,
-  [0, MEMORY_START],
-  [0, 100],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
+  const startPlacement = scene1EndPlacement;
 
-const cameraY = interpolate(
-  cameraProgress,
-  [0, MEMORY_START],
-  [0, 30],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-  const walkingPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
+const placement = {
+  x: startPlacement.x,
+  y: startPlacement.y,
+  scale:
+    startPlacement.scale
+};
+
+  const walkingPose = frontWalkCycle(scene3WalkPhase, WALK_CYCLE_FRAMES);
   const grinStrength = interpolate(
     frame,
     [GRIN_START, GRIN_PEAK, GRIN_END - 5, GRIN_END],
@@ -60,7 +62,7 @@ const cameraY = interpolate(
     headRotation: grinStrength * 7,
     eyeScaleY: 1 - Math.min(grinStrength, 1) * 0.25,
     leftEyeBrowY: -3 * grinStrength,
-    rightEyebrowY: 2 * grinStrength,
+    rightEyeBrowY: 2 * grinStrength,
   };
   const ambienceVolume = interpolate(
     frame,
@@ -82,11 +84,35 @@ const cameraY = interpolate(
     },
   );
   const MEMORY_DURATION = 300;
-  const isInMemory = frame >= MEMORY_START;
-  const MemoryEnd = frame < MEMORY_START + MEMORY_DURATION;
+    const MEMORY_END = MEMORY_START + MEMORY_DURATION;
+  const isInMemory = frame >= MEMORY_START
+   && frame < MEMORY_END;
+
+  const streetY = interpolate(
+  frame,
+  [0, Scene3LastFrame],
+  [streetTransform.y, streetTransform.y + 55],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
+
+const streetScale = interpolate(
+  frame,
+  [0, Scene3LastFrame],
+  [streetTransform.scale, streetTransform.scale + 0.04],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  }
+);
+const camera = getScene2Camera(Scene2LastFrame);
   return (
     <>
-    <Camera x={cameraX} y={cameraY} scale={1.1}>
+    <Camera scale={camera.scale} x={camera.x} y={camera.y} >
       {/* Egyptian Street Ambience */}
       <Audio
         src={staticFile("assets/Episode3/egyptian_street_ambience.mp3")}
@@ -112,29 +138,41 @@ const cameraY = interpolate(
       />
       <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_05.m4a")} from={920} />
     
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          overflow: "hidden",
-        }}
-      ></div>
-      {isInMemory && MemoryEnd ? (
-        <Sequence from={MEMORY_START} durationInFrames={300}>
-          <MemoryFlash />
-        </Sequence>
-      ) : (
+      
         <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
-            filter: `blur(${distortion * 2}px)`,
-          }}
-        >
-          <EgyptianStreet cameraX={cameraX} />
+      style={{
+        position: "absolute",
+        inset: 0,
+        
+      }}
+    >
+      <div style={{
+        transform: `
+          scaleX(${1 + distortion * 0.025})
+          scaleY(${1 + distortion * 0.015})
+        `,
+        filter: `blur(${distortion * 2}px)`,
+      }}
+      >
         </div>
-      )}
+      <EgyptianStreet 
+        y={streetY}
+        cameraX={camera.scale}
+        scale={streetScale}
+        x={streetTransform.x}
+      />
+      </div>
+     {isInMemory && (
+      
+    <Sequence
+      from={MEMORY_START}
+      durationInFrames={MEMORY_DURATION}
+    >
+      
+      <MemoryFlash />
+    </Sequence>
+     )}
+     
       <SceneMaster
         x={placement.x}
         y={placement.y}
@@ -150,6 +188,7 @@ const cameraY = interpolate(
         zIndex={1}
       >
         <YusufCharacter
+        
           mouthPose={isGrinning ? "grin" : "rest"}
           grounded
           {...walkingPose}

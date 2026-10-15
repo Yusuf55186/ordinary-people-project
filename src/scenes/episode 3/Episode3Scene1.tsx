@@ -1,4 +1,4 @@
-import { AbsoluteFill, useCurrentFrame, interpolate, staticFile } from "remotion";
+import { AbsoluteFill, useCurrentFrame, interpolate, staticFile, Easing } from "remotion";
 import { SceneMaster } from "../sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { Camera } from "../../components/Camera";
@@ -7,10 +7,11 @@ import { EgyptianStreet } from "../../environments/EgyptianStreet";
 import { yusufPose } from "../../animations/yusufPose";
 import { Audio } from "@remotion/media";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
-import { SCENE_1_DURATION, WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement } from "./episode3StreetMotion";
-
+import {WALK_CYCLE_FRAMES, YUSUF_GROUND_Y, getStreetPlacement,getApproachProgress,getSceneCameraPlacement} from "./episode3StreetMotion";
 export const Episode3Scene1 = () => {
   const frame = useCurrentFrame();
+  const SCENE_1_DURATION = 800;
+  const progress = getApproachProgress(frame);
   const scene1Episode3:MouthCue[] = [
     {startFrame:0, endFrame:63,pose:"rest"},
     // "تمام"
@@ -63,43 +64,30 @@ export const Episode3Scene1 = () => {
   const YusufScene1 = getMouthPose(frame,scene1Episode3)
   const walkfrontPose = frontWalkCycle(frame, WALK_CYCLE_FRAMES);
   const placement = getStreetPlacement(frame);
-  const streetScale = interpolate(frame, [0, SCENE_1_DURATION], [1, 1.01], {
+  const streetScale = interpolate(progress, [0, 1], [1.01, 1.075], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+    easing:Easing.inOut(Easing.ease)
   });
 
   const streetX = interpolate(frame, [0, SCENE_1_DURATION], [0, -18], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+    easing:Easing.inOut(Easing.cubic)
   });
 
   const streetY = interpolate(frame, [0, SCENE_1_DURATION], [0, -8], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
+        easing:Easing.inOut(Easing.cubic)
+
   });
+  const camera = getSceneCameraPlacement(placement);
 
 
-
-const cameraX = interpolate(
-  placement.x,
-  [250, 420],
-  [300, 0],
-  {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  }
-);
-const cameraY = interpolate(
-  placement.y,
-  [420,500],
-  [0,60],{
-    extrapolateLeft:"clamp",
-    extrapolateRight:"clamp",
-  }
-)
   return (
     
-    <Camera x={cameraX} y={cameraY} scale={1.1}>
+    <Camera x={camera.x} y={camera.y} scale={1.1}>
       <AbsoluteFill
         style={{
           translate: "-3.6px 14.4px",
@@ -110,10 +98,10 @@ const cameraY = interpolate(
   src={staticFile("VoiceOver/VO_Episode_3/rest-my-head-scene-1.m4a")}
   from={0}
 />
-        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={cameraX} cameraY={cameraY} />
+        <EgyptianStreet x={streetX} y={streetY} scale={streetScale} cameraX={camera.x} cameraY={camera.y} />
         <SceneMaster
           x={placement.x}
-          y={placement.y}
+          y={placement.y + 120}
           scale={placement.scale}
           width={500}
           groundY={YUSUF_GROUND_Y}
@@ -133,3 +121,4 @@ const cameraY = interpolate(
     </Camera>
   );
 };
+

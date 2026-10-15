@@ -30,8 +30,7 @@ return (
     </Sequence>
     <Sequence from={14400} durationInFrames={3000}>
         <Episode2Scene7 />
-    </Sequence>
-    
+    </Sequence>    
     </>
 )
 }
