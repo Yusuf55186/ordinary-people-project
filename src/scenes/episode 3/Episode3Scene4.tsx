@@ -68,7 +68,7 @@ const distortion = interpolate(
       style={{
         position: "absolute",
         inset: 0,
-        transform: `scaleX(${1 + distortion * 0.025}) scaleY(${1 + distortion * 0.015})`,
+        transform: `scaleX(${1 + distortion * 0.005}) scaleY(${1 + distortion * 0.015})`,
         filter: `blur(${distortion * 2}px)`,
       }}
     >

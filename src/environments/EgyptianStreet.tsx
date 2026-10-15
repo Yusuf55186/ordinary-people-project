@@ -11,20 +11,25 @@ const streetPath = "assets/Environment/Egyptian_street_assets_v1";
 const speed = {
   "01-sky-far-depth.png": 0.05,
   "04-ground-and-walkable-plane.png": 1,
-  "02-left-street-wall.png": 0.30,
-  "03-right-street-wall.png": 0.30,
-  "05-street-props.png": 0.10,
-}
-const layers : (keyof typeof speed)[] = [
+  "02-left-street-wall.png": 0.3,
+  "03-right-street-wall.png": 0.3,
+  "05-street-props.png": 0.1,
+};
+const layers: (keyof typeof speed)[] = [
   "01-sky-far-depth.png",
   "02-left-street-wall.png",
   "03-right-street-wall.png",
   "05-street-props.png",
-  "04-ground-and-walkable-plane.png"
+  "04-ground-and-walkable-plane.png",
 ];
 
-
-export const EgyptianStreet = ({ x = 0, y = 0, scale = 1, cameraX = 0, cameraY = 0 }: StreetProps) => {
+export const EgyptianStreet = ({
+  x = 0,
+  y = 0,
+  scale = 1,
+  cameraX = 0,
+  cameraY = 0,
+}: StreetProps) => {
   return (
     <div
       style={{
@@ -39,27 +44,25 @@ export const EgyptianStreet = ({ x = 0, y = 0, scale = 1, cameraX = 0, cameraY =
       }}
     >
       {layers.map((layer, index) => {
-         const correctionX = cameraX * (1 - speed[layer]);
-         return (
-        <Img
-          key={layer}
-          src={staticFile(`${streetPath}/${layer}`)}
-          style={{
-            position: "absolute",
-            top:0,
-            left:"-20%",
-            width: "140%",
-            height: "100%",
-            objectFit: "cover",
-            pointerEvents: "none",
-            transform: `translate(${correctionX}px)`
-          
-          }}
-        />
-         )
-      }
-        )}
-      
+        const correctionX = cameraX * (1 - speed[layer]);
+        return (
+          <Img
+            key={layer}
+            src={staticFile(`${streetPath}/${layer}`)}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: "-20%",
+              width: "140%",
+              height: "100%",
+              objectFit: "cover",
+              pointerEvents: "none",
+              transform: `translate(${correctionX}px)`,
+              translate: "0px 7.1px",
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
