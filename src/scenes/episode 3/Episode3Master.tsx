@@ -27,22 +27,22 @@ export const Episode3Master = () => {
       <Sequence from={2720} durationInFrames={1000}>
         <Episode3Scene5 />
       </Sequence>
-      <Sequence from={4406} durationInFrames={1000}>
+      <Sequence from={3720} durationInFrames={1000}>
         <Episode3Scene6 />
       </Sequence>
-      <Sequence from={5406} durationInFrames={1000}>
+      <Sequence from={4720} durationInFrames={1000}>
         <Episode3Scene6 />
       </Sequence>
-      <Sequence from={6400} durationInFrames={2000}>
+      <Sequence from={5720} durationInFrames={2000}>
         <Episode3Scene7 />
       </Sequence>
-      <Sequence from={8400} durationInFrames={2000}>
+      <Sequence from={7720} durationInFrames={400}>
         <Episode3Scene8 />
       </Sequence>
-      <Sequence from={10400} durationInFrames={1000}>
+      <Sequence from={8120} durationInFrames={600}>
         <Episode3Scene9 />
       </Sequence>
-      <Sequence from={11400} durationInFrames={1000}>
+      <Sequence from={8720} durationInFrames={500}>
         <Episode3Scene10 />
       </Sequence>
     </>

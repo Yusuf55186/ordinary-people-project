@@ -9,7 +9,7 @@ import {
   YUSUF_GROUND_Y,
   getSceneLastFrame,
   getStreetPlacement,
-  getTravelDistance,
+  
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 import { yusufPose } from "../../animations/yusufPose";
@@ -17,12 +17,24 @@ import { Audio } from "@remotion/media";
 export const Episode3Scene5 = () => {
     const frame = useCurrentFrame();
     const Scene5LastFrame = getSceneLastFrame("scene5");
-    const Scene4LastFrame = getSceneLastFrame("scene4");
+    const WALK_RESUME_START = 15;
+const WALK_RESUME_END = 70;
+
+const walkStrength = interpolate(
+  frame,
+  [WALK_RESUME_START, WALK_RESUME_END],
+  [0, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.ease),
+  }
+);
     const scene4EndWalkPhase =
   getSceneLastFrame("scene4"); 
-    const scene4EndDistance = getTravelDistance(Scene4LastFrame);
-    const scene4EndPlacement = getStreetPlacement(scene4EndDistance);
-    const scene4Travel = Math.min(frame,Scene5LastFrame);
+    const scene4EndPlacement = getStreetPlacement(getSceneLastFrame("scene1"));
+    const scene4Travel = Math.max(Math.min(frame - WALK_RESUME_START,Scene5LastFrame));
+    const walkFrame = Math.max(0, frame - WALK_RESUME_START);
     const placement = {
   x: scene4EndPlacement.x - scene4Travel * 0.25,
   y: scene4EndPlacement.y + scene4Travel * 0.13,
@@ -30,7 +42,7 @@ export const Episode3Scene5 = () => {
     scene4EndPlacement.scale +
     scene4Travel * 0.00015,
 };
-const YusufFrontWalk = frontWalkCycle(scene4EndWalkPhase + frame,WALK_CYCLE_FRAMES);
+const YusufFrontWalk = frontWalkCycle(scene4EndWalkPhase + walkFrame,WALK_CYCLE_FRAMES);
 const TAB_START = 30;
 const IF_IT_AFFECTED_ME_START = 145;
 const YA3NI_START = 324;
@@ -82,15 +94,39 @@ const uncertaintyStrength = interpolate(
     extrapolateRight: "clamp",
     easing: Easing.inOut(Easing.cubic),
   }
-);
-  const YusufActingPoseScene5 = {
+);const YusufActingPoseScene5 = {
   ...YusufFrontWalk,
 
+  // Walking animation gradually resumes
+  bodyY: (YusufFrontWalk.bodyY ?? 0) * walkStrength,
+
+  leftArmSwing: YusufFrontWalk.leftArmSwing * walkStrength,
+  rightArmSwing: YusufFrontWalk.rightArmSwing * walkStrength,
+
+  leftKneeRotation: YusufFrontWalk.leftKneeRotation * walkStrength,
+  rightKneeRotation: YusufFrontWalk.rightKneeRotation * walkStrength,
+
+  leftHipRotation: YusufFrontWalk.leftHipRotation * walkStrength,
+  rightHipRotation: YusufFrontWalk.rightHipRotation * walkStrength,
+
+  leftLegScaleY:
+    1 + (YusufFrontWalk.leftLegScaleY - 1) * walkStrength,
+
+  rightLegScaleY:
+    1 + (YusufFrontWalk.rightLegScaleY - 1) * walkStrength,
+
+  leftArmScaleY:
+    1 + (YusufFrontWalk.leftArmScaleY - 1) * walkStrength,
+
+  rightArmScaleY:
+    1 + (YusufFrontWalk.rightArmScaleY - 1) * walkStrength,
+
+  // Facial acting stays independent from walking
   headRotation:
-    (YusufFrontWalk.headRotation ?? 0) +
+    (YusufFrontWalk.headRotation ?? 0) * walkStrength +
     hesitationStrength * 4 +
-    futureThoughtStrength * 5 +
-    uncertaintyStrength * -4,
+    futureThoughtStrength * 5 -
+    uncertaintyStrength * 4,
 
   eyeLLookX: futureThoughtStrength * 5,
   eyeRLookX: futureThoughtStrength * 5,
@@ -98,22 +134,14 @@ const uncertaintyStrength = interpolate(
   leftEyeBrowY: uncertaintyStrength * -4,
   rightEyeBrowY: uncertaintyStrength * 3,
 };
-const OVERTHINK_START = 80;
-const THOUGHTS_OVERLAP_START = 260;
-const FULL_BEND = 340;
+const OVERTHINK_START = 260;
+const THOUGHTS_OVERLAP_START = 424;
+const FULL_BEND = 560;
 
 const streetBendStrength = interpolate(
   frame,
-  [
-    OVERTHINK_START,
-    THOUGHTS_OVERLAP_START,
-    FULL_BEND,
-  ],
-  [
-    0,
-    0.25,
-    1,
-  ],
+  [OVERTHINK_START, THOUGHTS_OVERLAP_START, FULL_BEND],
+  [0, 0.08, 0.25],
   {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -184,7 +212,7 @@ return (
       skewX(${bend * 1.5}deg)
       scaleX(${1 + bend * 0.015})
     `,
-    filter:`blur${noodleBlurStrength}`,
+    filter:`blur${noodleBlurStrength}px`,
     transformOrigin: "50% 75%",
   }}
 >

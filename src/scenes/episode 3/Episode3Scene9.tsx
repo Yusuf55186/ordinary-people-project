@@ -2,11 +2,10 @@ import { useCurrentFrame, interpolate,Easing, staticFile } from "remotion";
 import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
+import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 import {
   YUSUF_GROUND_Y,
-  getSceneLastFrame,
-  getStreetPlacement,
-  getTravelDistance,
+  
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 import { idleAnimation } from "../../animations/idleAnimation";
@@ -17,14 +16,11 @@ export const Episode3Scene9 = () => {
   const idlePose = idleAnimation(frame,60);
   
 
-  const scene8LastFrame =
-    getSceneLastFrame("scene8");
-
-  const scene8EndDistance =
-    getTravelDistance(scene8LastFrame);
-
-  const scene8EndPlacement =
-    getStreetPlacement(scene8EndDistance);
+ const scene8EndPlacement = {
+  x: 250,
+  y: 650,
+  scale: 0.7,
+};
 
     const AH_START = 50;
 const I_WAS_GOING_TO_GET_SOMETHING_START = 180;
@@ -88,16 +84,16 @@ const indomieConfusionStrength = interpolate(
 );
 const scene9IdlePose = {
     ...idlePose,
- headRotation: (
-  idlePose.headRotation ?? 0, + realizationStrength * -6
-  + recallStrength * -4
+headRotation:
+  (idlePose.headRotation ?? 0)
+  - realizationStrength * 6
+  - recallStrength * 4
   + indomieConfusionStrength * 6
-  + innerVoiceReaction * -4
+  - innerVoiceReaction * 4,
+ 
 
- ),
-
-  bodyY: (idlePose.bodyY ?? 0 + realizationStrength * -4),
-
+bodyY:
+  (idlePose.bodyY ?? 0) - realizationStrength * 4,
   leftArmSwing: 0,
   rightArmSwing: 0,
 
@@ -134,6 +130,78 @@ const scene9IdlePose = {
   mouthPose:"rest",
 
 };
+// آه
+const scene9Line1MouthCues: MouthCue[] = [
+  { startFrame: 0, endFrame: 5, pose: "rest" },
+  { startFrame: 5, endFrame: 15, pose: "A" },
+  { startFrame: 15, endFrame: 25, pose: "E" },
+  { startFrame: 25, endFrame: 35, pose: "rest" },
+];
+
+// أنا كنت رايح أجيب حاجة
+const scene9Line2MouthCues: MouthCue[] = [
+  { startFrame: 0, endFrame: 5, pose: "rest" },
+
+  // أنا كنت
+  { startFrame: 5, endFrame: 12, pose: "A" },
+  { startFrame: 12, endFrame: 18, pose: "N" },
+  { startFrame: 18, endFrame: 25, pose: "A" },
+  { startFrame: 25, endFrame: 33, pose: "E" },
+  { startFrame: 33, endFrame: 40, pose: "N" },
+
+  // رايح
+  { startFrame: 40, endFrame: 48, pose: "R" },
+  { startFrame: 48, endFrame: 58, pose: "A" },
+  { startFrame: 58, endFrame: 65, pose: "E" },
+
+  // أجيب حاجة
+  { startFrame: 65, endFrame: 73, pose: "A" },
+  { startFrame: 73, endFrame: 82, pose: "E" },
+  { startFrame: 82, endFrame: 89, pose: "MBP" },
+  { startFrame: 89, endFrame: 98, pose: "A" },
+  { startFrame: 98, endFrame: 110, pose: "rest" },
+];
+
+// إيه هي؟
+const scene9Line3MouthCues: MouthCue[] = [
+  { startFrame: 0, endFrame: 5, pose: "rest" },
+  { startFrame: 5, endFrame: 15, pose: "E" },
+  { startFrame: 15, endFrame: 25, pose: "A" },
+  { startFrame: 25, endFrame: 35, pose: "E" },
+  { startFrame: 35, endFrame: 45, pose: "rest" },
+];
+
+// إندومي!
+const scene9Line4MouthCues: MouthCue[] = [
+  { startFrame: 0, endFrame: 5, pose: "rest" },
+
+  // إن
+  { startFrame: 5, endFrame: 13, pose: "E" },
+  { startFrame: 13, endFrame: 20, pose: "N" },
+
+  // دو
+  { startFrame: 20, endFrame: 28, pose: "N" },
+  { startFrame: 28, endFrame: 40, pose: "U" },
+
+  // مي
+  { startFrame: 40, endFrame: 48, pose: "MBP" },
+  { startFrame: 48, endFrame: 60, pose: "I" },
+
+  { startFrame: 60, endFrame: 75, pose: "rest" },
+];
+const LINE1_START = 0;
+const LINE2_START = 120;
+const LINE3_START = 262;
+const LINE4_START = 462;
+
+const scene9MouthPose =
+  frame >= LINE4_START
+    ? getMouthPose(frame - LINE4_START, scene9Line4MouthCues)
+    : frame >= LINE3_START
+      ? getMouthPose(frame - LINE3_START, scene9Line3MouthCues)
+      : frame >= LINE2_START
+        ? getMouthPose(frame - LINE2_START, scene9Line2MouthCues)
+        : getMouthPose(frame - LINE1_START, scene9Line1MouthCues);
   return (
     <>
     <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S09_Yusuf_01.m4a")}></Audio>
@@ -156,7 +224,7 @@ const scene9IdlePose = {
           castShadow: "streetSun",
         }}
       >
-        <YusufCharacter leftHandPose={"open"} grounded {...scene9IdlePose} />
+        <YusufCharacter leftHandPose={"open"} grounded {...scene9IdlePose} mouthPose={scene9MouthPose}/>
       </SceneMaster>
     </Camera>
     </>

@@ -8,34 +8,49 @@ import { Audio } from "@remotion/media";
 import {
   WALK_CYCLE_FRAMES,
   YUSUF_GROUND_Y,
-  getSceneLastFrame,
-  getStreetPlacement,
-  getTravelDistance,
+
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 
 export const Episode3Scene10 = () => {
   const frame = useCurrentFrame();
 
-  const scene9LastFrame = getSceneLastFrame("scene9");
-  const scene10LastFrame = getSceneLastFrame("scene10");
+   const startPlacement = {
+  x: 250,
+  y: 650,
+  scale: 0.7,
+};
 
-  const scene9EndDistance =
-    getTravelDistance(scene9LastFrame);
+const destination = {
+  x: 250,
+  y: 720,
+  scale: 0.82,
+};
 
-  const scene9EndPlacement =
-    getStreetPlacement(scene9EndDistance);
+const travelProgress = interpolate(
+  frame,
+  [0, 300],
+  [0, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+);
 
-  const scene10Travel =
-    Math.min(frame, scene10LastFrame);
-
-  const placement = {
-    x: scene9EndPlacement.x - scene10Travel * 0.2,
-    y: scene9EndPlacement.y + scene10Travel * 0.1,
-    scale:
-      scene9EndPlacement.scale +
-      scene10Travel * 0.00012,
-  };
+const placement = {
+  x: interpolate(travelProgress, [0, 1], [
+    startPlacement.x,
+    destination.x,
+  ]),
+  y: interpolate(travelProgress, [0, 1], [
+    startPlacement.y,
+    destination.y,
+  ]),
+  scale: interpolate(travelProgress, [0, 1], [
+    startPlacement.scale,
+    destination.scale,
+  ]),
+};
   const CALL_BACK_START = 200;
 const callbackReactionStrength = interpolate(
   frame,
@@ -53,7 +68,7 @@ const callbackReactionStrength = interpolate(
   }
 );
   const walkingPose = frontWalkCycle(
-    scene9LastFrame + frame,
+    frame,
     WALK_CYCLE_FRAMES
   );
   const scene10Pose = {

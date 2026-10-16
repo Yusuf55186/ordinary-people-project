@@ -9,38 +9,55 @@ import {
   YUSUF_GROUND_Y,
   getSceneLastFrame,
   getStreetPlacement,
-  getTravelDistance,
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 import { Audio } from "@remotion/media";
 export const Episode3Scene7 = () => {
     const frame = useCurrentFrame();
+   const FREEZE_START = 950;
+   const scene1LastFrame = getSceneLastFrame("scene1")
+const startPlacement = getStreetPlacement(
+  getSceneLastFrame("scene1")
+);
 
-const scene6LastFrame =
-  getSceneLastFrame("scene6");
-
-const scene7LastFrame =
-  getSceneLastFrame("scene7");
-
-const scene6EndDistance =
-  getTravelDistance(scene6LastFrame);
-
-const scene6EndPlacement =
-  getStreetPlacement(scene6EndDistance);
-
-const scene7Travel =
-  Math.min(frame, scene7LastFrame);
-
-const placement = {
-  x: scene6EndPlacement.x - scene7Travel * 0.22,
-  y: scene6EndPlacement.y + scene7Travel * 0.12,
-  scale:
-    scene6EndPlacement.scale +
-    scene7Travel * 0.00014,
+// Waar Yusuf naartoe loopt
+const destination = {
+  x: 250,
+  y: 650,
+  scale: 0.7,
 };
 
+// Voortgang van 0 naar 1
+const travelProgress = interpolate(
+  frame,
+  [0, FREEZE_START],
+  [0, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.cubic),
+  }
+);
+
+const placement = {
+  x: interpolate(travelProgress, [0, 1], [
+    startPlacement.x,
+    destination.x,
+  ]),
+  y: interpolate(travelProgress, [0, 1], [
+    startPlacement.y,
+    destination.y,
+  ]),
+  scale: interpolate(travelProgress, [0, 1], [
+    startPlacement.scale,
+    destination.scale,
+  ]),
+};
+
+const walkFrame = Math.min(frame, FREEZE_START);
+
 const YusufFrontWalk = frontWalkCycle(
-  scene6LastFrame + frame,
+  scene1LastFrame + walkFrame,
   WALK_CYCLE_FRAMES
 );
 
@@ -152,10 +169,12 @@ const cameraShakeY =
   }
 );
 
-const finalGroundDistortion =
-  zigzagStrength +
-  overlapChaos * 0.8 +
-  fullNoodleStrength * 1.2;
+const finalGroundDistortion = Math.min(
+  1.5,
+  zigzagStrength * 0.5 +
+  overlapChaos * 0.4 +
+  fullNoodleStrength * 0.6
+);
 return (
     <>
     <Audio src={staticFile("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_01.m4a")} />

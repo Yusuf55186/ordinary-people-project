@@ -2,22 +2,22 @@ import { useCurrentFrame,Easing,interpolate } from "remotion";
 import { SceneMaster } from "../../scenes/sceneCharacter";
 import { YusufCharacter } from "../../YusufCharacter";
 import { EgyptianStreet } from "../../environments/EgyptianStreet";
+import { staticFile } from "remotion";
+import { Audio } from "@remotion/media";
 import {
   YUSUF_GROUND_Y,
-  getSceneLastFrame,
-  getStreetPlacement,
-  getTravelDistance,
+
 } from "./episode3StreetMotion";
 import { Camera } from "../../components/Camera";
 import { yusufPose } from "../../animations/yusufPose";
 import { getMouthPose, type MouthCue } from "../../animations/lipSync";
 export const Episode3Scene8 = () => {
   const frame = useCurrentFrame();
-  const scene7LastFrame = getSceneLastFrame("scene7");
-  const scene7EndDistance =
-    getTravelDistance(scene7LastFrame);
-  const scene7EndPlacement =
-    getStreetPlacement(scene7EndDistance);
+  const scene7EndPlacement = {
+  x: 250,
+  y: 650,
+  scale: 0.7,
+};
 
     const lookAroundStrength = interpolate(
   frame,
@@ -107,15 +107,33 @@ const line2 = getMouthPose(
 const scene8MouthPose =
   frame >= LINE2_START
     ? line2
-    : line1;
+    : frame >= LINE1_START
+    ? line1
+    : "rest";
+    const cameraZoom = interpolate(
+  frame,
+  [0, 8, 20],
+  [1.23, 1.08, 1],
+  {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.out(Easing.cubic),
+  }
+);
 const yusufresolver = yusufPose(scene8Pose);
 
   return (
-    <Camera
-      x={0}
-      y={0}
-      scale={1}
-    >
+    <>
+      <Audio
+        src={staticFile("VoiceOver/VO_Episode_3/EP03_S08_Yusuf_01.m4a")}
+        from={LINE1_START}
+      />
+      <Audio
+        src={staticFile("VoiceOver/VO_Episode_3/EP03_S08_Yusuf_02.m4a")}
+        from={LINE2_START}
+      />
+
+      <Camera x={0} y={0} scale={cameraZoom}>
       <EgyptianStreet
         groundBend={0}
       />
@@ -140,5 +158,6 @@ const yusufresolver = yusufPose(scene8Pose);
         />
       </SceneMaster>
     </Camera>
+    </>
   );
 };
