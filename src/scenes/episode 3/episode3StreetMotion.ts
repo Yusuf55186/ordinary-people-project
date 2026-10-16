@@ -33,37 +33,29 @@ export const STOP_FRAME = 115;
 
 
 export const getTravelDistance = (
-  frame: number
+  frame: number,
+  slowStart: number = SLOW_START,
+  stopFrame: number = STOP_FRAME
 ): number => {
-  const framesSinceSlowdownStarted = Math.max(
+  const elapsed = Math.max(
     0,
-    Math.min(
-      frame - SLOW_START,
-      STOP_FRAME - SLOW_START
-    )
+    Math.min(frame - slowStart, stopFrame - slowStart)
   );
 
   return (
-    Math.max(0, Math.min(frame, SLOW_START)) +
-    framesSinceSlowdownStarted -
-    (
-      framesSinceSlowdownStarted *
-      framesSinceSlowdownStarted
-    ) /
-      (2 * (STOP_FRAME - SLOW_START))
+    Math.max(0, Math.min(frame, slowStart)) +
+    elapsed -
+    (elapsed * elapsed) / (2 * (stopFrame - slowStart))
   );
 };
 
 
 export const MAX_APPROACH_DISTANCE =
-  getTravelDistance(STOP_FRAME);
-
+getTravelDistance(STOP_FRAME)
 export const getApproachProgress = (
   frame: number
 ) =>
-  getTravelDistance(frame) /
-  MAX_APPROACH_DISTANCE;
-
+getTravelDistance(frame) / MAX_APPROACH_DISTANCE;
 
 export const getWalkStrength = (
   frame: number

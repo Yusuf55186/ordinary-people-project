@@ -21,10 +21,10 @@ export const Episode3Master = () => {
       <Sequence from={1237} durationInFrames={1080}>
         <Episode3Scene3 />
       </Sequence>
-      <Sequence from={2317} durationInFrames={1080}>
+      <Sequence from={2317} durationInFrames={400}>
         <Episode3Scene4 />
       </Sequence>
-      <Sequence from={3400} durationInFrames={1000}>
+      <Sequence from={2720} durationInFrames={1000}>
         <Episode3Scene5 />
       </Sequence>
       <Sequence from={4406} durationInFrames={1000}>

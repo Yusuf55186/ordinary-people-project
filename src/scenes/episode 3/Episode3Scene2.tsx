@@ -120,6 +120,14 @@ const streetBlur = interpolate(
     extrapolateRight: "clamp",
   }
 );
+const carBlur = interpolate(
+  frame,
+  [0,30,220],
+  [0,MAX_STREET_BLUR,0],{
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  }
+)
 const streetScale = interpolate(
   frame,
   [0, Scene2LastFrame,],
@@ -377,7 +385,7 @@ const confirmMouthCues: MouthCue[] = [
   { startFrame: 65, endFrame: 90, pose: "rest" },
 ];
 
-const yusufAudioStart = 50;
+const yusufAudioStart = 200;
 const confirmAudioStart = 550;
 const smileAudioStart = 615;
 const firstLineMouthPose = getMouthPose(
@@ -465,15 +473,15 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
   return (
     <>
     <Audio from={yusufAudioStart} src={staticFile("VoiceOver/VO_Episode_3/looks_like_my_father_car.m4a")}></Audio>
-    <Audio from={231} src={staticFile("VoiceOver/VO_Episode_3/it_was_yellow.m4a")}></Audio>
-        <Audio from={384} src={staticFile("VoiceOver/VO_Episode_3/or_was_it_beige.m4a")}></Audio>
+    <Audio from={350} src={staticFile("VoiceOver/VO_Episode_3/it_was_yellow.m4a")}></Audio>
+        <Audio from={480} src={staticFile("VoiceOver/VO_Episode_3/or_was_it_beige.m4a")}></Audio>
             <Audio from={550} src={staticFile("VoiceOver/VO_Episode_3/no_no_yellow.m4a")}></Audio>
 
     
     <Camera x={cameraBackToYusufX} y={camera.y} scale={camera.scale}>
       <AbsoluteFill
         style={{
-          translate: "-3.6px 14.4px",
+         
         }}
       >
         
@@ -496,6 +504,7 @@ const resolvedYusuf = yusufPose(scene2ActingPose);
 </div>
 <div style={{
   position:"absolute",
+  filter: `blur(${carBlur}px)`,
   left:540,
   top:460,
   zIndex:9999,
