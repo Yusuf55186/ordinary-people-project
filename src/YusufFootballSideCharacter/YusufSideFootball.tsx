@@ -16,7 +16,7 @@ export const YusufSideFootball = () => {
     position: "absolute",
     left: 50,
     top: 140,
-    width: 190,
+    width: 200,
     height: 100,
     transform: "rotate(20deg)",
     transformOrigin: "20px 20px",
