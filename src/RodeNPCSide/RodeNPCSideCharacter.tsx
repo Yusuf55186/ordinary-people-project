@@ -1,6 +1,7 @@
 import { RodeNPCSideLeg } from "./RodeNPCLegs"
 import { RodeNPCHead } from "./RodeNPCHead"
 import { RodeNPCTorso } from "./RodeNPCTorso"
+import { RodeNPCArms } from "./RodeNPCArms"
 export const RodeNpcCharacter = () => {
     return (
         <>
@@ -13,6 +14,9 @@ export const RodeNpcCharacter = () => {
          <div style={{ position: "absolute", left: 1218, top: 574, width:140, height: 300 }}>
         <RodeNPCSideLeg />
         </div>
+                 <div style={{ position: "absolute", left: 1310, top: 434, width: 140, height: 134 }}>
+  <RodeNPCArms />
+</div>
         </>
     )
 }
