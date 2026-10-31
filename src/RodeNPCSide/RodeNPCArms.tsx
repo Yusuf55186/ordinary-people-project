@@ -4,7 +4,7 @@ export const RodeNPCArms = () => {
       xmlns="http://www.w3.org/2000/svg"
       id="RodeNPCArms"
       version="1.1"
-      viewBox="0 0 188.37 180"
+      viewBox="0 0 188.37 200"
       style={{ width: "100%", height: "100%" }}
     >
       <defs>
@@ -30,7 +30,7 @@ export const RodeNPCArms = () => {
 
           .rode-arm-st0,
           .rode-arm-st6 {
-            opacity: .1;
+            opacity: 0;
           }
 
           .rode-arm-st1,
@@ -59,10 +59,11 @@ export const RodeNPCArms = () => {
           .rode-arm-st5 {
             opacity: .3;
           }
+     
         `}</style>
       </defs>
 
-      <g id="R_hand" transform="rotate(0 72 70)">
+      <g id="R_hand" transform="rotate(45 72 70)">
         <path
           className="rode-arm-st2"
           d="M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z"
@@ -89,7 +90,7 @@ export const RodeNPCArms = () => {
         />
       </g>
 
-      <g id="Forearm_x5F_R" transform="rotate(0 72 70)">
+      <g id="Forearm_x5F_R" transform="rotate(45 72 70)">
         <path
           id="Forearm_R"
           className="rode-arm-st3"
@@ -97,7 +98,7 @@ export const RodeNPCArms = () => {
         />
       </g>
 
-      <g id="Upper_x5F_Arm_x5F_R">
+      <g id="Upper_x5F_Arm_x5F_R" >
         <path
           id="Upper_x5F_Arm_x5F_R1"
           data-name="Upper_x5F_Arm_x5F_R"
@@ -126,7 +127,7 @@ export const RodeNPCArms = () => {
         />
       </g>
 
-      <g id="Details">
+      <g id="Details" transform="rotate(45 72 70)">
         <path
           className="rode-arm-st0"
           d="M121.51,134.77c.08-.63.28-1.24.61-1.8.09-.15.21-.28.31-.42L6.89,14.19c-11.39,19.43,11.78,24.94,11.78,24.94-1.9,10.92,50.02,45.04,49.31,45.04-.53,0,32.64,31.66,53.49,50.59.01,0,.03,0,.04,0Z"

@@ -14,7 +14,8 @@ export const RodeNpcCharacter = () => {
          <div style={{ position: "absolute", left: 1218, top: 574, width:140, height: 300 }}>
         <RodeNPCSideLeg />
         </div>
-                 <div style={{ position: "absolute", left: 1310, top: 434, width: 140, height: 134 }}>
+                 <div style={{ position: "absolute", left: 1302, top: 437, width: 150, height: 150,transform: "rotate(20deg)",
+    transformOrigin: "20px 20px",}}>
   <RodeNPCArms />
 </div>
         </>

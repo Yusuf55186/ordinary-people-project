@@ -11,19 +11,7 @@ export const YusufSideFootball = () => {
   </div>
 
   {/* Arm: achter de torso */}
-  <div
-  style={{
-    position: "absolute",
-    left: 50,
-    top: 140,
-    width: 200,
-    height: 100,
-    transform: "rotate(20deg)",
-    transformOrigin: "20px 20px",
-  }}
->
-  <YusufSideArms />
-</div>
+  
 
   {/* Torso */}
   <div style={{ position: "absolute", left: 0, top: 115, width: 141.6, height: 161.42 }}>
@@ -34,6 +22,18 @@ export const YusufSideFootball = () => {
   <div style={{ position: "absolute", left: 49, top: 4, width: 49.15, height: 116.6 }}>
     <YusufSideHead />
   </div>
+  <div
+  style={{
+    position: "absolute",
+    left:70,
+    top: 140,
+    width: 150, height: 150,
+    transform: "rotate(20deg)",
+    transformOrigin: "20px 20px",
+  }}
+>
+  <YusufSideArms />
+</div>
 </div>
     )
 }
