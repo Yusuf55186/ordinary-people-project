@@ -1,66 +1,136 @@
+import { useId } from "react";
+import { useCharacterLighting } from "../scenes/sceneCharacter";
 export const YusufSideHead = () => {
+  const id = `yusuf-head-${useId().replace(/:/g, "")}`;
+  const lighting = useCharacterLighting();
+  const left = Math.max(0, Math.min(1, lighting.leftLight));
+  const right = Math.max(0, Math.min(1, lighting.rightLight));
+  const burn = Math.max(0, Math.min(1, lighting.burn));
 return (
-<svg xmlns="http://www.w3.org/2000/svg" id="YusufSideHead" version="1.1" viewBox="0 0 49.15 116.6">
+<svg xmlns="http://www.w3.org/2000/svg" id={`${id}-YusufSideHead`} version="1.1" viewBox="0 0 49.15 116.6" style={{ display: "block", width: "100%", height: "100%" }}>
 
   <defs>
+    <linearGradient id={`${id}-burn`} x1="0" y1="0" x2="49.15" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#0a1834" stopOpacity="0.08" />
+      <stop offset="50%" stopColor="#0a1834" stopOpacity="0.42" />
+      <stop offset="100%" stopColor="#0a1834" stopOpacity="0.12" />
+    </linearGradient>
+    <radialGradient id={`${id}-left`} cx="0" cy="28" r="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor={lighting.leftColor} stopOpacity="0.36" />
+      <stop offset="35%" stopColor={lighting.leftColor} stopOpacity="0.17" />
+      <stop offset="78%" stopColor={lighting.leftColor} stopOpacity="0" />
+    </radialGradient>
+    <radialGradient id={`${id}-right`} cx="49" cy="30" r="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor={lighting.rightColor} stopOpacity="0.34" />
+      <stop offset="35%" stopColor={lighting.rightColor} stopOpacity="0.15" />
+      <stop offset="78%" stopColor={lighting.rightColor} stopOpacity="0" />
+    </radialGradient>
+    <linearGradient id={`${id}-hairline-shadow`} x1="0" y1="31" x2="0" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#071228" stopOpacity="0.65" />
+      <stop offset="100%" stopColor="#071228" stopOpacity="0" />
+    </linearGradient>
+    <clipPath id={`${id}-face-clip`}>
+      <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" />
+    </clipPath>
+    <mask id={`${id}-hair-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="49.15" height="116.6" style={{ maskType: "alpha" }}>
+      <use href={`#${id}-Hair`} />
+    </mask>
+    <radialGradient id={`${id}-hair-left`} cx="2" cy="5" r="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor={lighting.leftColor} stopOpacity="0.24" />
+      <stop offset="50%" stopColor={lighting.leftColor} stopOpacity="0.08" />
+      <stop offset="100%" stopColor={lighting.leftColor} stopOpacity="0" />
+    </radialGradient>
+    <radialGradient id={`${id}-hair-right`} cx="42" cy="7" r="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor={lighting.rightColor} stopOpacity="0.22" />
+      <stop offset="50%" stopColor={lighting.rightColor} stopOpacity="0.07" />
+      <stop offset="100%" stopColor={lighting.rightColor} stopOpacity="0" />
+    </radialGradient>
+
     <style>{`
-      .head-st0, .head-st1, .head-st2, .head-st3, .head-st4, .head-st5 {
+      #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st2, #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st4, #${id}-YusufSideHead .head-st5 {
         stroke-miterlimit: 10;
       }
 
-  .head-st0, .head-st1, .head-st2, .head-st3, .head-st5 {
+  #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st2, #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st5 {
     stroke: #000;
   }
 
-  .head-st0, .head-st4 {
+  #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st4 {
     fill: none;
   }
 
-  .head-st1, .head-st3 {
+  #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st3 {
     fill: #fff;
   }
 
-  .head-st3, .head-st6 {
+  #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st6 {
     opacity: .5;
   }
 
-  .head-st4 {
+  #${id}-YusufSideHead .head-st4 {
     stroke: #1b0000;
   }
 
-  .head-st5 {
+  #${id}-YusufSideHead .head-st5 {
     fill: #d48455;
 }
 `}
 </style>
 
   </defs>
-  <path id="Head" className="head-st5" d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42"/>
-  <g id="R_ear">
+  <path id={`${id}-Head`} className="head-st5" d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42"/>
+    <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
+    <path
+      d="M4 30 C14 35 29 35 39 30 L41 47 L2 47 Z"
+      clipPath={`url(#${id}-face-clip)`}
+      fill={`url(#${id}-hairline-shadow)`}
+      opacity={burn * 0.65}
+      pointerEvents="none"
+    />
+  <g id={`${id}-R_ear`}>
     <path className="head-st5" d="M43.83,67.8s3.71,4.67-1.37,5.42"/>
+    <path d="M43.83,67.8s3.71,4.67-1.37,5.42" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M43.83,67.8s3.71,4.67-1.37,5.42" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M43.83,67.8s3.71,4.67-1.37,5.42" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M43.83,67.8s3.71,4.67-1.37,5.42" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
     <path className="head-st5" d="M41.51,57.3s17.04,13.9-1.52,22.79"/>
+    <path d="M41.51,57.3s17.04,13.9-1.52,22.79" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M41.51,57.3s17.04,13.9-1.52,22.79" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M41.51,57.3s17.04,13.9-1.52,22.79" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M41.51,57.3s17.04,13.9-1.52,22.79" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
   </g>
   <path className="head-st4" d="M15.6,93.02c-1.89,4.22-6.46,6.44-10.93,6.51"/>
-  <g id="Eye_L">
+  <g id={`${id}-Eye_L`}>
     <path className="head-st1" d="M12.12,71.69l-5.02-.07c-2.63-.04-4.7-3.63-4.63-8.02h0c.08-4.39,2.27-7.93,4.9-7.89l5.02.07c2.63.04,4.7,3.63,4.63,8.02h0c-.08,4.39-2.27,7.93-4.9,7.89Z"/>
     <ellipse className="head-st2" cx="9.64" cy="66.05" rx="1.38" ry=".83" transform="translate(-56.58 74.43) rotate(-88.91)"/>
     <path className="head-st5" d="M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z"/>
+    <path d="M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
   </g>
-  <g id="Nose_Yusuf">
-    <path id="nostril_R" className="head-st0" d="M9.85,86.25"/>
-    <path id="nostril_R1" data-name="nostril_R" className="head-st0" d="M13.27,81.37"/>
-    <path id="nostril_L" className="head-st5" d="M2.89,76.21s-5.99,10.35,1.01,10.04"/>
+  <g id={`${id}-Nose_Yusuf`}>
+    <path id={`${id}-nostril_R`} className="head-st0" d="M9.85,86.25"/>
+    <path id={`${id}-nostril_R1`} data-name="nostril_R" className="head-st0" d="M13.27,81.37"/>
+    <path id={`${id}-nostril_L`} className="head-st5" d="M2.89,76.21s-5.99,10.35,1.01,10.04"/>
+    <path d="M2.89,76.21s-5.99,10.35,1.01,10.04" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M2.89,76.21s-5.99,10.35,1.01,10.04" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M2.89,76.21s-5.99,10.35,1.01,10.04" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M2.89,76.21s-5.99,10.35,1.01,10.04" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
   </g>
   <g className="head-st6">
     <path className="head-st1" d="M1.68,64.96"/>
     <ellipse className="head-st1" cx="10.3" cy="63.45" rx="8.93" ry="12.94" transform="translate(-.59 .1) rotate(-.53)"/>
   </g>
-  <g id="Eyebrow_R">
+  <g id={`${id}-Eyebrow_R`}>
     <line className="head-st0" x1="7.37" y1="45.78" x2="27.76" y2="46.16"/>
     <path className="head-st0" d="M27.4,46.27c.13-.27,2.11-.09,1.96,1.79"/>
     <path className="head-st0" d="M8.06,45.9c-.12-.27-2.1-.17-2.03,1.73"/>
   </g>
-  <g id="Hair">
+  <g id={`${id}-Hair`}>
     <g>
       <path className="head-st0" d="M6.27,21.48s-.58,3.92.2,4.56c.12.1.18.22.14.33-.15.36-.41,1.07-.25,1.35.03.06.06.12.06.18-.03.43-.05,2.07,1.09,2.33.21.05.38.13.46.25.3.44,1.86.6,2.67,1.38,1.89,1.8,7.58,1.4,7.58,1.4.13.02.25.05.38.06.84.1,1.7.13,2.54.05.52-.05,1.5-.4,1.76-.29.66.27,2.57.1,2.73-.29.27-.62,1.42.78,4.43-.11,1.93-.57,3.09-.26,5.09-.12,1.41.1,2.24-.63,2.61-1.07.14-.16.39-.27.67-.35l.84-1.04"/>
       <path className="head-st0" d="M.95,54.26l.23-8.92s.14-20.84.98-22.93c.21-.53.26-1.17.18-1.77-.16-1.19-.35-2.91-.17-3.62.06-.25.08-.51.07-.77,0-1.55.08-5.85,1.29-6.7.35-.25.67-.61.84-1.12.46-1.38,1.5-3.7,3.24-3.49,2.46.29,3.89,1.18,6.29-.71,3.73-2.94,5.13,1.3,5.47-.63.21-1.19,2.58-1.87,3.38-1.07.32.32,1.53-.84,2.18-1.02,1.03-.29,2.09-.28,3.13-.02.16.04.32.1.47.16,0,0,7.03-1.62,9.33,3.8.99,2.33,2.91,2.74,3.27,4.07.1.36.31.62.57.75,1.41.73,1.35,5.78,1.31,7.12,0,.19.02.37.07.54.19.85-.14,3.07-.33,4.19-.06.35.02.71.16,1.02.88,1.86-2.48,22.33-1.59,23.07l.03,11.52-1.19-.56"/>
@@ -139,8 +209,16 @@ return (
     <path d="M1.68,8.77v.33c-.01.21.03.4.13.58.06.19.16.35.31.48.14.15.3.25.48.31.18.09.37.14.58.13l.4-.05c.25-.07.47-.2.66-.39l.23-.3c.14-.23.2-.49.2-.76v-.33c.01-.21-.03-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"/>
     <path d="M1.63,9.75l-.02.12c0,.21.04.4.13.58.06.19.16.35.31.48.14.15.3.25.48.31.18.09.37.14.58.13l.4-.05c.25-.07.47-.2.66-.39l.23-.3c.14-.23.2-.49.2-.76l.02-.12c0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"/>
   </g>
-  <g id="R_ear1" data-name="R_ear">
+  <g mask={`url(#${id}-hair-mask)`} pointerEvents="none">
+    <rect width="49.15" height="116.6" fill={`url(#${id}-hair-left)`} opacity={left} />
+    <rect width="49.15" height="116.6" fill={`url(#${id}-hair-right)`} opacity={right} />
+  </g>
+  <g id={`${id}-R_ear1`} data-name="R_ear">
     <path className="head-st5" d="M44.29,67.4s3.71,4.67-1.37,5.42"/>
+    <path d="M44.29,67.4s3.71,4.67-1.37,5.42" fill={`url(#${id}-burn)`} opacity={burn} stroke="none" pointerEvents="none" />
+    <path d="M44.29,67.4s3.71,4.67-1.37,5.42" fill={`url(#${id}-left)`} opacity={left} stroke="none" pointerEvents="none" />
+    <path d="M44.29,67.4s3.71,4.67-1.37,5.42" fill={`url(#${id}-right)`} opacity={right} stroke="none" pointerEvents="none" />
+    <path d="M44.29,67.4s3.71,4.67-1.37,5.42" fill="none" stroke="#000" strokeMiterlimit={10} pointerEvents="none" />
   </g>
   <line className="head-st3" x1="19.7" y1="62.9" x2="29.62" y2="60.76"/>
 </svg>

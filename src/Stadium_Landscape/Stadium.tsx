@@ -1,10 +1,13 @@
 import { AbsoluteFill, Img, staticFile } from "remotion";
 const stadiumPath = "assets/Environment/Stadium";
 const stadiumLayers = [
-  "stadium-sky.png",
-  "stadium-neighborhood.png",
-  "stadium-pitch.png",
+  "Nachtelijke hemel met blauwe wolken-1.png",
+    "Verlichte lichtmasten met zachte lichtbundels-5.png",
+
+  "Bomen, huisdak en verlichte tribune-2.png",
+  "Verlichte grasvoorgrond van het voetbalveld-4.png",
   "stadium-goal-fence.png",
+
 ];
 
 export const Episode4Stadium = () => (
