@@ -1,14 +1,30 @@
 import { useId } from "react";
 // Use the SAME SceneMaster module that provides this character's lighting.
 import { useCharacterLighting } from "../scenes/sceneCharacter";
-export const YusufSideLegs = () => {
+
+type Props = {
+  shortsColor?: string;
+  shoeColor?: string;
+  shoeDarkColor?: string;
+  shoeLightColor?: string;
+  shoeOutlineColor?: string;
+  skinColor?: string;
+};
+
+export const YusufSideLegs = ({
+  shortsColor = "#0252d2",
+  shoeColor = "#46a2cd",
+  shoeDarkColor = "#6faad3",
+  shoeLightColor = "#84c0e2",
+  shoeOutlineColor = "#042840",
+  skinColor = "#d48455",
+}: Props) => {
   const id = `yusuf-leg-${useId().replace(/:/g, "")}`;
   const lighting = useCharacterLighting();
   const left = Math.max(0, Math.min(1, lighting.leftLight));
   const right = Math.max(0, Math.min(1, lighting.rightLight));
   const burn = Math.max(0, Math.min(1, lighting.burn));
   const night = left + right + burn > 0;
-
   return (
     <svg xmlns="http://www.w3.org/2000/svg" id={`${id}-Yusuf_x5F_Legs_x5F_Side`} version="1.1" style={{ display: "block", width: "100%", height: "100%" }} viewBox="0 0 196.52 259.89">
       <defs>
@@ -38,18 +54,18 @@ export const YusufSideLegs = () => {
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st4, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { fill: #fff; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st12 { fill: #3fa9f5; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st13, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6 { fill: none; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5 { fill: #46a2cd; stroke: #042840; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5 { fill: ${shoeColor}; stroke: ${shoeOutlineColor}; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { stroke-width: 2px; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st14 { fill: #84c0e2; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st15 { fill: #6faad3; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st7 { fill: #0252d2; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st14 { fill: ${shoeLightColor}; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st15 { fill: ${shoeDarkColor}; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st7 { fill: ${shortsColor}; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st8 { fill: aqua; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st9 { fill: #ff0014; stroke: #fff; stroke-width: 3px; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st3 { opacity: .2; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st16 { fill: #0d475c; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st16 { fill: ${shoeColor === "#46a2cd" ? "#0d475c" : shoeOutlineColor}; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st17, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st18, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st19 { fill: #141110; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st18 { opacity: .1; }
-          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st10 { fill: #d48455; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st10 { fill: ${skinColor}; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { stroke: #ed1c24; }
           #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st19 { opacity: .3; }
         `}</style>

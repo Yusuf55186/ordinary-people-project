@@ -1,5 +1,7 @@
 import { useId } from "react";
+// Adjust this import to your project's SceneMaster location.
 import { useCharacterLighting } from "../scenes/sceneCharacter";
+
 export const YusufSideHead = () => {
   const id = `yusuf-head-${useId().replace(/:/g, "")}`;
   const lighting = useCharacterLighting();
@@ -10,6 +12,7 @@ return (
 <svg xmlns="http://www.w3.org/2000/svg" id={`${id}-YusufSideHead`} version="1.1" viewBox="0 0 49.15 116.6" style={{ display: "block", width: "100%", height: "100%" }}>
 
   <defs>
+    {/* Cool fill light, with a slightly darker middle of the face. */}
     <linearGradient id={`${id}-burn`} x1="0" y1="0" x2="49.15" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stopColor="#0a1834" stopOpacity="0.08" />
       <stop offset="50%" stopColor="#0a1834" stopOpacity="0.42" />
@@ -32,6 +35,7 @@ return (
     <clipPath id={`${id}-face-clip`}>
       <path d="M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42" />
     </clipPath>
+    {/* Alpha masking retains every original hair detail and silhouette. */}
     <mask id={`${id}-hair-mask`} maskUnits="userSpaceOnUse" x="0" y="0" width="49.15" height="116.6" style={{ maskType: "alpha" }}>
       <use href={`#${id}-Hair`} />
     </mask>

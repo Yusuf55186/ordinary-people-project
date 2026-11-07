@@ -2,7 +2,7 @@ import { Composition } from "remotion";
 import { Scene, calculateMetadata } from "./Composition";
 import { Episode2Master } from "./scenes/episode 2/Episode2Master";
 import { Episode3Master } from "./scenes/episode 3/Episode3Master";
-import {Episode3StreetTest} from "./environments/Episode3StreetTest"
+import {Episode4FootballRunTest} from "./environments/Episode3StreetTest"
 // import { HandPoseTest } from "./handPoseTest";
 const EPISODE_2_SCENE_1_DURATION = 17400;
 const EPISODE_3_DURATION = 12400;
@@ -37,7 +37,7 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
       id="StreetTest"
-      component={Episode3StreetTest}
+      component={Episode4FootballRunTest}
       durationInFrames={120}
       fps={60}
       width={1920}

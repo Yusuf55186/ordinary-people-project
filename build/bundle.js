@@ -17742,7 +17742,7 @@ if (true) {
 
 
 },
-2413(__unused_rspack_module, __unused_rspack___webpack_exports__, __webpack_require__) {
+6788(__unused_rspack_module, __unused_rspack___webpack_exports__, __webpack_require__) {
 "use strict";
 
 // EXTERNAL MODULE: ./node_modules/remotion/dist/esm/index.mjs
@@ -18195,7 +18195,9 @@ function YusufTorsoPelvis() {
 
 ;// CONCATENATED MODULE: ./src/YusufHead.tsx
 
-function YusufHead({ headRotation, eyeScaleY, eyeLLookX, eyeLLookY, eyeRLookY, eyeRLookX, leftEyeBrowY, rightEyebrowY, mouthPose }) {
+function YusufHead({ headRotation, eyeScaleY, eyeLLookX, eyeLLookY, eyeRLookY, eyeRLookX, leftEyeBrowY, rightEyebrowY, mouthPose, smileStrength = 0 }) {
+    const mouthRadius = 10 + smileStrength * 4;
+    const smileCurveY = 105 + smileStrength * 10;
     return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
         style: {
             width: "100%",
@@ -18744,6 +18746,43 @@ function YusufHead({ headRotation, eyeScaleY, eyeLLookX, eyeLLookY, eyeRLookY, e
                                 })
                             ]
                         });
+                    case 'grin':
+                        return /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                            id: "Mouth_Goofy_Grin",
+                            children: [
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("defs", {
+                                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)("clipPath", {
+                                        id: "grinClip",
+                                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            d: "M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z"
+                                        })
+                                    })
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M 34 101 Q 50 108 68 98 Q 65 120 50 120 Q 38 119 34 101 Z",
+                                    fill: "#161E2D",
+                                    stroke: "#222",
+                                    strokeWidth: 1.5
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M 32 100 Q 50 108 70 97 L 69 108 Q 50 115 34 107 Z",
+                                    fill: "#FFFFFF",
+                                    clipPath: "url(#grinClip)"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M 29 99 Q 32 96 35 98",
+                                    stroke: "#222",
+                                    strokeWidth: 1.5,
+                                    fill: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M 68 96 Q 72 93 75 95",
+                                    stroke: "#222",
+                                    strokeWidth: 1.5,
+                                    fill: "none"
+                                })
+                            ]
+                        });
                     default:
                         // De 'Rest/Smile' stand: een ontspannen glimlach opgebouwd uit pure ellipsen
                         return /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
@@ -18760,21 +18799,17 @@ function YusufHead({ headRotation, eyeScaleY, eyeLLookX, eyeLLookY, eyeRLookY, e
                                         })
                                     })
                                 }),
-                                /*#__PURE__*/ (0,jsx_runtime.jsx)("ellipse", {
-                                    id: "rest",
-                                    style: {
-                                        fill: "#161E2D"
-                                    },
-                                    className: "st4",
-                                    cx: 50,
-                                    cy: 105.5,
-                                    rx: 10,
-                                    ry: 2.5
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: `M 40 105 Q 50 ${smileCurveY} 60 105`,
+                                    stroke: "#222",
+                                    strokeWidth: 3,
+                                    fill: "none",
+                                    strokeLinecap: "round"
                                 }),
                                 /*#__PURE__*/ (0,jsx_runtime.jsx)("ellipse", {
                                     cx: 50,
                                     cy: 105.5,
-                                    rx: 10,
+                                    rx: mouthRadius,
                                     ry: 2.5,
                                     fill: "none"
                                 })
@@ -19547,13 +19582,35 @@ function YusufArms({ leftArmSwing, rightArmSwing, rightArmScaleY, leftArmScaleY,
 
 
 
-function YusufCharacter({ leftKneeRotation, rightKneeRotation, leftHipRotation, rightHipRotation, bodyY, leftArmSwing, rightArmSwing, leftElbowRotation, rightElbowRotation, leftHandRotation, headRotation, eyeScaleY, leftHandPose, eyeLLookX, eyeLLookY, eyeRLookX, eyeRLookY, leftEyeBrowY, rightEyeBrowY, leftLegScaleY, rightLegScaleY, leftArmScaleY, rightArmScaleY, mouthPose }) {
+// Approximate sole-edge anchors in the existing leg SVG coordinates.
+// Grounding is opt-in, preserving the rig's behaviour in other episodes.
+const YUSUF_GROUND_Y = 1050;
+const getYusufGroundOffset = (leftKnee, rightKnee, leftHip, rightHip, leftScale, rightScale)=>{
+    const rotate = (x, y, cx, cy, degrees)=>{
+        const a = degrees * Math.PI / 180;
+        return [
+            cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a),
+            cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)
+        ];
+    };
+    const soleY = (x, y, left)=>{
+        const hipX = left ? 50 : 116;
+        const knee = rotate(x, y, left ? 41 : 116, left ? 172 : 173, left ? leftKnee : rightKnee);
+        const scaledY = 10 + (knee[1] - 10) * (left ? leftScale : rightScale);
+        const hip = rotate(knee[0], scaledY, hipX, 10, left ? leftHip : rightHip);
+        return 560 + hip[1] * (left ? 1.06 : 1) * (250 / 188.5) * 1.1;
+    };
+    const lowestSole = Math.max(soleY(16, 304.38, true), soleY(64, 303.64, true), soleY(123, 301.69, false), soleY(171, 305.13, false));
+    return YUSUF_GROUND_Y - lowestSole;
+};
+function YusufCharacter({ grounded = false, leftKneeRotation, rightKneeRotation, leftHipRotation, rightHipRotation, bodyY, leftArmSwing, rightArmSwing, leftElbowRotation, rightElbowRotation, leftHandRotation, headRotation, eyeScaleY, leftHandPose, eyeLLookX, eyeLLookY, eyeRLookX, eyeRLookY, leftEyeBrowY, rightEyeBrowY, leftLegScaleY, rightLegScaleY, leftArmScaleY, rightArmScaleY, mouthPose, smileStrength }) {
+    const groundedOffset = getYusufGroundOffset(leftKneeRotation, rightKneeRotation, leftHipRotation, rightHipRotation, leftLegScaleY, rightLegScaleY);
     return /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
         style: {
             position: "relative",
             width: 500,
             height: 1050,
-            transform: `translateY(${bodyY}px)`
+            transform: `translateY(${grounded ? groundedOffset : bodyY}px)`
         },
         children: [
             /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
@@ -19574,51 +19631,61 @@ function YusufCharacter({ leftKneeRotation, rightKneeRotation, leftHipRotation, 
                     rightLegScaleY: rightLegScaleY
                 })
             }),
-            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
                 style: {
                     position: "absolute",
-                    left: 135,
-                    top: 180,
-                    width: 230
+                    inset: 0,
+                    transform: `translateY(${grounded ? bodyY : 0}px)`
                 },
-                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufTorsoPelvis, {})
-            }),
-            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
-                style: {
-                    position: "absolute",
-                    left: 160,
-                    top: 0,
-                    width: 180
-                },
-                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
-                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufHead, {
-                        headRotation: headRotation,
-                        eyeScaleY: eyeScaleY,
-                        eyeLLookX: eyeLLookX,
-                        eyeRLookX: eyeRLookX,
-                        eyeRLookY: eyeRLookY,
-                        eyeLLookY: eyeLLookY,
-                        leftEyeBrowY: leftEyeBrowY,
-                        rightEyebrowY: rightEyeBrowY,
-                        mouthPose: mouthPose
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            left: 135,
+                            top: 180,
+                            width: 230
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufTorsoPelvis, {})
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            left: 160,
+                            top: 0,
+                            width: 180
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                            children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufHead, {
+                                headRotation: headRotation,
+                                eyeScaleY: eyeScaleY,
+                                eyeLLookX: eyeLLookX,
+                                eyeRLookX: eyeRLookX,
+                                eyeRLookY: eyeRLookY,
+                                eyeLLookY: eyeLLookY,
+                                leftEyeBrowY: leftEyeBrowY,
+                                rightEyebrowY: rightEyeBrowY,
+                                mouthPose: mouthPose,
+                                smileStrength: smileStrength
+                            })
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufArms, {
+                        leftArmSwing: leftArmSwing,
+                        rightArmSwing: rightArmSwing,
+                        leftElbowRotation: leftElbowRotation,
+                        rightElbowRotation: rightElbowRotation,
+                        leftHandRotation: leftHandRotation,
+                        leftHandPose: leftHandPose,
+                        leftArmScaleY: leftArmScaleY,
+                        rightArmScaleY: rightArmScaleY
                     })
-                })
-            }),
-            /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufArms, {
-                leftArmSwing: leftArmSwing,
-                rightArmSwing: rightArmSwing,
-                leftElbowRotation: leftElbowRotation,
-                rightElbowRotation: rightElbowRotation,
-                leftHandRotation: leftHandRotation,
-                leftHandPose: leftHandPose,
-                leftArmScaleY: leftArmScaleY,
-                rightArmScaleY: rightArmScaleY
+                ]
             })
         ]
     });
 }
 
-;// CONCATENATED MODULE: ./src/animations/walkCycle.ts
+;// CONCATENATED MODULE: ./src/animations/sidewalkCycle.ts
 
 const DEFAULT_WALK_CYCLE_CONFIG = {
     kneeAmplitude: 25,
@@ -19690,9 +19757,9 @@ const walkCycle = (frame, cycleFrames, config = DEFAULT_WALK_CYCLE_CONFIG)=>{
         middleFrame,
         lastFrame
     ], [
-        armSwingAmplitude,
         -armSwingAmplitude,
-        armSwingAmplitude
+        armSwingAmplitude,
+        -armSwingAmplitude
     ]);
     return {
         leftKneeRotation,
@@ -26897,7 +26964,7 @@ function FarmalaCharacter({ headRotation, bodyY, leftArmRotation, rightArmRotati
                         colorInterpolationFilters: "sRGB",
                         children: /*#__PURE__*/ (0,jsx_runtime.jsx)("feColorMatrix", {
                             type: "matrix",
-                            values: " 0.93 0.02 0.00 0 0.012 0.01 0.90 0.01 0 0.008 0.00 0.02 0.88 0 0.004 0    0    0    1 0 "
+                            values: "   0.93 0.02 0.00 0 0.012   0.01 0.90 0.01 0 0.008   0.00 0.02 0.88 0 0.004   0    0    0    1 0   "
                         })
                     }),
                     /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
@@ -33647,45 +33714,150 @@ function AdyManCharacter({ headRotation = 0, bodyY = 0, leftArmRotation = 0, rig
 
 ;// CONCATENATED MODULE: ./src/scenes/sceneCharacter.tsx
 
-const SceneMaster = ({ x, y, width, scale = 1, zIndex = 0, children, integration })=>{
-    const ambientFilter = (integration === null || integration === void 0 ? void 0 : integration.ambientLight) === "room" ? "brightness(0.97) saturate(0.94) sepia(0.04)" : undefined;
-    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
-        style: {
-            position: "absolute",
-            top: 0,
-            left: 0,
-            transformOrigin: "top left",
-            width,
-            zIndex,
-            isolation: "isolate",
-            transform: `translate(${x}px, ${y}px) scale(${scale})`
-        },
-        children: [
-            (integration === null || integration === void 0 ? void 0 : integration.contactShadow) && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
-                style: {
-                    position: "absolute",
-                    top: "97%",
-                    left: "50%",
-                    width: "55%",
-                    height: 8,
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(39, 21, 12, 0.30)",
-                    filter: "blur(3px)",
-                    transform: "translateX(-50%)",
-                    pointerEvents: "none",
-                    zIndex: 1000,
-                    mixBlendMode: "multiply"
-                }
-            }),
-            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
-                style: {
-                    position: "relative",
-                    zIndex: 1,
-                    filter: ambientFilter
-                },
-                children: children
-            })
-        ]
+
+const CharacterLightingContext = /*#__PURE__*/ (0,react.createContext)({
+    leftLight: 0,
+    rightLight: 0,
+    burn: 0,
+    leftColor: "#b9e4ff",
+    rightColor: "#b9e4ff"
+});
+const useCharacterLighting = ()=>(0,react.useContext)(CharacterLightingContext);
+const defaultStadiumLights = {
+    left: {
+        x: 120,
+        y: 150,
+        intensity: 0.9,
+        range: 1400,
+        color: "#b9e4ff"
+    },
+    right: {
+        x: 1800,
+        y: 150,
+        intensity: 1,
+        range: 1400,
+        color: "#c8eaff"
+    }
+};
+const clamp = (value, min, max)=>Math.min(max, Math.max(min, value));
+const getLightStrength = (light, targetX, targetY)=>{
+    const distance = Math.hypot(targetX - light.x, targetY - light.y);
+    const range = Math.max(light.range, 1);
+    return clamp(light.intensity / (1 + (distance / range) ** 2), 0, 1);
+};
+const SceneMaster = ({ x, y, width, groundX, groundY, scale = 1, zIndex = 0, children, integration })=>{
+    const stadiumEnabled = (integration === null || integration === void 0 ? void 0 : integration.ambientLight) === "stadiumNight" || (integration === null || integration === void 0 ? void 0 : integration.keyLight) === "stadium" || (integration === null || integration === void 0 ? void 0 : integration.castShadow) === "stadium";
+    const lights = (integration === null || integration === void 0 ? void 0 : integration.stadiumLights) ?? defaultStadiumLights;
+    const localGroundX = groundX ?? width / 2;
+    const localGroundY = groundY ?? width * 2.7;
+    // Licht meten bij het midden van de zichtbare persoon.
+    const sampleX = x + localGroundX * scale;
+    const sampleY = y + localGroundY * 0.45 * scale;
+    const leftLight = stadiumEnabled ? getLightStrength(lights.left, sampleX, sampleY) : 0;
+    const rightLight = stadiumEnabled ? getLightStrength(lights.right, sampleX, sampleY) : 0;
+    const lighting = {
+        leftLight,
+        rightLight,
+        burn: stadiumEnabled ? clamp(0.65 - Math.max(leftLight, rightLight) * 0.35, 0.2, 0.65) : 0,
+        leftColor: lights.left.color,
+        rightColor: lights.right.color
+    };
+    const ambientFilter = (integration === null || integration === void 0 ? void 0 : integration.ambientLight) === "stadiumNight" ? "brightness(0.9) saturate(0.88)" : (integration === null || integration === void 0 ? void 0 : integration.ambientLight) === "daylight" ? "brightness(0.97) saturate(0.92) sepia(0.05)" : (integration === null || integration === void 0 ? void 0 : integration.ambientLight) === "room" ? "brightness(0.96) saturate(0.93) sepia(0.12)" : "";
+    const keyLightFilter = (integration === null || integration === void 0 ? void 0 : integration.keyLight) === "sun" ? "brightness(1.04) sepia(0.04)" : (integration === null || integration === void 0 ? void 0 : integration.keyLight) === "deskLamp" ? "brightness(1.03) sepia(0.08)" : "";
+    const filters = [
+        ambientFilter,
+        keyLightFilter
+    ].filter(Boolean).join(" ");
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(CharacterLightingContext.Provider, {
+        value: lighting,
+        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
+            style: {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width,
+                zIndex,
+                isolation: "isolate",
+                transformOrigin: "top left",
+                transform: `translate(${x}px, ${y}px) scale(${scale})`
+            },
+            children: [
+                (integration === null || integration === void 0 ? void 0 : integration.castShadow) === "stadium" && [
+                    {
+                        light: lights.left,
+                        strength: leftLight
+                    },
+                    {
+                        light: lights.right,
+                        strength: rightLight
+                    }
+                ].map(({ light, strength }, index)=>{
+                    const feetWorldX = x + localGroundX * scale;
+                    const awayFromLight = feetWorldX - light.x;
+                    const direction = awayFromLight >= 0 ? 1 : -1;
+                    const shadowLength = width * clamp(Math.abs(awayFromLight) / Math.max(light.range, 1), 0.35, 1.8);
+                    return /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            left: localGroundX,
+                            top: localGroundY,
+                            width: shadowLength,
+                            height: 14,
+                            borderRadius: "50%",
+                            backgroundColor: "#061020",
+                            opacity: strength * 0.22,
+                            filter: "blur(5px)",
+                            transformOrigin: "0% 50%",
+                            transform: `
+                    translateY(-50%)
+                    rotate(${direction === 1 ? 12 : 168}deg)
+                  `,
+                            pointerEvents: "none",
+                            zIndex: 0
+                        }
+                    }, index);
+                }),
+                (integration === null || integration === void 0 ? void 0 : integration.castShadow) === "streetSun" && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        top: groundY ?? "98.5%",
+                        left: localGroundX,
+                        width: "110%",
+                        height: 12,
+                        borderRadius: "50%",
+                        backgroundColor: "rgba(35, 29, 25, 0.22)",
+                        filter: "blur(5px)",
+                        transform: "translateY(-50%) rotate(-18deg)",
+                        transformOrigin: "0% 50%",
+                        pointerEvents: "none",
+                        zIndex: 0
+                    }
+                }),
+                (integration === null || integration === void 0 ? void 0 : integration.contactShadow) && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        top: groundY ?? "98.5%",
+                        left: localGroundX,
+                        width: "42%",
+                        height: 9,
+                        borderRadius: "50%",
+                        backgroundColor: stadiumEnabled ? "rgba(4, 10, 22, 0.6)" : "rgba(24, 18, 14, 0.48)",
+                        filter: "blur(3px)",
+                        transform: "translate(-50%, -50%)",
+                        pointerEvents: "none",
+                        zIndex: 0
+                    }
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "relative",
+                        zIndex: 1,
+                        filter: filters || undefined
+                    },
+                    children: children
+                })
+            ]
+        })
     });
 };
 
@@ -47127,7 +47299,8 @@ const yusufPose = (animation)=>{
         rightEyeBrowY: animation.rightEyeBrowY ?? 0,
         rightLegScaleY: animation.rightLegScaleY ?? 1,
         leftLegScaleY: animation.leftLegScaleY ?? 1,
-        mouthPose: animation.mouthPose ?? "rest"
+        mouthPose: animation.mouthPose ?? "rest",
+        smileStrength: animation.smileStrength ?? 0
     };
 };
 
@@ -47696,6 +47869,7 @@ const Episode2Scene1 = ()=>{
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp"
     });
+    const isPickingUp = frame >= pickupStart;
     const isPhoneContact = frame >= phoneContactStart;
     const phoneX = (0,esm/* .interpolate */.GW)(frame, [
         phoneContactStart,
@@ -50972,13 +51146,6525 @@ const Episode2Master = ()=>{
     });
 };
 
+;// CONCATENATED MODULE: ./src/animations/frontWalkCycle.ts
+
+const DEFAULT_FRONT_WALK_CONFIG = {
+    kneeAmplitude: 30,
+    hipAmplitude: 2,
+    bodyBounce: 3.5,
+    armSwingAmplitude: 10,
+    legScaleDelta: 0.010,
+    armScaleDelta: 0.025,
+    headRotationAmplitude: 0.7
+};
+const frontWalkCycle = (frame, cycleFrames, config = DEFAULT_FRONT_WALK_CONFIG)=>{
+    const cycleFrame = frame % cycleFrames;
+    const quarter = cycleFrames / 4;
+    const half = cycleFrames / 2;
+    const threeQuarter = cycleFrames * 3 / 4;
+    const end = cycleFrames - 1;
+    const frames = [
+        0,
+        quarter,
+        half,
+        threeQuarter,
+        end
+    ];
+    return {
+        /*
+     * LEGS
+     *
+     * 0       = left step
+     * quarter = passing position
+     * half    = right step
+     * 3/4     = passing position
+     */ leftKneeRotation: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            config.kneeAmplitude,
+            8,
+            0,
+            10,
+            config.kneeAmplitude
+        ]),
+        rightKneeRotation: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            0,
+            -10,
+            -config.kneeAmplitude,
+            -8,
+            0
+        ]),
+        leftHipRotation: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            config.hipAmplitude,
+            0,
+            -config.hipAmplitude,
+            0,
+            config.hipAmplitude
+        ]),
+        rightHipRotation: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            -config.hipAmplitude,
+            0,
+            config.hipAmplitude,
+            0,
+            -config.hipAmplitude
+        ]),
+        /*
+     * BODY
+     *
+     * Slight dip during passing positions.
+     */ bodyY: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            0,
+            config.bodyBounce,
+            0,
+            config.bodyBounce,
+            0
+        ]),
+        /*
+     * ARMS
+     */ leftArmSwing: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            config.armSwingAmplitude,
+            0,
+            -config.armSwingAmplitude,
+            0,
+            config.armSwingAmplitude
+        ]),
+        rightArmSwing: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            -config.armSwingAmplitude,
+            0,
+            config.armSwingAmplitude,
+            0,
+            -config.armSwingAmplitude
+        ]),
+        /*
+     * FRONT-VIEW FORESHORTENING
+     */ leftLegScaleY: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            1 - config.legScaleDelta,
+            1,
+            1 + config.legScaleDelta,
+            1,
+            1 - config.legScaleDelta
+        ]),
+        rightLegScaleY: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            1 + config.legScaleDelta,
+            1,
+            1 - config.legScaleDelta,
+            1,
+            1 + config.legScaleDelta
+        ]),
+        leftArmScaleY: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            1 - config.armScaleDelta,
+            1,
+            1 + config.armScaleDelta,
+            1,
+            1 - config.armScaleDelta
+        ]),
+        rightArmScaleY: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            1 + config.armScaleDelta,
+            1,
+            1 - config.armScaleDelta,
+            1,
+            1 + config.armScaleDelta
+        ]),
+        /*
+     * Keep head relatively stable.
+     */ headRotation: (0,esm/* .interpolate */.GW)(cycleFrame, frames, [
+            config.headRotationAmplitude,
+            0,
+            -config.headRotationAmplitude,
+            0,
+            config.headRotationAmplitude
+        ])
+    };
+};
+
+;// CONCATENATED MODULE: ./src/environments/EgyptianStreet.tsx
+
+
+const streetPath = "assets/Environment/Egyptian_street_assets_v1";
+const speed = {
+    "01-sky-far-depth.png": 0.05,
+    "04-ground-and-walkable-plane.png": 1,
+    "02-left-street-wall.png": 0.3,
+    "03-right-street-wall.png": 0.3,
+    "05-street-props.png": 0.1
+};
+const EgyptianStreet_layers = [
+    "01-sky-far-depth.png",
+    "02-left-street-wall.png",
+    "03-right-street-wall.png",
+    "05-street-props.png",
+    "04-ground-and-walkable-plane.png"
+];
+const EgyptianStreet = ({ x = 0, y = 0, scale = 1, cameraX = 0, groundBend = 0 })=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const zigzag = Math.sin(frame * 0.12) * 8 * groundBend;
+    const heavyWave = Math.sin(frame * 0.06) * 10 * Math.max(0, groundBend - 1);
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+        style: {
+            position: "absolute",
+            left: x,
+            top: y,
+            transform: `scale(${scale})`,
+            transformOrigin: "top left",
+            inset: 0,
+            overflow: "visible",
+            zIndex: 0
+        },
+        children: EgyptianStreet_layers.map((layer)=>{
+            const isGround = layer === "04-ground-and-walkable-plane.png";
+            const correctionX = cameraX * (1 - speed[layer]);
+            const groundTransform = isGround ? `
+      translateX(${correctionX - 3}px)
+      perspective(1200px)
+      rotateX(${groundBend * 12 + heavyWave}deg)
+      skewX(${groundBend * 8 + zigzag}deg)
+      scaleY(${1 + groundBend * 0.18})
+      scaleX(${1 + Math.max(0, groundBend - 1) * 0.08})
+    ` : `translateX(${correctionX - 3}px)`;
+            return /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+                src: (0,esm/* .staticFile */.dQ)(`${streetPath}/${layer}`),
+                style: {
+                    position: "absolute",
+                    top: 0,
+                    left: "-20%",
+                    width: "140%",
+                    height: "100%",
+                    objectFit: "cover",
+                    pointerEvents: "none",
+                    transform: groundTransform,
+                    scale: 1.16,
+                    translate: "150px 0px"
+                },
+                durationInFrames: 3494
+            }, layer);
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/episode3StreetMotion.ts
+
+const EPISODE3_SCENES = {
+    scene1: {
+        duration: 430
+    },
+    scene2: {
+        duration: 680
+    },
+    scene3: {
+        duration: 1020
+    },
+    scene4: {
+        duration: 300
+    },
+    scene5: {
+        duration: 1070
+    },
+    scene6: {
+        duration: 1040
+    },
+    scene7: {
+        duration: 2000
+    },
+    scene8: {
+        duration: 1200
+    },
+    scene9: {
+        duration: 1000
+    },
+    scene10: {
+        duration: 1000
+    }
+};
+const getSceneDuration = (scene)=>EPISODE3_SCENES[scene].duration;
+const getSceneLastFrame = (scene)=>getSceneDuration(scene) - 1;
+const episode3StreetMotion_YUSUF_GROUND_Y = 1050;
+const episode3StreetMotion_WALK_CYCLE_FRAMES = 35;
+const episode3StreetMotion_SLOW_START = 55;
+const STOP_FRAME = 115;
+const getTravelDistance = (frame, slowStart = episode3StreetMotion_SLOW_START, stopFrame = STOP_FRAME)=>{
+    const elapsed = Math.max(0, Math.min(frame - slowStart, stopFrame - slowStart));
+    return Math.max(0, Math.min(frame, slowStart)) + elapsed - elapsed * elapsed / (2 * (stopFrame - slowStart));
+};
+const MAX_APPROACH_DISTANCE = getTravelDistance(STOP_FRAME);
+const getApproachProgress = (frame)=>getTravelDistance(frame) / MAX_APPROACH_DISTANCE;
+const getWalkStrength = (frame)=>{
+    const slowDownProgress = Math.max(0, Math.min(1, (frame - episode3StreetMotion_SLOW_START) / (STOP_FRAME - episode3StreetMotion_SLOW_START)));
+    return 1 - slowDownProgress * slowDownProgress * (3 - 2 * slowDownProgress);
+};
+const getStreetPlacement = (distance)=>({
+        x: 420 - 170 * distance / getSceneLastFrame("scene1"),
+        y: 420 + 115 * distance / getSceneLastFrame("scene1"),
+        scale: 0.38 + 0.12 * distance / getSceneLastFrame("scene1")
+    });
+const getSceneEndState = (scene)=>{
+    const lastFrame = getSceneLastFrame(scene);
+    const distance = getTravelDistance(lastFrame);
+    return {
+        lastFrame,
+        distance,
+        placement: getStreetPlacement(distance)
+    };
+};
+const getSceneCameraPlacement = (placement)=>({
+        x: (0,esm/* .interpolate */.GW)(placement.x, [
+            250,
+            420
+        ], [
+            300,
+            0
+        ], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp"
+        }),
+        y: (0,esm/* .interpolate */.GW)(placement.y, [
+            420,
+            500
+        ], [
+            0,
+            60
+        ], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp"
+        }),
+        scale: 1.1
+    });
+const SCENE_2_CAMERA_END = (/* unused pure expression or super */ null && ({
+    x: 20,
+    y: 70,
+    scale: 1.35
+}));
+const FINAL_CAMERA_Scene_1 = getSceneCameraPlacement(getStreetPlacement(getSceneLastFrame("scene1")));
+const StreetTransform = (frame)=>{
+    const distance = getTravelDistance(frame);
+    return {
+        x: -18,
+        y: -8 * (43 * distance) / getSceneLastFrame("scene1"),
+        scale: 1.01 + 0.065 * distance / getSceneLastFrame("scene1")
+    };
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene1.tsx
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene1 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const SCENE_1_DURATION = 800;
+    const progress = getApproachProgress(frame);
+    const scene1Episode3 = [
+        {
+            startFrame: 0,
+            endFrame: 63,
+            pose: "rest"
+        },
+        // "تمام"
+        {
+            startFrame: 63,
+            endFrame: 68,
+            pose: "A"
+        },
+        {
+            startFrame: 68,
+            endFrame: 73,
+            pose: "MBP"
+        },
+        {
+            startFrame: 73,
+            endFrame: 78,
+            pose: "A"
+        },
+        // "أنا بس"
+        {
+            startFrame: 78,
+            endFrame: 84,
+            pose: "A"
+        },
+        {
+            startFrame: 84,
+            endFrame: 89,
+            pose: "N"
+        },
+        {
+            startFrame: 89,
+            endFrame: 95,
+            pose: "A"
+        },
+        {
+            startFrame: 95,
+            endFrame: 101,
+            pose: "MBP"
+        },
+        {
+            startFrame: 101,
+            endFrame: 107,
+            pose: "S"
+        },
+        // "هنزل أتمشى"
+        {
+            startFrame: 107,
+            endFrame: 114,
+            pose: "E"
+        },
+        {
+            startFrame: 114,
+            endFrame: 120,
+            pose: "N"
+        },
+        {
+            startFrame: 120,
+            endFrame: 127,
+            pose: "A"
+        },
+        {
+            startFrame: 127,
+            endFrame: 134,
+            pose: "L"
+        },
+        {
+            startFrame: 134,
+            endFrame: 141,
+            pose: "A"
+        },
+        {
+            startFrame: 141,
+            endFrame: 148,
+            pose: "TH"
+        },
+        {
+            startFrame: 148,
+            endFrame: 155,
+            pose: "MBP"
+        },
+        {
+            startFrame: 155,
+            endFrame: 162,
+            pose: "S"
+        },
+        {
+            startFrame: 162,
+            endFrame: 169,
+            pose: "A"
+        },
+        // "شوية كده"
+        {
+            startFrame: 169,
+            endFrame: 176,
+            pose: "S"
+        },
+        {
+            startFrame: 176,
+            endFrame: 183,
+            pose: "O"
+        },
+        {
+            startFrame: 183,
+            endFrame: 190,
+            pose: "E"
+        },
+        {
+            startFrame: 190,
+            endFrame: 197,
+            pose: "A"
+        },
+        {
+            startFrame: 197,
+            endFrame: 204,
+            pose: "E"
+        },
+        // Thinking pause
+        // "أفك دماغي"
+        {
+            startFrame: 250,
+            endFrame: 256,
+            pose: "A"
+        },
+        {
+            startFrame: 256,
+            endFrame: 262,
+            pose: "F"
+        },
+        {
+            startFrame: 262,
+            endFrame: 268,
+            pose: "O"
+        },
+        {
+            startFrame: 268,
+            endFrame: 274,
+            pose: "G"
+        },
+        {
+            startFrame: 274,
+            endFrame: 280,
+            pose: "MBP"
+        },
+        {
+            startFrame: 280,
+            endFrame: 286,
+            pose: "A"
+        },
+        {
+            startFrame: 286,
+            endFrame: 292,
+            pose: "G"
+        },
+        {
+            startFrame: 292,
+            endFrame: 300,
+            pose: "E"
+        },
+        // End hold
+        {
+            startFrame: 300,
+            endFrame: 420,
+            pose: "rest"
+        }
+    ];
+    const YusufScene1 = getMouthPose(frame, scene1Episode3);
+    const walkfrontPose = frontWalkCycle(frame, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const placement = getStreetPlacement(frame);
+    const streetScale = (0,esm/* .interpolate */.GW)(progress, [
+        0,
+        1
+    ], [
+        1.01,
+        1.075
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.ease */.GS.ease)
+    });
+    const streetX = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        SCENE_1_DURATION
+    ], [
+        0,
+        -18
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const streetY = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        SCENE_1_DURATION
+    ], [
+        0,
+        -8
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const camera = getSceneCameraPlacement(placement);
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(Camera, {
+        x: camera.x,
+        y: camera.y,
+        scale: 1.1,
+        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)(esm/* .AbsoluteFill */.H1, {
+            style: {
+                translate: "-3.6px 14.4px"
+            },
+            children: [
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    durationInFrames: 415,
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/rest-my-head-scene-1.m4a"),
+                    from: 0
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                    x: streetX,
+                    y: streetY,
+                    scale: streetScale,
+                    cameraX: camera.x,
+                    cameraY: camera.y
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                    x: placement.x,
+                    y: placement.y + 120,
+                    scale: placement.scale,
+                    width: 500,
+                    groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                    integration: {
+                        contactShadow: true,
+                        ambientLight: "daylight",
+                        castShadow: "streetSun",
+                        keyLight: "sun"
+                    },
+                    zIndex: 1,
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                        grounded: true,
+                        ...yusufPose({
+                            ...walkfrontPose,
+                            mouthPose: YusufScene1
+                        })
+                    })
+                })
+            ]
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/environments/props/YellowCar.tsx
+
+
+const YellowCar = ({ x, y, width = 700, scale = 1, zIndex = 0, integration })=>{
+    const imageUrl = "assets/Episode3/Street/props/yellow_car_front_view_sedan.png";
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+        style: {
+            position: "relative",
+            width: "100%"
+        },
+        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
+            style: {
+                position: "absolute",
+                left: x,
+                top: y,
+                transform: `scale(${scale})`,
+                zIndex,
+                transformOrigin: "center bottom"
+            },
+            children: [
+                /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
+                    style: {
+                        position: "relative",
+                        width
+                    },
+                    children: [
+                        (integration === null || integration === void 0 ? void 0 : integration.contactShadow) && /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+                            children: [
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                                    style: {
+                                        position: "absolute",
+                                        left: width * 0.6,
+                                        top: 1100,
+                                        width: width * 0.13,
+                                        height: 9,
+                                        borderRadius: "50%",
+                                        background: "rgba(0, 0, 0, 0.66)",
+                                        filter: "blur(3px)",
+                                        zIndex: 10
+                                    }
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                                    style: {
+                                        position: "absolute",
+                                        left: width * 1.5,
+                                        top: 1100,
+                                        width: width * 0.13,
+                                        height: 9,
+                                        borderRadius: "50%",
+                                        background: "rgba(0, 0, 0, 0.66)",
+                                        filter: "blur(3px)",
+                                        zIndex: 10
+                                    }
+                                })
+                            ]
+                        }),
+                        (integration === null || integration === void 0 ? void 0 : integration.castShadow) && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                            style: {
+                                position: "absolute",
+                                left: width * 0.6,
+                                top: 1110,
+                                width: width * 0.76,
+                                height: 50,
+                                borderRadius: "50%",
+                                background: "rgba(25, 20, 15, 0.22)",
+                                filter: "blur(18px)",
+                                zIndex: 0,
+                                pointerEvents: "none"
+                            }
+                        })
+                    ]
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+                    src: (0,esm/* .staticFile */.dQ)(imageUrl),
+                    style: {
+                        width,
+                        display: "block"
+                    }
+                })
+            ]
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene2.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const getScene2Camera = (frame)=>{
+    const closeUpStrength = (0,esm/* .interpolate */.GW)(frame, [
+        215,
+        280
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const closeUpX = (0,esm/* .interpolate */.GW)(closeUpStrength, [
+        0,
+        1
+    ], [
+        FINAL_CAMERA_Scene_1.x,
+        -40
+    ]);
+    const closeUpY = (0,esm/* .interpolate */.GW)(closeUpStrength, [
+        0,
+        1
+    ], [
+        FINAL_CAMERA_Scene_1.y,
+        120
+    ]);
+    const closeUpScale = (0,esm/* .interpolate */.GW)(closeUpStrength, [
+        0,
+        1
+    ], [
+        FINAL_CAMERA_Scene_1.scale,
+        1.8
+    ]);
+    const mediumShotStrength = (0,esm/* .interpolate */.GW)(frame, [
+        610,
+        670
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const x = (0,esm/* .interpolate */.GW)(mediumShotStrength, [
+        0,
+        1
+    ], [
+        closeUpX,
+        20
+    ]);
+    const y = (0,esm/* .interpolate */.GW)(mediumShotStrength, [
+        0,
+        1
+    ], [
+        closeUpY,
+        70
+    ]);
+    const scale = (0,esm/* .interpolate */.GW)(mediumShotStrength, [
+        0,
+        1
+    ], [
+        closeUpScale,
+        1.35
+    ]);
+    return {
+        x,
+        y,
+        scale
+    };
+};
+const Episode3Scene2 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const Scene1LastFrame = getSceneLastFrame("scene1");
+    const Scene2LastFrame = getSceneLastFrame("scene2");
+    const scene1Endplacement = getStreetPlacement(Scene1LastFrame);
+    const sceneEndStreet = StreetTransform(Scene1LastFrame);
+    const scene2WalkPhase = EPISODE3_SCENES.scene1.duration;
+    const startPlacement = scene1Endplacement;
+    const placement = {
+        x: startPlacement.x,
+        y: startPlacement.y,
+        scale: startPlacement.scale
+    };
+    const walkfrontPose = frontWalkCycle(scene2WalkPhase, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const walkStrength = getWalkStrength(frame);
+    const idleBlink = BlinkingAnimation(frame, 120);
+    // const STOP_FRAME = 120;
+    //  const BACKGROUND_ZOOM_SPEED = 0.0005;
+    const MAX_STREET_BLUR = 2.5;
+    const streetY = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        Scene2LastFrame
+    ], [
+        sceneEndStreet.y,
+        sceneEndStreet.y + 43
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.quad */.GS.quad)
+    });
+    const streetBlur = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        30,
+        709
+    ], [
+        0,
+        MAX_STREET_BLUR,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const carBlur = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        30,
+        220
+    ], [
+        0,
+        MAX_STREET_BLUR,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const streetScale = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        Scene2LastFrame
+    ], [
+        sceneEndStreet.scale,
+        sceneEndStreet.scale + 0.0065
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.quad */.GS.quad)
+    });
+    const streetX = sceneEndStreet.x;
+    const carLookStrength = (0,esm/* .interpolate */.GW)(frame, [
+        42,
+        72,
+        166,
+        215
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const carHeadRotation = (0,esm/* .interpolate */.GW)(carLookStrength, [
+        0,
+        1
+    ], [
+        0,
+        4
+    ]);
+    const carEyeLookStrength = (0,esm/* .interpolate */.GW)(frame, [
+        25,
+        40,
+        166,
+        215
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const carEyeLookX = (0,esm/* .interpolate */.GW)(carEyeLookStrength, [
+        0,
+        1
+    ], [
+        0,
+        4
+    ]);
+    // Recognition holds, then the gaze drops slightly as the car passes.
+    const carEyeLookY = (0,esm/* .interpolate */.GW)(frame, [
+        70,
+        140,
+        175,
+        215
+    ], [
+        0,
+        0,
+        2,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const recognitionBrow = (0,esm/* .interpolate */.GW)(frame, [
+        30,
+        50,
+        100,
+        140
+    ], [
+        0,
+        -1.5,
+        -1.5,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    // const START_CAR_X = 300;
+    // const START_CAR_Y = -300;
+    // const START_CAR_SCALE = 0.1;
+    const carX = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        100,
+        180
+    ], [
+        300,
+        260,
+        -200
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const carY = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        100,
+        180
+    ], [
+        -300,
+        30,
+        400
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const carScale = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        100,
+        180
+    ], [
+        0.1,
+        0.4,
+        0.7
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const memoryThoughtStrength = (0,esm/* .interpolate */.GW)(frame, [
+        215,
+        240,
+        315,
+        340
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const memoryHeadRotation = (0,esm/* .interpolate */.GW)(memoryThoughtStrength, [
+        0,
+        1
+    ], [
+        0,
+        -3
+    ]);
+    const memoryEyeY = (0,esm/* .interpolate */.GW)(memoryThoughtStrength, [
+        0,
+        1
+    ], [
+        0,
+        -1.5
+    ]);
+    const doubtStrength = (0,esm/* .interpolate */.GW)(frame, [
+        365,
+        395,
+        455,
+        485
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const doubtHeadRotation = (0,esm/* .interpolate */.GW)(doubtStrength, [
+        0,
+        1
+    ], [
+        0,
+        4
+    ]);
+    const doubtLeftBrow = (0,esm/* .interpolate */.GW)(doubtStrength, [
+        0,
+        1
+    ], [
+        0,
+        -2
+    ]);
+    const doubtRightBrow = (0,esm/* .interpolate */.GW)(doubtStrength, [
+        0,
+        1
+    ], [
+        0,
+        1.5
+    ]);
+    const settleHeadRotation = (0,esm/* .interpolate */.GW)(frame, [
+        610,
+        635,
+        680
+    ], [
+        0,
+        1,
+        1.5
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const confirmHeadRotation = (0,esm/* .interpolate */.GW)(frame, [
+        545,
+        553,
+        561,
+        569,
+        577,
+        590,
+        610
+    ], [
+        0,
+        -4,
+        3,
+        -4,
+        2,
+        0,
+        -1.5
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const confirmBodyY = (0,esm/* .interpolate */.GW)(frame, [
+        545,
+        553,
+        561,
+        569,
+        577,
+        590
+    ], [
+        0,
+        2,
+        0,
+        2,
+        0,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const confirmBlink = (0,esm/* .interpolate */.GW)(frame, [
+        548,
+        555,
+        562
+    ], [
+        1,
+        0.08,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const postConfirmEyeX = (0,esm/* .interpolate */.GW)(frame, [
+        610,
+        650
+    ], [
+        carEyeLookX,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const eyeScaleY = Math.min(idleBlink.eyeScaleY, confirmBlink);
+    const firstLineMouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 49,
+            pose: "rest"
+        },
+        // "إيه"
+        {
+            startFrame: 49,
+            endFrame: 54,
+            pose: "E"
+        },
+        {
+            startFrame: 54,
+            endFrame: 59,
+            pose: "A"
+        },
+        // "ده؟"
+        {
+            startFrame: 59,
+            endFrame: 64,
+            pose: "A"
+        },
+        {
+            startFrame: 64,
+            endFrame: 69,
+            pose: "A"
+        },
+        {
+            startFrame: 69,
+            endFrame: 87,
+            pose: "rest"
+        },
+        // "دي"
+        {
+            startFrame: 87,
+            endFrame: 92,
+            pose: "E"
+        },
+        {
+            startFrame: 92,
+            endFrame: 97,
+            pose: "I"
+        },
+        // "شبه"
+        {
+            startFrame: 97,
+            endFrame: 102,
+            pose: "S"
+        },
+        {
+            startFrame: 102,
+            endFrame: 107,
+            pose: "A"
+        },
+        {
+            startFrame: 107,
+            endFrame: 112,
+            pose: "MBP"
+        },
+        {
+            startFrame: 112,
+            endFrame: 116,
+            pose: "A"
+        },
+        // "عربية"
+        {
+            startFrame: 116,
+            endFrame: 121,
+            pose: "A"
+        },
+        {
+            startFrame: 121,
+            endFrame: 126,
+            pose: "R"
+        },
+        {
+            startFrame: 126,
+            endFrame: 131,
+            pose: "A"
+        },
+        {
+            startFrame: 131,
+            endFrame: 136,
+            pose: "MBP"
+        },
+        {
+            startFrame: 136,
+            endFrame: 140,
+            pose: "I"
+        },
+        // "أبويا"
+        {
+            startFrame: 140,
+            endFrame: 145,
+            pose: "A"
+        },
+        {
+            startFrame: 145,
+            endFrame: 150,
+            pose: "MBP"
+        },
+        {
+            startFrame: 150,
+            endFrame: 155,
+            pose: "U"
+        },
+        {
+            startFrame: 155,
+            endFrame: 161,
+            pose: "I"
+        },
+        {
+            startFrame: 161,
+            endFrame: 166,
+            pose: "A"
+        },
+        {
+            startFrame: 166,
+            endFrame: 230,
+            pose: "rest"
+        }
+    ];
+    const confirmMouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        // لا
+        {
+            startFrame: 5,
+            endFrame: 11,
+            pose: "A"
+        },
+        {
+            startFrame: 11,
+            endFrame: 15,
+            pose: "rest"
+        },
+        // لا
+        {
+            startFrame: 15,
+            endFrame: 21,
+            pose: "A"
+        },
+        {
+            startFrame: 21,
+            endFrame: 25,
+            pose: "rest"
+        },
+        // لا
+        {
+            startFrame: 25,
+            endFrame: 32,
+            pose: "A"
+        },
+        // reset
+        {
+            startFrame: 32,
+            endFrame: 40,
+            pose: "rest"
+        },
+        // صفرا
+        {
+            startFrame: 40,
+            endFrame: 46,
+            pose: "S"
+        },
+        {
+            startFrame: 46,
+            endFrame: 52,
+            pose: "A"
+        },
+        {
+            startFrame: 52,
+            endFrame: 58,
+            pose: "R"
+        },
+        {
+            startFrame: 58,
+            endFrame: 65,
+            pose: "A"
+        },
+        {
+            startFrame: 65,
+            endFrame: 90,
+            pose: "rest"
+        }
+    ];
+    const yusufAudioStart = 200;
+    const confirmAudioStart = 550;
+    const smileAudioStart = 615;
+    const firstLineMouthPose = getMouthPose(frame - yusufAudioStart, firstLineMouthCues);
+    const confirmMouthPose = getMouthPose(frame - confirmAudioStart, confirmMouthCues);
+    const smileStrength = (0,esm/* .interpolate */.GW)(frame, [
+        smileAudioStart,
+        smileAudioStart + 15,
+        smileAudioStart + 45,
+        smileAudioStart + 60
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const scene2MouthPose = frame >= confirmAudioStart ? confirmMouthPose : firstLineMouthPose;
+    const scene2ActingPose = {
+        ...walkfrontPose,
+        mouthPose: scene2MouthPose,
+        headRotation: (walkfrontPose.headRotation ?? 0) * walkStrength + carHeadRotation + memoryHeadRotation + doubtHeadRotation + confirmHeadRotation + settleHeadRotation,
+        bodyY: (walkfrontPose.bodyY ?? 0) * walkStrength + confirmBodyY,
+        leftArmSwing: (walkfrontPose.leftArmSwing ?? 0) * walkStrength,
+        rightArmSwing: (walkfrontPose.rightArmSwing ?? 0) * walkStrength,
+        leftKneeRotation: (walkfrontPose.leftKneeRotation ?? 0) * walkStrength,
+        rightKneeRotation: (walkfrontPose.rightKneeRotation ?? 0) * walkStrength,
+        leftHipRotation: walkfrontPose.leftHipRotation * walkStrength,
+        rightHipRotation: walkfrontPose.rightHipRotation * walkStrength,
+        leftLegScaleY: 1 + (walkfrontPose.leftLegScaleY - 1) * walkStrength,
+        rightLegScaleY: 1 + (walkfrontPose.rightLegScaleY - 1) * walkStrength,
+        leftArmScaleY: 1 + (walkfrontPose.leftArmScaleY - 1) * walkStrength,
+        rightArmScaleY: 1 + (walkfrontPose.rightArmScaleY - 1) * walkStrength,
+        eyeLLookX: postConfirmEyeX,
+        eyeRLookX: postConfirmEyeX,
+        eyeLLookY: memoryEyeY + carEyeLookY,
+        eyeRLookY: memoryEyeY + carEyeLookY,
+        leftEyeBrowY: doubtLeftBrow + recognitionBrow,
+        rightEyeBrowY: doubtRightBrow + recognitionBrow,
+        eyeScaleY,
+        smileStrength
+    };
+    const camera = getScene2Camera(frame);
+    const cameraBackToYusufX = (0,esm/* .interpolate */.GW)(frame, [
+        140,
+        200,
+        700,
+        799
+    ], [
+        camera.x,
+        -300,
+        -300,
+        camera.x
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const resolvedYusuf = yusufPose(scene2ActingPose);
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                from: yusufAudioStart,
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/looks_like_my_father_car.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                from: 350,
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/it_was_yellow.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                from: 480,
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/or_was_it_beige.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                from: 550,
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/no_no_yellow.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Camera, {
+                x: cameraBackToYusufX,
+                y: camera.y,
+                scale: camera.scale,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsxs)(esm/* .AbsoluteFill */.H1, {
+                    style: {},
+                    children: [
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                            style: {
+                                width: "100%",
+                                height: "100%",
+                                // transform: `scale(${carPassScale})`,
+                                // transformOrigin: "50% 50%",
+                                filter: `blur(${streetBlur}px)`
+                            },
+                            children: /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                                x: streetX,
+                                y: streetY,
+                                scale: streetScale,
+                                cameraX: camera.x,
+                                cameraY: camera.y
+                            })
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                            style: {
+                                filter: `blur(${streetBlur}px)`
+                            }
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                            style: {
+                                position: "absolute",
+                                filter: `blur(${carBlur}px)`,
+                                left: 540,
+                                top: 460,
+                                zIndex: 9999,
+                                width: 700,
+                                height: 400
+                            },
+                            children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YellowCar, {
+                                x: carX,
+                                y: carY,
+                                scale: carScale,
+                                width: 700,
+                                integration: {
+                                    contactShadow: true,
+                                    castShadow: true
+                                }
+                            })
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                            x: placement.x,
+                            y: placement.y,
+                            scale: placement.scale,
+                            width: 500,
+                            groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                            integration: {
+                                contactShadow: true,
+                                ambientLight: "daylight",
+                                keyLight: "sun",
+                                castShadow: "streetSun"
+                            },
+                            zIndex: 1,
+                            children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                                grounded: true,
+                                ...resolvedYusuf
+                            })
+                        })
+                    ]
+                })
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/MemoryFlash.tsx
+
+
+const MemoryFlash = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const HENEDY_APPEAR = 23;
+    const henedyStrength = (0,esm/* .interpolate */.GW)(frame, [
+        15,
+        HENEDY_APPEAR,
+        45,
+        60
+    ], [
+        0,
+        0.5,
+        0.8,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.out */.GS.out(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const memoryWarp = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        12,
+        24,
+        36
+    ], [
+        0,
+        1,
+        -0.6,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const memoryBlur = (0,esm/* .interpolate */.GW)(henedyStrength, [
+        0,
+        0.5,
+        1
+    ], [
+        40,
+        20,
+        0.4
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const memoryRotation = (0,esm/* .interpolate */.GW)(memoryWarp, [
+        -1,
+        1
+    ], [
+        -0.8,
+        0.8
+    ]);
+    const imageUrl = (0,esm/* .staticFile */.dQ)("assets/Flash_Images/henedy_flashback.png");
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(jsx_runtime.Fragment, {
+        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+            style: {
+                position: "absolute",
+                left: 700,
+                top: 180
+            },
+            children: /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+                src: imageUrl,
+                style: {
+                    width: 500,
+                    objectFit: "contain",
+                    opacity: henedyStrength,
+                    transform: `
+      scaleX(${1 + memoryWarp * 0.45})
+      scaleY(${1 - memoryWarp * 0.25})
+      rotate(${memoryRotation}deg)
+    `,
+                    filter: `
+      blur(${memoryBlur}px)`,
+                    transformOrigin: "center center",
+                    borderRadius: 999
+                }
+            })
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene3.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene3 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const MEMORY_START = 205;
+    const GRIN_START = 170;
+    const GRIN_PEAK = 190;
+    const GRIN_END = 230;
+    const WALK_STOP = 180;
+    const SLOW_START = 130;
+    const COMPOSITION_TRANSITION_START = 900;
+    const COMPOSITION_TRANSITION_END = 1019;
+    const Scene2LastFrame = getSceneLastFrame("scene2");
+    const LastSceneFrame = getSceneLastFrame("scene1");
+    const scene1EndPlacement = getStreetPlacement(LastSceneFrame);
+    const walkProgress = Math.max(0, Math.min(1, (frame - SLOW_START) / (WALK_STOP - SLOW_START)));
+    const walkStrength = 1 - walkProgress * walkProgress * (3 - 2 * walkProgress);
+    const streetTransform = StreetTransform(LastSceneFrame);
+    // Scene 3's own forward travel
+    const scene3WalkPhase = EPISODE3_SCENES.scene2.duration + Math.min(frame, WALK_STOP);
+    const startPlacement = scene1EndPlacement;
+    const placement = {
+        x: startPlacement.x,
+        y: startPlacement.y,
+        scale: startPlacement.scale
+    };
+    const walkingPose = frontWalkCycle(scene3WalkPhase, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const walkingPoseScene3 = {
+        ...walkingPose,
+        headRotation: (walkingPose.headRotation ?? 0) * walkStrength,
+        bodyY: (walkingPose.bodyY ?? 0) * walkStrength,
+        leftArmSwing: walkingPose.leftArmSwing * walkStrength,
+        rightArmSwing: walkingPose.rightArmSwing * walkStrength,
+        leftKneeRotation: walkingPose.leftKneeRotation * walkStrength,
+        rightKneeRotation: walkingPose.rightKneeRotation * walkStrength,
+        leftHipRotation: walkingPose.leftHipRotation * walkStrength,
+        rightHipRotation: walkingPose.rightHipRotation * walkStrength,
+        leftLegScaleY: 1 + (walkingPose.leftLegScaleY - 1) * walkStrength,
+        rightLegScaleY: 1 + (walkingPose.rightLegScaleY - 1) * walkStrength,
+        leftArmScaleY: 1 + (walkingPose.leftArmScaleY - 1) * walkStrength,
+        rightArmScaleY: 1 + (walkingPose.rightArmScaleY - 1) * walkStrength
+    };
+    const grinStrength = (0,esm/* .interpolate */.GW)(frame, [
+        GRIN_START,
+        GRIN_PEAK,
+        GRIN_END - 5,
+        GRIN_END
+    ], [
+        0,
+        1.15,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.ease */.GS.ease)
+    });
+    const mischievousActing = {
+        headRotation: grinStrength * 7,
+        eyeScaleY: 1 - Math.min(grinStrength, 1) * 0.25,
+        leftEyeBrowY: -3 * grinStrength,
+        rightEyeBrowY: 2 * grinStrength
+    };
+    const ambienceVolume = (0,esm/* .interpolate */.GW)(frame, [
+        GRIN_END + 10,
+        GRIN_END + 70
+    ], [
+        1,
+        0.25
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const isGrinning = frame >= GRIN_START && frame < GRIN_END;
+    const distortion = (0,esm/* .interpolate */.GW)(frame, [
+        130,
+        205,
+        505,
+        535
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const MEMORY_DURATION = 300;
+    const MEMORY_END = MEMORY_START + MEMORY_DURATION;
+    const isInMemory = frame >= MEMORY_START && frame < MEMORY_END;
+    const compositionProgress = (0,esm/* .interpolate */.GW)(frame, [
+        COMPOSITION_TRANSITION_START,
+        COMPOSITION_TRANSITION_END
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.ease */.GS.ease)
+    });
+    const camera = getScene2Camera(Scene2LastFrame);
+    const scene3CameraX = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        camera.x,
+        0
+    ]);
+    const scene3CameraY = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        camera.y,
+        40
+    ]);
+    const scene3CameraScale = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        camera.scale,
+        1.1
+    ]);
+    const streetY = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        streetTransform.y + 55,
+        0
+    ]);
+    const streetScale = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        streetTransform.scale + 0.04,
+        1.2
+    ]);
+    const streetX = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        camera.x,
+        0
+    ]);
+    const streetCameraX = (0,esm/* .interpolate */.GW)(compositionProgress, [
+        0,
+        1
+    ], [
+        camera.scale,
+        0
+    ]);
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(jsx_runtime.Fragment, {
+        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+            scale: scene3CameraScale,
+            x: scene3CameraX,
+            y: scene3CameraY,
+            children: [
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("assets/Episode3/egyptian_street_ambience.mp3"),
+                    volume: ambienceVolume,
+                    from: 1
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_01.m4a"),
+                    from: 0
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_02.m4a"),
+                    from: 145
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_03.m4a"),
+                    from: 720
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_04.m4a"),
+                    from: 800
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S03_Yusuf_05.m4a"),
+                    from: 920
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        inset: 0
+                    },
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            inset: 0,
+                            transform: `
+        scaleX(${1 + distortion * 0.025})
+        scaleY(${1 + distortion * 0.015})
+      `,
+                            filter: `blur(${distortion * 2}px)`
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                            y: streetY,
+                            cameraX: streetCameraX,
+                            scale: streetScale,
+                            x: streetX
+                        })
+                    })
+                }),
+                isInMemory && /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                    from: MEMORY_START,
+                    durationInFrames: MEMORY_DURATION,
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(MemoryFlash, {})
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                    x: placement.x,
+                    y: placement.y,
+                    scale: placement.scale,
+                    width: 500,
+                    groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                    integration: {
+                        contactShadow: true,
+                        ambientLight: "daylight",
+                        keyLight: "sun",
+                        castShadow: "streetSun"
+                    },
+                    zIndex: 1,
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                        mouthPose: isGrinning ? "grin" : "rest",
+                        grounded: true,
+                        ...walkingPoseScene3,
+                        ...mischievousActing
+                    })
+                })
+            ]
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/UniversityHallway.tsx
+
+
+const UniversityHallway = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .AbsoluteFill */.H1, {
+        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+            src: (0,esm/* .staticFile */.dQ)("assets/Flash_Images/Sunlit University Hallway with Arabic Signs.png"),
+            style: {
+                width: "100%",
+                height: "100%",
+                objectFit: "cover"
+            }
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene4.tsx
+
+
+
+
+
+
+
+
+
+
+
+// Temporary timings until VO is recorded
+const DISTORTION_START = 65;
+const Episode3Scene4_MEMORY_START = 90;
+const MEMORY_FULLY_VISIBLE = 120;
+const Episode3Scene4_MEMORY_END = 210;
+const SCENE3_WALK_STOP = 130;
+// const SCENE3_WALK_STOP = 180;
+const Episode3Scene4 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const memoryOpacity = (0,esm/* .interpolate */.GW)(frame, [
+        Episode3Scene4_MEMORY_START,
+        MEMORY_FULLY_VISIBLE
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const scene3WalkPhase = Math.min(frame, SCENE3_WALK_STOP);
+    // const scene3EndDistance = getTravelDistance(SCENE3_WALK_STOP);
+    const scene3EndPlacement = getStreetPlacement(getSceneLastFrame("scene1"));
+    const isInMemory = frame >= Episode3Scene4_MEMORY_START && frame < Episode3Scene4_MEMORY_END;
+    const placement = {
+        x: scene3EndPlacement.x,
+        y: scene3EndPlacement.y,
+        scale: scene3EndPlacement.scale
+    };
+    const walkingPose = frontWalkCycle(scene3WalkPhase, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const cameraProgress = Math.min(frame, Episode3Scene4_MEMORY_START);
+    const cameraX = (0,esm/* .interpolate */.GW)(cameraProgress, [
+        0,
+        Episode3Scene4_MEMORY_START
+    ], [
+        0,
+        100
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const cameraY = (0,esm/* .interpolate */.GW)(cameraProgress, [
+        0,
+        Episode3Scene4_MEMORY_START
+    ], [
+        0,
+        30
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const distortion = (0,esm/* .interpolate */.GW)(frame, [
+        DISTORTION_START,
+        Episode3Scene4_MEMORY_START
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const memoryReaction = (0,esm/* .interpolate */.GW)(frame, [
+        MEMORY_FULLY_VISIBLE + 20,
+        230,
+        250
+    ], [
+        0,
+        1,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const REACTION_START = 225; // 120
+    const memoryShock = (0,esm/* .interpolate */.GW)(frame, [
+        REACTION_START,
+        REACTION_START + 45,
+        REACTION_START + 55
+    ], [
+        1,
+        1.5,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const headRotationDenial = (0,esm/* .interpolate */.GW)(frame, [
+        REACTION_START,
+        REACTION_START + 45,
+        REACTION_START + 55,
+        REACTION_START + 66,
+        REACTION_START + 77
+    ], [
+        0,
+        -3,
+        0,
+        -3,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const memoryActing = {
+        headRotation: -3 * memoryReaction * headRotationDenial,
+        leftEyeBrowY: -2 * memoryReaction * headRotationDenial,
+        rightEyeBrowY: -1 * memoryReaction * headRotationDenial,
+        eyeScaleY: memoryShock
+    };
+    const reactionZoom = (0,esm/* .interpolate */.GW)(frame, [
+        REACTION_START - 10,
+        REACTION_START + 45,
+        REACTION_START + 55,
+        REACTION_START + 66
+    ], [
+        1,
+        3,
+        3,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                from: MEMORY_FULLY_VISIBLE,
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S04_Yusuf_02.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Camera, {
+                x: 0,
+                y: 40,
+                scale: 1.1,
+                children: !isInMemory && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        inset: 0,
+                        transform: `scaleX(${1 + distortion * 0.005}) scaleY(${1 + distortion * 0.015})`,
+                        filter: `blur(${distortion * 2}px)`
+                    },
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        cameraX: cameraX,
+                        cameraY: cameraY,
+                        scale: 1
+                    })
+                })
+            }),
+            isInMemory && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                style: {
+                    position: "absolute",
+                    inset: 0,
+                    opacity: memoryOpacity,
+                    zIndex: 0
+                },
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(UniversityHallway, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                x: placement.x,
+                y: placement.y,
+                scale: placement.scale * reactionZoom,
+                width: 500,
+                groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                integration: {
+                    contactShadow: true,
+                    ambientLight: "daylight",
+                    keyLight: "sun",
+                    castShadow: "streetSun"
+                },
+                zIndex: 1,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                    grounded: true,
+                    ...walkingPose,
+                    ...memoryActing
+                })
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene5.tsx
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene5 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const Scene5LastFrame = getSceneLastFrame("scene5");
+    const WALK_RESUME_START = 15;
+    const WALK_RESUME_END = 70;
+    const walkStrength = (0,esm/* .interpolate */.GW)(frame, [
+        WALK_RESUME_START,
+        WALK_RESUME_END
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.ease */.GS.ease)
+    });
+    const scene4EndWalkPhase = getSceneLastFrame("scene4");
+    const scene4EndPlacement = getStreetPlacement(getSceneLastFrame("scene1"));
+    const scene4Travel = Math.max(Math.min(frame - WALK_RESUME_START, Scene5LastFrame));
+    const walkFrame = Math.max(0, frame - WALK_RESUME_START);
+    const placement = {
+        x: scene4EndPlacement.x - scene4Travel * 0.25,
+        y: scene4EndPlacement.y + scene4Travel * 0.13,
+        scale: scene4EndPlacement.scale + scene4Travel * 0.00015
+    };
+    const YusufFrontWalk = frontWalkCycle(scene4EndWalkPhase + walkFrame, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const TAB_START = 30;
+    const IF_IT_AFFECTED_ME_START = 145;
+    const YA3NI_START = 324;
+    const FUTURE_START = 424;
+    const hesitationStrength = (0,esm/* .interpolate */.GW)(frame, [
+        TAB_START - 5,
+        TAB_START + 10,
+        TAB_START + 35,
+        IF_IT_AFFECTED_ME_START - 10
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const futureThoughtStrength = (0,esm/* .interpolate */.GW)(frame, [
+        IF_IT_AFFECTED_ME_START - 5,
+        IF_IT_AFFECTED_ME_START + 20,
+        FUTURE_START + 50,
+        FUTURE_START + 90
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const uncertaintyStrength = (0,esm/* .interpolate */.GW)(frame, [
+        YA3NI_START - 5,
+        YA3NI_START + 15,
+        FUTURE_START + 20,
+        FUTURE_START + 60
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const YusufActingPoseScene5 = {
+        ...YusufFrontWalk,
+        // Walking animation gradually resumes
+        bodyY: (YusufFrontWalk.bodyY ?? 0) * walkStrength,
+        leftArmSwing: YusufFrontWalk.leftArmSwing * walkStrength,
+        rightArmSwing: YusufFrontWalk.rightArmSwing * walkStrength,
+        leftKneeRotation: YusufFrontWalk.leftKneeRotation * walkStrength,
+        rightKneeRotation: YusufFrontWalk.rightKneeRotation * walkStrength,
+        leftHipRotation: YusufFrontWalk.leftHipRotation * walkStrength,
+        rightHipRotation: YusufFrontWalk.rightHipRotation * walkStrength,
+        leftLegScaleY: 1 + (YusufFrontWalk.leftLegScaleY - 1) * walkStrength,
+        rightLegScaleY: 1 + (YusufFrontWalk.rightLegScaleY - 1) * walkStrength,
+        leftArmScaleY: 1 + (YusufFrontWalk.leftArmScaleY - 1) * walkStrength,
+        rightArmScaleY: 1 + (YusufFrontWalk.rightArmScaleY - 1) * walkStrength,
+        // Facial acting stays independent from walking
+        headRotation: (YusufFrontWalk.headRotation ?? 0) * walkStrength + hesitationStrength * 4 + futureThoughtStrength * 5 - uncertaintyStrength * 4,
+        eyeLLookX: futureThoughtStrength * 5,
+        eyeRLookX: futureThoughtStrength * 5,
+        leftEyeBrowY: uncertaintyStrength * -4,
+        rightEyeBrowY: uncertaintyStrength * 3
+    };
+    const OVERTHINK_START = 260;
+    const THOUGHTS_OVERLAP_START = 424;
+    const FULL_BEND = 560;
+    const streetBendStrength = (0,esm/* .interpolate */.GW)(frame, [
+        OVERTHINK_START,
+        THOUGHTS_OVERLAP_START,
+        FULL_BEND
+    ], [
+        0,
+        0.08,
+        0.25
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const noodleStrength = (0,esm/* .interpolate */.GW)(frame, [
+        FUTURE_START - 10,
+        FUTURE_START + 20,
+        FUTURE_START + 70,
+        FUTURE_START + 120,
+        FUTURE_START + 140
+    ], [
+        0,
+        0.2,
+        0.6,
+        0.8,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const noodleBlurStrength = (0,esm/* .interpolate */.GW)(frame, [
+        FUTURE_START - 10,
+        FUTURE_START + 20,
+        FUTURE_START + 70,
+        FUTURE_START + 100
+    ], [
+        0,
+        3,
+        10,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const bend = Math.sin(frame * 0.05) * 2 * noodleStrength;
+    const YusufResolver = yusufPose(YusufActingPoseScene5);
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S05_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S05_Yusuf_02.m4a"),
+                from: 145
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S05_Yusuf_03.m4a"),
+                from: 324
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S05_Yusuf_04.m4a"),
+                from: 424
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: 0,
+                y: 0,
+                scale: 1,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            inset: 0,
+                            transform: `
+      perspective(1400px)
+      rotateY(${streetBendStrength * 2.2}deg)
+      skewX(${bend * 1.5}deg)
+      scaleX(${1 + bend * 0.015})
+    `,
+                            filter: `blur${noodleBlurStrength}px`,
+                            transformOrigin: "50% 75%"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                            groundBend: streetBendStrength
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: placement.x,
+                        y: placement.y,
+                        scale: placement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            grounded: true,
+                            ...YusufResolver
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/GymFlash.tsx
+
+
+const GymFlash = ()=>{
+    const imgURL = "assets/Environment/Gouden zonsondergang in de fitnessruimte.png";
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+        src: (0,esm/* .staticFile */.dQ)(imgURL),
+        style: {
+            width: "100%",
+            height: "100%",
+            objectFit: "cover"
+        }
+    });
+};
+
+;// CONCATENATED MODULE: ./src/WorkFlash.tsx
+
+
+const WorkFlash = ()=>{
+    const imgURL = "assets/Environment/Nachtelijk programmeerwerk met stadslicht.png";
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+        style: {
+            width: "100%",
+            height: "100%",
+            objectFit: "cover"
+        },
+        src: (0,esm/* .staticFile */.dQ)(imgURL)
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene6.tsx
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene6 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const WORK_FLASH_START = 180;
+    const WORK_FLASH_END = 240;
+    const GYM_FLASH_START = 320;
+    const GYM_FLASH_END = 380;
+    const isWorkFlash = frame >= WORK_FLASH_START && frame < WORK_FLASH_END;
+    const isGymFlash = frame >= GYM_FLASH_START && frame < GYM_FLASH_END;
+    const scene5LastFrame = getSceneLastFrame("scene5");
+    const scene6LastFrame = getSceneLastFrame("scene6");
+    const scene4EndPlacement = getStreetPlacement(getSceneLastFrame("scene1"));
+    // Gebruik dezelfde startvertraging als Scene 5
+    const WALK_RESUME_START = 15;
+    const scene5Travel = Math.max(0, Math.min(scene5LastFrame - WALK_RESUME_START, scene5LastFrame));
+    const scene5EndPlacement = {
+        x: scene4EndPlacement.x - scene5Travel * 0.25,
+        y: scene4EndPlacement.y + scene5Travel * 0.13,
+        scale: scene4EndPlacement.scale + scene5Travel * 0.00015
+    };
+    const scene6Travel = Math.min(frame, scene6LastFrame);
+    const placement = {
+        x: scene5EndPlacement.x - scene6Travel * 0.25,
+        y: scene5EndPlacement.y + scene6Travel * 0.13,
+        scale: scene5EndPlacement.scale + scene6Travel * 0.00015
+    };
+    const flashOpacity = (start, end)=>(0,esm/* .interpolate */.GW)(frame, [
+            start,
+            start + 6,
+            end - 6,
+            end
+        ], [
+            0,
+            1,
+            1,
+            0
+        ], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp"
+        });
+    const YusufFrontWalk = frontWalkCycle(scene5LastFrame + frame, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const scene6BendStrength = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        180,
+        380,
+        scene6LastFrame
+    ], [
+        0.25,
+        0.3,
+        0.45,
+        0.65
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S06_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S06_Yusuf_02.m4a"),
+                from: 206,
+                durationInFrames: 794,
+                trimBefore: 61
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S06_Yusuf_03.m4a"),
+                from: 300
+            }),
+            [
+                260,
+                360,
+                460,
+                560,
+                660,
+                760
+            ].map((start)=>/*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                    src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S06_Yusuf_04.m4a"),
+                    from: start
+                }, start)),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: 0,
+                y: 0,
+                scale: 1,
+                children: [
+                    isWorkFlash && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            width: "65%",
+                            height: "65%",
+                            left: "17.5%",
+                            top: "17.5%",
+                            zIndex: 10,
+                            backdropFilter: "blur(2px)",
+                            filter: "contrast(1.2) saturate(0.85)",
+                            transform: "scale(1.05)",
+                            opacity: flashOpacity(WORK_FLASH_START, WORK_FLASH_END),
+                            overflow: "hidden",
+                            borderRadius: 20
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(WorkFlash, {})
+                    }),
+                    isGymFlash && /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                        style: {
+                            position: "absolute",
+                            width: "65%",
+                            height: "65%",
+                            left: "17.5%",
+                            top: "17.5%",
+                            backdropFilter: "blur(1px)",
+                            filter: "contrast(1.2) saturate(0.85)",
+                            transform: "scale(1.05)",
+                            zIndex: 10,
+                            opacity: flashOpacity(GYM_FLASH_START, GYM_FLASH_END),
+                            overflow: "hidden",
+                            borderRadius: 20
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(GymFlash, {})
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        groundBend: scene6BendStrength
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: placement.x,
+                        y: placement.y,
+                        scale: placement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            grounded: true,
+                            ...YusufFrontWalk
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene7.tsx
+
+
+
+
+
+
+
+
+
+const Episode3Scene7 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const FREEZE_START = 950;
+    const scene1LastFrame = getSceneLastFrame("scene1");
+    const startPlacement = getStreetPlacement(getSceneLastFrame("scene1"));
+    // Waar Yusuf naartoe loopt
+    const destination = {
+        x: 250,
+        y: 650,
+        scale: 0.7
+    };
+    // Voortgang van 0 naar 1
+    const travelProgress = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        FREEZE_START
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const placement = {
+        x: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.x,
+            destination.x
+        ]),
+        y: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.y,
+            destination.y
+        ]),
+        scale: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.scale,
+            destination.scale
+        ])
+    };
+    const walkFrame = Math.min(frame, FREEZE_START);
+    const YusufFrontWalk = frontWalkCycle(scene1LastFrame + walkFrame, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const unstableWalkStrength = (0,esm/* .interpolate */.GW)(frame, [
+        180,
+        260,
+        420,
+        520
+    ], [
+        0,
+        0.35,
+        0.7,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const unstableHead = Math.sin(frame * 0.18) * 3 * unstableWalkStrength;
+    const unstableBodyY = Math.sin(frame * 0.22) * 3 * unstableWalkStrength;
+    const scene7ActingPose = {
+        ...YusufFrontWalk,
+        headRotation: (YusufFrontWalk.headRotation ?? 0) + unstableHead,
+        bodyY: (YusufFrontWalk.bodyY ?? 0) + unstableBodyY
+    };
+    const zigzagStrength = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        120,
+        220,
+        320,
+        420,
+        520,
+        620
+    ], [
+        0,
+        0.1,
+        0.2,
+        0.35,
+        0.5,
+        0.7,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const OVERLAP_START = 700;
+    const overlapChaos = (0,esm/* .interpolate */.GW)(frame, [
+        OVERLAP_START,
+        OVERLAP_START + 120
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const cameraScaleEscalation = (0,esm/* .interpolate */.GW)(frame, [
+        OVERLAP_START + 43,
+        OVERLAP_START + 120
+    ], [
+        1,
+        1.23
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const cameraShakeStrength = (0,esm/* .interpolate */.GW)(frame, [
+        OVERLAP_START,
+        OVERLAP_START + 120
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const cameraShakeX = Math.sin(frame * 0.45) * 6 * cameraShakeStrength;
+    const cameraShakeY = Math.sin(frame * 0.62) * 4 * cameraShakeStrength;
+    const fullNoodleStrength = (0,esm/* .interpolate */.GW)(frame, [
+        OVERLAP_START + 80,
+        OVERLAP_START + 150,
+        OVERLAP_START + 220
+    ], [
+        0,
+        0.5,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const finalGroundDistortion = Math.min(1.5, zigzagStrength * 0.5 + overlapChaos * 0.4 + fullNoodleStrength * 0.6);
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_02.m4a"),
+                from: 100
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_03.m4a"),
+                from: 300
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_04.m4a"),
+                from: 470
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_05.m4a"),
+                from: 570
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_06.m4a"),
+                from: 670
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_07.m4a"),
+                from: 770
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_08.m4a"),
+                from: 870
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_09.m4a"),
+                from: OVERLAP_START
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_10.m4a"),
+                from: OVERLAP_START + 18
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_11.m4a"),
+                from: OVERLAP_START + 34
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_12.m4a"),
+                from: OVERLAP_START + 48
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S07_Yusuf_13.m4a"),
+                from: 1800
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: cameraShakeX,
+                y: cameraShakeY,
+                scale: cameraScaleEscalation,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        groundBend: finalGroundDistortion
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: placement.x,
+                        y: placement.y,
+                        scale: placement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            grounded: true,
+                            ...scene7ActingPose
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene8.tsx
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene8 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const scene7EndPlacement = {
+        x: 250,
+        y: 650,
+        scale: 0.7
+    };
+    const lookAroundStrength = (0,esm/* .interpolate */.GW)(frame, [
+        20,
+        45,
+        80,
+        110
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const settleStrength = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        8,
+        18
+    ], [
+        1,
+        0.35,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.out */.GS.out(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const scene8Line1MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        // أنا
+        {
+            startFrame: 5,
+            endFrame: 10,
+            pose: "A"
+        },
+        {
+            startFrame: 10,
+            endFrame: 15,
+            pose: "N"
+        },
+        {
+            startFrame: 15,
+            endFrame: 20,
+            pose: "A"
+        },
+        // كنت
+        {
+            startFrame: 20,
+            endFrame: 25,
+            pose: "E"
+        },
+        {
+            startFrame: 25,
+            endFrame: 30,
+            pose: "U"
+        },
+        {
+            startFrame: 30,
+            endFrame: 35,
+            pose: "N"
+        },
+        {
+            startFrame: 35,
+            endFrame: 40,
+            pose: "S"
+        },
+        // بفكر
+        {
+            startFrame: 40,
+            endFrame: 45,
+            pose: "MBP"
+        },
+        {
+            startFrame: 45,
+            endFrame: 50,
+            pose: "I"
+        },
+        {
+            startFrame: 50,
+            endFrame: 55,
+            pose: "E"
+        },
+        {
+            startFrame: 55,
+            endFrame: 60,
+            pose: "R"
+        },
+        // في
+        {
+            startFrame: 60,
+            endFrame: 65,
+            pose: "F"
+        },
+        {
+            startFrame: 65,
+            endFrame: 70,
+            pose: "I"
+        },
+        // إيه
+        {
+            startFrame: 70,
+            endFrame: 76,
+            pose: "E"
+        },
+        {
+            startFrame: 76,
+            endFrame: 82,
+            pose: "A"
+        },
+        {
+            startFrame: 82,
+            endFrame: 95,
+            pose: "rest"
+        }
+    ];
+    const scene8Line2MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        // مش
+        {
+            startFrame: 5,
+            endFrame: 10,
+            pose: "MBP"
+        },
+        {
+            startFrame: 10,
+            endFrame: 15,
+            pose: "I"
+        },
+        {
+            startFrame: 15,
+            endFrame: 21,
+            pose: "S"
+        },
+        // فاكر
+        {
+            startFrame: 21,
+            endFrame: 27,
+            pose: "F"
+        },
+        {
+            startFrame: 27,
+            endFrame: 33,
+            pose: "A"
+        },
+        {
+            startFrame: 33,
+            endFrame: 39,
+            pose: "E"
+        },
+        {
+            startFrame: 39,
+            endFrame: 46,
+            pose: "R"
+        },
+        {
+            startFrame: 46,
+            endFrame: 60,
+            pose: "rest"
+        }
+    ];
+    const LINE1_START = 120;
+    const LINE2_START = 240;
+    const scene8Pose = {
+        headRotation: lookAroundStrength * 6 + Math.sin(frame * 0.35) * 1.5 * settleStrength,
+        bodyY: Math.sin(frame * 0.35) * 1.5 * settleStrength,
+        eyeLLookX: lookAroundStrength * 3,
+        eyeRLookX: lookAroundStrength * 3,
+        leftEyeBrowY: -1.5 * lookAroundStrength,
+        rightEyeBrowY: 1 * lookAroundStrength
+    };
+    const line1 = getMouthPose(frame - LINE1_START, scene8Line1MouthCues);
+    const line2 = getMouthPose(frame - LINE2_START, scene8Line2MouthCues);
+    const scene8MouthPose = frame >= LINE2_START ? line2 : frame >= LINE1_START ? line1 : "rest";
+    const cameraZoom = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        8,
+        20
+    ], [
+        1.23,
+        1.08,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.out */.GS.out(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const yusufresolver = yusufPose(scene8Pose);
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S08_Yusuf_01.m4a"),
+                from: LINE1_START
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S08_Yusuf_02.m4a"),
+                from: LINE2_START
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: 0,
+                y: 0,
+                scale: cameraZoom,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        groundBend: 0
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: scene7EndPlacement.x,
+                        y: scene7EndPlacement.y,
+                        scale: scene7EndPlacement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            ...yusufresolver,
+                            grounded: true,
+                            mouthPose: scene8MouthPose
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene9.tsx
+
+
+
+
+
+
+
+
+
+
+const Episode3Scene9 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const idlePose = idleAnimation(frame, 60);
+    const scene8EndPlacement = {
+        x: 250,
+        y: 650,
+        scale: 0.7
+    };
+    const AH_START = 50;
+    const I_WAS_GOING_TO_GET_SOMETHING_START = 180;
+    const WHAT_IS_IT_START = 300;
+    const INDOMIE_START = 530;
+    const realizationStrength = (0,esm/* .interpolate */.GW)(frame, [
+        AH_START - 5,
+        AH_START + 10,
+        AH_START + 35,
+        AH_START + 60
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const innerVoiceReaction = (0,esm/* .interpolate */.GW)(frame, [
+        WHAT_IS_IT_START,
+        WHAT_IS_IT_START + 15,
+        WHAT_IS_IT_START + 55,
+        WHAT_IS_IT_START + 80
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const recallStrength = (0,esm/* .interpolate */.GW)(frame, [
+        I_WAS_GOING_TO_GET_SOMETHING_START - 10,
+        I_WAS_GOING_TO_GET_SOMETHING_START + 15,
+        WHAT_IS_IT_START - 25,
+        WHAT_IS_IT_START
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const indomieConfusionStrength = (0,esm/* .interpolate */.GW)(frame, [
+        INDOMIE_START - 8,
+        INDOMIE_START + 10,
+        INDOMIE_START + 40,
+        INDOMIE_START + 70
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const scene9IdlePose = {
+        ...idlePose,
+        headRotation: (idlePose.headRotation ?? 0) - realizationStrength * 6 - recallStrength * 4 + indomieConfusionStrength * 6 - innerVoiceReaction * 4,
+        bodyY: (idlePose.bodyY ?? 0) - realizationStrength * 4,
+        leftArmSwing: 0,
+        rightArmSwing: 0,
+        leftElbowRotation: 0,
+        rightElbowRotation: 0,
+        leftKneeRotation: 0,
+        rightKneeRotation: 0,
+        leftHipRotation: 0,
+        rightHipRotation: 0,
+        leftLegScaleY: 1,
+        rightLegScaleY: 1,
+        leftArmScaleY: 1,
+        rightArmScaleY: 1,
+        eyeScaleY: 1 + indomieConfusionStrength * 0.35,
+        eyeLLookY: indomieConfusionStrength * -0.8,
+        eyeRLookY: indomieConfusionStrength * -0.8,
+        leftEyeBrowY: indomieConfusionStrength * -4,
+        rightEyeBrowY: indomieConfusionStrength * -4,
+        mouthPose: "rest"
+    };
+    // آه
+    const scene9Line1MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        {
+            startFrame: 5,
+            endFrame: 15,
+            pose: "A"
+        },
+        {
+            startFrame: 15,
+            endFrame: 25,
+            pose: "E"
+        },
+        {
+            startFrame: 25,
+            endFrame: 35,
+            pose: "rest"
+        }
+    ];
+    // أنا كنت رايح أجيب حاجة
+    const scene9Line2MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        // أنا كنت
+        {
+            startFrame: 5,
+            endFrame: 12,
+            pose: "A"
+        },
+        {
+            startFrame: 12,
+            endFrame: 18,
+            pose: "N"
+        },
+        {
+            startFrame: 18,
+            endFrame: 25,
+            pose: "A"
+        },
+        {
+            startFrame: 25,
+            endFrame: 33,
+            pose: "E"
+        },
+        {
+            startFrame: 33,
+            endFrame: 40,
+            pose: "N"
+        },
+        // رايح
+        {
+            startFrame: 40,
+            endFrame: 48,
+            pose: "R"
+        },
+        {
+            startFrame: 48,
+            endFrame: 58,
+            pose: "A"
+        },
+        {
+            startFrame: 58,
+            endFrame: 65,
+            pose: "E"
+        },
+        // أجيب حاجة
+        {
+            startFrame: 65,
+            endFrame: 73,
+            pose: "A"
+        },
+        {
+            startFrame: 73,
+            endFrame: 82,
+            pose: "E"
+        },
+        {
+            startFrame: 82,
+            endFrame: 89,
+            pose: "MBP"
+        },
+        {
+            startFrame: 89,
+            endFrame: 98,
+            pose: "A"
+        },
+        {
+            startFrame: 98,
+            endFrame: 110,
+            pose: "rest"
+        }
+    ];
+    // إيه هي؟
+    const scene9Line3MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        {
+            startFrame: 5,
+            endFrame: 15,
+            pose: "E"
+        },
+        {
+            startFrame: 15,
+            endFrame: 25,
+            pose: "A"
+        },
+        {
+            startFrame: 25,
+            endFrame: 35,
+            pose: "E"
+        },
+        {
+            startFrame: 35,
+            endFrame: 45,
+            pose: "rest"
+        }
+    ];
+    // إندومي!
+    const scene9Line4MouthCues = [
+        {
+            startFrame: 0,
+            endFrame: 5,
+            pose: "rest"
+        },
+        // إن
+        {
+            startFrame: 5,
+            endFrame: 13,
+            pose: "E"
+        },
+        {
+            startFrame: 13,
+            endFrame: 20,
+            pose: "N"
+        },
+        // دو
+        {
+            startFrame: 20,
+            endFrame: 28,
+            pose: "N"
+        },
+        {
+            startFrame: 28,
+            endFrame: 40,
+            pose: "U"
+        },
+        // مي
+        {
+            startFrame: 40,
+            endFrame: 48,
+            pose: "MBP"
+        },
+        {
+            startFrame: 48,
+            endFrame: 60,
+            pose: "I"
+        },
+        {
+            startFrame: 60,
+            endFrame: 75,
+            pose: "rest"
+        }
+    ];
+    const LINE1_START = 0;
+    const LINE2_START = 120;
+    const LINE3_START = 262;
+    const LINE4_START = 462;
+    const scene9MouthPose = frame >= LINE4_START ? getMouthPose(frame - LINE4_START, scene9Line4MouthCues) : frame >= LINE3_START ? getMouthPose(frame - LINE3_START, scene9Line3MouthCues) : frame >= LINE2_START ? getMouthPose(frame - LINE2_START, scene9Line2MouthCues) : getMouthPose(frame - LINE1_START, scene9Line1MouthCues);
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S09_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S09_Yusuf_02.m4a"),
+                from: 120
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S09_Yusuf_03.m4a"),
+                from: 262
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S09_Yusuf_04.m4a"),
+                from: 462
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: 0,
+                y: 0,
+                scale: 1,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        groundBend: 0
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: scene8EndPlacement.x,
+                        y: scene8EndPlacement.y,
+                        scale: scene8EndPlacement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            leftHandPose: "open",
+                            grounded: true,
+                            ...scene9IdlePose,
+                            mouthPose: scene9MouthPose
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Scene10.tsx
+
+
+
+
+
+
+
+
+
+const Episode3Scene10 = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    const startPlacement = {
+        x: 250,
+        y: 650,
+        scale: 0.7
+    };
+    const destination = {
+        x: 250,
+        y: 720,
+        scale: 0.82
+    };
+    const travelProgress = (0,esm/* .interpolate */.GW)(frame, [
+        0,
+        300
+    ], [
+        0,
+        1
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp"
+    });
+    const placement = {
+        x: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.x,
+            destination.x
+        ]),
+        y: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.y,
+            destination.y
+        ]),
+        scale: (0,esm/* .interpolate */.GW)(travelProgress, [
+            0,
+            1
+        ], [
+            startPlacement.scale,
+            destination.scale
+        ])
+    };
+    const CALL_BACK_START = 200;
+    const callbackReactionStrength = (0,esm/* .interpolate */.GW)(frame, [
+        CALL_BACK_START - 5,
+        CALL_BACK_START + 10,
+        CALL_BACK_START + 35,
+        CALL_BACK_START + 60
+    ], [
+        0,
+        1,
+        1,
+        0
+    ], {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: esm/* .Easing.inOut */.GS.inOut(esm/* .Easing.cubic */.GS.cubic)
+    });
+    const walkingPose = frontWalkCycle(frame, episode3StreetMotion_WALK_CYCLE_FRAMES);
+    const scene10Pose = {
+        ...walkingPose,
+        headRotation: (walkingPose.headRotation ?? 0) + callbackReactionStrength * 4,
+        eyeLLookX: callbackReactionStrength * 2.5,
+        eyeRLookX: callbackReactionStrength * 2.5,
+        leftEyeBrowY: callbackReactionStrength * -2,
+        rightEyeBrowY: callbackReactionStrength * 1.5
+    };
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S010_Yusuf_01.m4a")
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S010_Yusuf_02.m4a"),
+                from: 136
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Audio, {
+                src: (0,esm/* .staticFile */.dQ)("VoiceOver/VO_Episode_3/EP03_S010_Yusuf_03.m4a"),
+                from: 236
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(Camera, {
+                x: 0,
+                y: 0,
+                scale: 1,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(EgyptianStreet, {
+                        groundBend: 0
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: placement.x,
+                        y: placement.y,
+                        scale: placement.scale,
+                        width: 500,
+                        groundY: episode3StreetMotion_YUSUF_GROUND_Y,
+                        integration: {
+                            contactShadow: true,
+                            ambientLight: "daylight",
+                            keyLight: "sun",
+                            castShadow: "streetSun"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufCharacter, {
+                            grounded: true,
+                            ...scene10Pose
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/scenes/episode 3/Episode3Master.tsx
+
+
+
+
+
+
+
+
+
+
+
+
+const Episode3Master = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                durationInFrames: 430,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene1, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 430,
+                durationInFrames: 807,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene2, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 1237,
+                durationInFrames: 1080,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene3, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 2317,
+                durationInFrames: 400,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene4, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 2720,
+                durationInFrames: 1000,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene5, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 3720,
+                durationInFrames: 1000,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene6, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 4720,
+                durationInFrames: 1000,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene6, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 5720,
+                durationInFrames: 2000,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene7, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 7720,
+                durationInFrames: 400,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene8, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 8120,
+                durationInFrames: 600,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene9, {})
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Sequence */.gd, {
+                from: 8720,
+                durationInFrames: 500,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode3Scene10, {})
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/Stadium_Landscape/Stadium.tsx
+
+
+const stadiumPath = "assets/Environment/Stadium";
+const stadiumLayers = [
+    "Nachtelijke hemel met blauwe wolken-1.png",
+    "Verlichte lichtmasten met zachte lichtbundels-5.png",
+    "Bomen, huisdak en verlichte tribune-2.png",
+    "Verlichte grasvoorgrond van het voetbalveld-4.png",
+    "stadium-goal-fence.png"
+];
+const Episode4Stadium = ()=>/*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .AbsoluteFill */.H1, {
+        children: stadiumLayers.map((path, index)=>/*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Img */.E9, {
+                src: (0,esm/* .staticFile */.dQ)(`${stadiumPath}/${path}`),
+                style: {
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "fill",
+                    zIndex: index
+                }
+            }, path))
+    });
+
+;// CONCATENATED MODULE: ./src/YusufFootballSideCharacter/YusufSideArms.tsx
+
+
+// Use the SAME SceneMaster module that provides this character's lighting.
+
+const YusufSideArms = ()=>{
+    const id = `yusuf-arm-${(0,react.useId)().replace(/:/g, "")}`;
+    const lighting = useCharacterLighting();
+    const left = Math.max(0, Math.min(1, lighting.leftLight));
+    const right = Math.max(0, Math.min(1, lighting.rightLight));
+    const burn = Math.max(0, Math.min(1, lighting.burn));
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: `${id}-Yusuf_x5F_Side_x5F_Arm`,
+        version: "1.1",
+        style: {
+            display: "block",
+            width: "100%",
+            height: "100%"
+        },
+        viewBox: "0 0 188.37 180",
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("defs", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-burn`,
+                        x1: "0%",
+                        y1: "0%",
+                        x2: "100%",
+                        y2: "100%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.05"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "55%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.4"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.48"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-left`,
+                        x1: "0%",
+                        y1: "0%",
+                        x2: "100%",
+                        y2: "0%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.42"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "22%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.16"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "65%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-right`,
+                        x1: "100%",
+                        y1: "0%",
+                        x2: "0%",
+                        y2: "0%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.4"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "22%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.14"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "65%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                        children: `
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { stroke-miterlimit: 10; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st3, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st4 { fill: #141110; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st5 { opacity: .1; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { stroke: #000; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1 { stroke: #111; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { fill: #d48455; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st7 { fill: #063ac6; stroke: #1b0000; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st4 { opacity: .3; }
+        `
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                "data-yusuf-joint": "right-elbow",
+                style: {
+                    transform: "rotate(var(--yusuf-right-elbow, 0deg))",
+                    transformOrigin: "72px 70px",
+                    transformBox: "view-box"
+                },
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        id: `${id}-R_hand`,
+                        transform: "rotate(15 72 70)",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32,.96-1.11,.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32,.96-1.11,.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32,.96-1.11,.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32,.96-1.11,.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32,.96-1.11,.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71,.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71,.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71,.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71,.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71,.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-burn)`,
+                                        opacity: burn,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-left)`,
+                                        opacity: left,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z",
+                                        fill: `url(#${id}-right)`,
+                                        opacity: right,
+                                        stroke: "none",
+                                        pointerEvents: "none"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "arm-st1",
+                                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71,.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z",
+                                        style: {
+                                            fill: "none"
+                                        },
+                                        pointerEvents: "none"
+                                    })
+                                ]
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        id: `${id}-Forearm_x5F_R`,
+                        transform: "rotate(15 72 70)",
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                            children: [
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    id: `${id}-Forearm_R`,
+                                    className: "arm-st2",
+                                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z",
+                                    fill: `url(#${id}-burn)`,
+                                    opacity: burn,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z",
+                                    fill: `url(#${id}-left)`,
+                                    opacity: left,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z",
+                                    fill: `url(#${id}-right)`,
+                                    opacity: right,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    className: "arm-st2",
+                                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z",
+                                    style: {
+                                        fill: "none"
+                                    },
+                                    pointerEvents: "none"
+                                })
+                            ]
+                        })
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                id: `${id}-Upper_x5F_Arm_x5F_R`,
+                children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                    children: [
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            id: `${id}-Upper_x5F_Arm_x5F_R1`,
+                            "data-name": "Upper_x5F_Arm_x5F_R",
+                            className: "arm-st2",
+                            d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z"
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z",
+                            fill: `url(#${id}-burn)`,
+                            opacity: burn,
+                            stroke: "none",
+                            pointerEvents: "none"
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z",
+                            fill: `url(#${id}-left)`,
+                            opacity: left,
+                            stroke: "none",
+                            pointerEvents: "none"
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z",
+                            fill: `url(#${id}-right)`,
+                            opacity: right,
+                            stroke: "none",
+                            pointerEvents: "none"
+                        }),
+                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            className: "arm-st2",
+                            d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z",
+                            style: {
+                                fill: "none"
+                            },
+                            pointerEvents: "none"
+                        })
+                    ]
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "arm-st7",
+                        d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "arm-st7",
+                        d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z",
+                        style: {
+                            fill: "none"
+                        },
+                        pointerEvents: "none"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Shoulder_x5F_R`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st2",
+                                d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z",
+                                fill: `url(#${id}-burn)`,
+                                opacity: burn,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z",
+                                fill: `url(#${id}-left)`,
+                                opacity: left,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z",
+                                fill: `url(#${id}-right)`,
+                                opacity: right,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st2",
+                                d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z",
+                                style: {
+                                    fill: "none"
+                                },
+                                pointerEvents: "none"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st2",
+                                d: "M23.72,6.58c1.06-.48,.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M23.72,6.58c1.06-.48,.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z",
+                                fill: `url(#${id}-burn)`,
+                                opacity: burn,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M23.72,6.58c1.06-.48,.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z",
+                                fill: `url(#${id}-left)`,
+                                opacity: left,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M23.72,6.58c1.06-.48,.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z",
+                                fill: `url(#${id}-right)`,
+                                opacity: right,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st2",
+                                d: "M23.72,6.58c1.06-.48,.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z",
+                                style: {
+                                    fill: "none"
+                                },
+                                pointerEvents: "none"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st7",
+                                d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z",
+                                fill: `url(#${id}-burn)`,
+                                opacity: burn,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z",
+                                fill: `url(#${id}-left)`,
+                                opacity: left,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z",
+                                fill: `url(#${id}-right)`,
+                                opacity: right,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "arm-st7",
+                                d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z",
+                                style: {
+                                    fill: "none"
+                                },
+                                pointerEvents: "none"
+                            })
+                        ]
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/YusufFootballSideCharacter/YusufSideHead.tsx
+
+
+
+const YusufSideHead = ()=>{
+    const id = `yusuf-head-${(0,react.useId)().replace(/:/g, "")}`;
+    const lighting = useCharacterLighting();
+    const left = Math.max(0, Math.min(1, lighting.leftLight));
+    const right = Math.max(0, Math.min(1, lighting.rightLight));
+    const burn = Math.max(0, Math.min(1, lighting.burn));
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: `${id}-YusufSideHead`,
+        version: "1.1",
+        viewBox: "0 0 49.15 116.6",
+        style: {
+            display: "block",
+            width: "100%",
+            height: "100%"
+        },
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("defs", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-burn`,
+                        x1: "0",
+                        y1: "0",
+                        x2: "49.15",
+                        y2: "0",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#0a1834",
+                                stopOpacity: "0.08"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "50%",
+                                stopColor: "#0a1834",
+                                stopOpacity: "0.42"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#0a1834",
+                                stopOpacity: "0.12"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("radialGradient", {
+                        id: `${id}-left`,
+                        cx: "0",
+                        cy: "28",
+                        r: "62",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.36"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "35%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.17"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "78%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("radialGradient", {
+                        id: `${id}-right`,
+                        cx: "49",
+                        cy: "30",
+                        r: "62",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.34"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "35%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.15"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "78%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-hairline-shadow`,
+                        x1: "0",
+                        y1: "31",
+                        x2: "0",
+                        y2: "46",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#071228",
+                                stopOpacity: "0.65"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#071228",
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("clipPath", {
+                        id: `${id}-face-clip`,
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42"
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("mask", {
+                        id: `${id}-hair-mask`,
+                        maskUnits: "userSpaceOnUse",
+                        x: "0",
+                        y: "0",
+                        width: "49.15",
+                        height: "116.6",
+                        style: {
+                            maskType: "alpha"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("use", {
+                            href: `#${id}-Hair`
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("radialGradient", {
+                        id: `${id}-hair-left`,
+                        cx: "2",
+                        cy: "5",
+                        r: "40",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.24"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "50%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.08"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("radialGradient", {
+                        id: `${id}-hair-right`,
+                        cx: "42",
+                        cy: "7",
+                        r: "40",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.22"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "50%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.07"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                        children: `
+      #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st2, #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st4, #${id}-YusufSideHead .head-st5 {
+        stroke-miterlimit: 10;
+      }
+
+  #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st2, #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st5 {
+    stroke: #000;
+  }
+
+  #${id}-YusufSideHead .head-st0, #${id}-YusufSideHead .head-st4 {
+    fill: none;
+  }
+
+  #${id}-YusufSideHead .head-st1, #${id}-YusufSideHead .head-st3 {
+    fill: #fff;
+  }
+
+  #${id}-YusufSideHead .head-st3, #${id}-YusufSideHead .head-st6 {
+    opacity: .5;
+  }
+
+  #${id}-YusufSideHead .head-st4 {
+    stroke: #1b0000;
+  }
+
+  #${id}-YusufSideHead .head-st5 {
+    fill: #d48455;
+}
+`
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                id: `${id}-Head`,
+                className: "head-st5",
+                d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42",
+                fill: `url(#${id}-burn)`,
+                opacity: burn,
+                stroke: "none",
+                pointerEvents: "none"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42",
+                fill: `url(#${id}-left)`,
+                opacity: left,
+                stroke: "none",
+                pointerEvents: "none"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42",
+                fill: `url(#${id}-right)`,
+                opacity: right,
+                stroke: "none",
+                pointerEvents: "none"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: "M20.98,115.79c-9.55-.36-20.97,1.97-18.55-74.92C3.06,21.17,12.89,7.12,22.44,7.48s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42",
+                fill: "none",
+                stroke: "#000",
+                strokeMiterlimit: 10,
+                pointerEvents: "none"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: "M4 30 C14 35 29 35 39 30 L41 47 L2 47 Z",
+                clipPath: `url(#${id}-face-clip)`,
+                fill: `url(#${id}-hairline-shadow)`,
+                opacity: burn * 0.65,
+                pointerEvents: "none"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-R_ear`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st5",
+                        d: "M43.83,67.8s3.71,4.67-1.37,5.42"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M43.83,67.8s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M43.83,67.8s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M43.83,67.8s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M43.83,67.8s3.71,4.67-1.37,5.42",
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10,
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st5",
+                        d: "M41.51,57.3s17.04,13.9-1.52,22.79"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M41.51,57.3s17.04,13.9-1.52,22.79",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M41.51,57.3s17.04,13.9-1.52,22.79",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M41.51,57.3s17.04,13.9-1.52,22.79",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M41.51,57.3s17.04,13.9-1.52,22.79",
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10,
+                        pointerEvents: "none"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "head-st4",
+                d: "M15.6,93.02c-1.89,4.22-6.46,6.44-10.93,6.51"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Eye_L`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st1",
+                        d: "M12.12,71.69l-5.02-.07c-2.63-.04-4.7-3.63-4.63-8.02h0c.08-4.39,2.27-7.93,4.9-7.89l5.02.07c2.63.04,4.7,3.63,4.63,8.02h0c-.08,4.39-2.27,7.93-4.9,7.89Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("ellipse", {
+                        className: "head-st2",
+                        cx: "9.64",
+                        cy: "66.05",
+                        rx: "1.38",
+                        ry: ".83",
+                        transform: "translate(-56.58 74.43) rotate(-88.91)"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st5",
+                        d: "M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.68,60.07l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z",
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10,
+                        pointerEvents: "none"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Nose_Yusuf`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: `${id}-nostril_R`,
+                        className: "head-st0",
+                        d: "M9.85,86.25"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: `${id}-nostril_R1`,
+                        "data-name": "nostril_R",
+                        className: "head-st0",
+                        d: "M13.27,81.37"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: `${id}-nostril_L`,
+                        className: "head-st5",
+                        d: "M2.89,76.21s-5.99,10.35,1.01,10.04"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.89,76.21s-5.99,10.35,1.01,10.04",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.89,76.21s-5.99,10.35,1.01,10.04",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.89,76.21s-5.99,10.35,1.01,10.04",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.89,76.21s-5.99,10.35,1.01,10.04",
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10,
+                        pointerEvents: "none"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                className: "head-st6",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st1",
+                        d: "M1.68,64.96"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("ellipse", {
+                        className: "head-st1",
+                        cx: "10.3",
+                        cy: "63.45",
+                        rx: "8.93",
+                        ry: "12.94",
+                        transform: "translate(-.59 .1) rotate(-.53)"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Eyebrow_R`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("line", {
+                        className: "head-st0",
+                        x1: "7.37",
+                        y1: "45.78",
+                        x2: "27.76",
+                        y2: "46.16"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st0",
+                        d: "M27.4,46.27c.13-.27,2.11-.09,1.96,1.79"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st0",
+                        d: "M8.06,45.9c-.12-.27-2.1-.17-2.03,1.73"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Hair`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "head-st0",
+                                d: "M6.27,21.48s-.58,3.92.2,4.56c.12.1.18.22.14.33-.15.36-.41,1.07-.25,1.35.03.06.06.12.06.18-.03.43-.05,2.07,1.09,2.33.21.05.38.13.46.25.3.44,1.86.6,2.67,1.38,1.89,1.8,7.58,1.4,7.58,1.4.13.02.25.05.38.06.84.1,1.7.13,2.54.05.52-.05,1.5-.4,1.76-.29.66.27,2.57.1,2.73-.29.27-.62,1.42.78,4.43-.11,1.93-.57,3.09-.26,5.09-.12,1.41.1,2.24-.63,2.61-1.07.14-.16.39-.27.67-.35l.84-1.04"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "head-st0",
+                                d: "M.95,54.26l.23-8.92s.14-20.84.98-22.93c.21-.53.26-1.17.18-1.77-.16-1.19-.35-2.91-.17-3.62.06-.25.08-.51.07-.77,0-1.55.08-5.85,1.29-6.7.35-.25.67-.61.84-1.12.46-1.38,1.5-3.7,3.24-3.49,2.46.29,3.89,1.18,6.29-.71,3.73-2.94,5.13,1.3,5.47-.63.21-1.19,2.58-1.87,3.38-1.07.32.32,1.53-.84,2.18-1.02,1.03-.29,2.09-.28,3.13-.02.16.04.32.1.47.16,0,0,7.03-1.62,9.33,3.8.99,2.33,2.91,2.74,3.27,4.07.1.36.31.62.57.75,1.41.73,1.35,5.78,1.31,7.12,0,.19.02.37.07.54.19.85-.14,3.07-.33,4.19-.06.35.02.71.16,1.02.88,1.86-2.48,22.33-1.59,23.07l.03,11.52-1.19-.56"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "head-st0",
+                                d: "M6.87,29.86s.52,6.07-1.37,7.96-2.61,17.34-2.61,17.34l-1.64-.59"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "head-st0",
+                                d: "M36.67,32.01s-.67,5.59,1.18,7.62,2.29,17.53,2.29,17.53l1.25.99"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.04,53.77l.35-.52-2.8-.76.03.47c.06,1.03,1.27,2.01,2.26,1.3l.23-.17-2.26-1.3c-.02.39,0,.76.12,1.13.54,1.59,2.89,1.34,2.95-.4.04-1.38.09-2.76.13-4.13H1.06v1.14c-.01,1.97,2.81,1.89,3,0,.06-.58.08-1.16.08-1.74-.01-1.57-1.97-1.93-2.8-.76-.51.72-.81,1.56-1.01,2.41l2.95.4.06-.43H.33c.02.2-.01.4-.09.59l2.89.8c.42-1.71.7-3.46.86-5.21s.11-3.67.44-5.47l-2.95-.4c-.15,1.42-.14,2.84-.09,4.27.02.56,0,1.13.06,1.69.03.32.29-.05-.07.21-.27.2-.52.37-.75.62l2.56,1.06c.22-4.18,1.02-8.31,1.13-12.5.05-1.76-2.41-1.94-2.95-.4-.77,2.22-.91,4.63-.98,6.96-.03.9.99,1.8,1.9,1.45.08-.03.69-.35.79-.35l-1.45-1.1c.11.28.13.51.15.82.08,1.65,2.49,2.08,2.95.4.68-2.48.47-5.14,1.28-7.58l-2.95-.4c.01.54.03,1.08.07,1.62.11,1.76,2.32,1.94,2.95.4-.14.33-.1.2.1-.02.18-.19.34-.41.48-.64.29-.49.48-1.06.62-1.62.38-1.54-1.39-2.39-2.51-1.46-.51.42-1,.35-1.58.56-.32.11-.59.29-.83.52-.09.09-.57.58-.29.54l1.45,1.9c.12-.81.28-1.6.51-2.38.1-.32.2-.65.33-.96.05-.14.11-.29.18-.42.35-.49.19-.49-.47-.02,1.93,0,1.93-3,0-3-2.51,0-3.16,4.11-3.44,5.99-.13.83.37,2.04,1.45,1.9.53-.07.98-.16,1.43-.45.26-.16.48-.36.68-.59.23-.26.47-.38.05-.28-.67.16.15.06.26.04.29-.05.55-.13.83-.24.59-.24,1.08-.59,1.57-1l-2.51-1.46c-.22.9-.85,1.43-1.2,2.28l2.95.4c-.03-.54-.06-1.08-.07-1.62-.03-1.73-2.41-1.99-2.95-.4-.82,2.45-.6,5.1-1.28,7.58l2.95.4c-.02-.53-.05-1.12-.25-1.62-.27-.66-.72-1.05-1.45-1.1-.55-.04-1.09.26-1.59.46l1.9,1.45c.06-2.09.19-4.18.88-6.16l-2.95-.4c-.12,4.19-.92,8.32-1.13,12.5-.07,1.27,1.7,2.01,2.56,1.06.48-.53,1.06-.71,1.39-1.4s.31-1.43.29-2.18c-.06-1.78-.13-3.56.06-5.33.17-1.67-2.64-2.06-2.95-.4-.65,3.55-.43,7.15-1.3,10.69-.46,1.87,2.38,2.66,2.89.8.12-.46.18-.92.2-1.39.03-.82-.71-1.49-1.5-1.5-.9,0-1.4.7-1.5,1.5l-.06.43c-.22,1.68,2.56,2.02,2.95.4.15-.63.33-1.16.71-1.69l-2.8-.76c0,.59-.02,1.16-.08,1.74h3v-1.14c.01-1.93-2.94-1.93-3,0-.04,1.38-.09,2.76-.13,4.13l2.95-.4c-.06-.1-.06-.21-.01-.34.06-1.07-1.35-1.96-2.26-1.3l-.23.17,2.26,1.3-.03-.47c-.09-1.52-1.95-2-2.8-.76l-.35.52c-1.09,1.6,1.51,3.11,2.59,1.51h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.52,34.23c.3.95,1.13,1.38,2.09,1.16.63-.14,1.22-.44,1.8-.72l-.76.2.16-.02-.76-.2-.44-.53c.37,1.46,2.49,1.39,2.89,0,.32-1.1.37-2.26.42-3.4.04-.89-.72-1.4-1.5-1.5-.66-.09-1.25-.02-1.74.49-.24.26-.37.55-.49.88-.03.09-.06.17-.09.26.08-.16.07-.16-.04,0l.54-.54c.72.01.9-.02.53-.1-.18-.04-.36-.07-.55-.08-.28,0-.55.05-.81.14-.51.18-.92.53-1.31.9-.74.72-1.54,1.47-1.64,2.54-.07.74.63,1.38,1.3,1.47.8.11,1.35-.37,1.65-1.07.57-1.38.78-2.97,1.02-4.44.06-.36.1-.73.21-1.07-.06.19.09-.2.1-.21.1-.21.19-.42.28-.63.31-.76.43-1.55.53-2.36.09-.74-.64-1.38-1.3-1.47-.79-.11-1.36.37-1.65,1.07-.68,1.66-1.15,3.42-1.62,5.15-.26.95-.44,1.93-.52,2.92-.01.19-.02.38-.03.58,0,.1,0,.21,0,.31,0,.19-.01.21,0,.05-.13.48-.29.92-.26,1.43.07,1.19,1.21,1.8,2.26,1.3.69-.33,1.14-1.08,1.54-1.7s.77-1.29,1.12-1.95c.75-1.38,1.45-2.78,2.12-4.2.34-.73.2-1.62-.54-2.05-.67-.39-1.68-.18-2.05.54l-.35.68c-.05.1-.47.74-.13.35l.66-.39-.09.02h.8c-.5-.17-.98-.12-1.43.15-.7.4-.95,1.36-.54,2.05s1.35.94,2.05.54l.08-.05-1.16.15c.74.18,1.43.08,1.91-.57.32-.42.53-.95.78-1.42l-2.59-1.51c-.61,1.31-1.26,2.6-1.94,3.87-.32.59-.64,1.18-.98,1.76-.16.27-.33.55-.51.81,0,0-.24.39-.15.23l-.1.11c.13-.08.12-.08-.02,0l2.26,1.3c0-.19,0-.21-.02-.08.02-.1.05-.19.09-.28.07-.21.12-.4.15-.62.06-.46.05-.93.08-1.39.05-.73.24-1.52.45-2.28.47-1.67.92-3.38,1.58-4.99l-2.95-.4c-.01.11-.11.56-.17.81-.04.16-.09.31-.14.47-.14.43.11-.18-.09.21-.36.72-.51,1.4-.64,2.18-.23,1.4-.44,2.93-.99,4.25l2.95.4v-.12c-.06.25-.13.5-.19.76.06-.13.05-.13-.02-.01.08-.09.16-.19.24-.28.16-.18.32-.35.49-.53.07-.07.5-.41.5-.49,0,.18-.84-.11-.36.09.63.26,1.47-.01,1.94-.47.26-.26.4-.56.53-.9.03-.09.06-.17.09-.26.1-.26.04-.18-.17.24l-.66.39c-.21,0-.24.02-.08.03.1.01.19.03.29.04l-1.5-1.5c-.02.49-.04.98-.09,1.47-.04.38-.09.68-.22,1.13h2.89c-.22-.85-.94-1.54-1.86-1.46-.44.04-.78.23-1.17.41-.09.04-.12.05-.24.09-.11.03-.57.09-.19.09l.76.2-.06-.04.69.9-.03-.09c-.25-.77-1.04-1.27-1.85-1.05-.76.21-1.29,1.07-1.05,1.85h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.03,29.1v.02c.91-.12,1.82-.24,2.74-.36v-.02c.04.39.09.77.14,1.16.1-.37.2-.73.32-1.09.04-.13.08-.3.15-.42-.08.15.06-.02.08-.05.28-.38.55-.73.67-1.2.15-.59-.11-1.08-.36-1.58-.37-.74-.75-1.48-1.6-1.73-.99-.29-1.79.22-2.35,1l2.8.76c-.02-.3.06-.37.24-.62l-.54.54.14-.07-1.82-.23c.08.07.26.44.43.59.29.27.66.45,1.06.44.69-.01,1.26-.4,1.53-1.03.39-.91.09-2.47-.56-3.2-.48-.54-1.23-.49-1.82-.23-.16.07-.3.21-.44.32l1.82-.23-.05-.03.3,2.36s.49-.28.57-.35c.26-.25.46-.6.57-.95.3-.97-.2-1.68-.99-2.19l.69,1.69c.27-.92.51-1.9,1.08-2.7.71-1,1.51-1.93,2.22-2.93.47-.66.12-1.67-.54-2.05-.75-.44-1.58-.12-2.05.54-.73,1.03-1.58,1.98-2.29,3.02-.66.98-.98,2.2-1.31,3.32-.2.66.14,1.34.69,1.69l.04.05-.39-1.46c.03-.13.61-.49.11-.21-.19.11-.36.25-.52.4-.77.68-.44,1.84.3,2.36l.05.03c.57.4,1.34.18,1.82-.23l-.17.15-1.82-.23.04.04-.39-.66c.06.16.08.32.13.48.1.31-.1.31.16-.02l1.3-.74h-.09c.35.16.71.3,1.06.45-.12-.12-.23-.43-.43-.59-.56-.47-1.16-.54-1.82-.23-.94.43-1.39,1.79-1.33,2.74.1,1.53,1.93,1.98,2.8.76-1.31-.4-1.81-.34-1.5.2l.16.32.32.64-.15-1.16s-.32.32-.41.46c-.2.33-.33.74-.46,1.11-.25.74-.64,1.63-.2,2.37.68,1.15,2.34.85,2.74-.36v-.02c.26-.77-.29-1.64-1.04-1.85-.82-.22-1.59.28-1.85,1.05h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M5.76,22.52c-.01.06-.03.12-.06.18l.15-.36c-.15.35-.32.68-.38,1.06-.04.26-.08.52-.08.78,0,.14,0,.28-.01.42l.05-.4c0,.06-.02.12-.04.17-.06.2-.07.4-.03.6,0,.2.07.39.18.56l.23.3c.19.19.41.31.66.39.22.03.45.08.67.06s.46-.04.67-.13.43-.16.61-.29c.2-.14.4-.29.57-.47.27-.29.44-.66.44-1.06,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48-.29-.26-.66-.46-1.06-.44s-.79.15-1.06.44c-.07.07-.14.14-.21.2l.3-.23c-.09.07-.19.13-.3.18l.36-.15c-.08.03-.17.06-.26.07l.4-.05c-.09.01-.17.01-.26,0l.4.05h-.03c.35.61.7,1.23,1.05,1.84.15-.44.07-.91.13-1.36l-.05.4c.03-.17.07-.35.13-.51l-.15.36c.11-.25.25-.49.31-.75.09-.39.05-.8-.15-1.16-.09-.17-.22-.32-.39-.42-.14-.13-.31-.22-.51-.27-.38-.09-.81-.07-1.16.15-.32.21-.6.51-.69.9h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M8.98,23.83l3.91.15-.4-2.95-1.65.24c-.73.11-1.16.99-1.07,1.65.11.79.72,1.21,1.47,1.3l1.21.14v-3c-1.52-.13-3.03-.15-4.56-.05-1.41.09-2.14,2.04-.76,2.8l1.56.85-.74-1.3c0,.89-.1,1.77-.39,2.61-.12.33-.27.62-.45.93-.07.11-.36.28-.15.23l1.16.15c.4.66.56.74.46.25-.01-.23,0-.47,0-.7l-1.1,1.45c.77-.1,1.54-.21,2.31-.31,1.66-.22,1.28-3.15-.4-2.95-.37.05.06.19-.15-.13l.15,1.16c.49-1.55-.71-3.58-1.54-4.83l-.23,1.82c.97-1.19,2.14-1.87,3.54-2.45.7-.29,1.18-.85,1.07-1.65-.09-.67-.73-1.39-1.47-1.3l-2.09.24,1.06,2.56.73-.6c1.1-.89.11-2.48-1.06-2.56l-2.14-.15c-.81-.06-1.5.73-1.5,1.5,0,.89.69,1.4,1.5,1.5l.72.09-1.45-1.1c.34,1.21,1.25,1.82,2.48,1.74,1.46-.09,2.87-.12,4.32.09,2.96.44,5.81,1.46,8.63,2.44v-2.89c-1.26.4-2.53.76-3.75,1.27s-2.22,1.22-3.25,2-2.07,1.54-3.15,2.24-2.24,1.68-3.46,1.91l1.9,1.45c.02-.18.12-.17,0-.14.22-.07.45-.18.66-.28.43-.21.8-.48,1.17-.77.73-.57,1.37-1.28,2.17-1.76,1.65-.99,3.73-.89,5.51-1.55,1.49-.55,1.41-3.03-.4-2.95-3.16.14-6.28.68-9.31,1.6-1.33.4-1.53,2.6,0,2.89l.29.05.4-2.95c-.89-.09-1.75.03-2.6.31-1.35.45-1.5,2.51,0,2.89,2.7.7,5.08-.7,7.27-2.12.95-.62.99-1.98,0-2.59-.75-.47-1.55-.71-2.44-.71v3l2.39-.07-.4-2.95-.91.29.8,2.89.27-.09c1.61-.54,1.32-2.86-.4-2.95-.42-.02-.84-.05-1.26-.12l.66,2.51c-.16.06-.13.07.09.02.19-.03.38-.06.57-.09.38-.06.76-.11,1.14-.17.73-.11,1.16-.99,1.07-1.65-.11-.78-.72-1.23-1.47-1.3-.6-.06-1.2-.12-1.79-.17l.4,2.95c.59-.23,1.03-.49,1.5-.91.82-.73.42-2.28-.66-2.51l-1.92-.4-.4,2.95c2.24-.03,4.4.29,6.54.93l.4-2.95-4.14-.04c-1.72-.02-1.99,2.45-.4,2.95.93.29,1.85.62,2.74,1.01l.36-2.74c-1.76.24-4.29.3-5.21,2.1-.31.61-.24,1.31.23,1.82.44.46.92.86,1.46,1.2l.76-2.8c-1.37.09-2.52.61-3.57,1.49-.55.46-1.01,1.01-1.43,1.59-.38.53-.67,1.2-1.18,1.61-.76.61-.46,1.92.3,2.36,2,1.12,4.19,1.85,6.5,1.93,1.05.04,2.11-.08,3.13-.3.58-.12,1.14-.29,1.69-.5.3-.11,1.06-.59,1.33-.44l-.3-2.36c-2.78,2.42-6.19.19-8.79-1.37l-.36,2.74c4.38-1.73,8.95-1.99,13.47-.61,1.6.49,2.71-1.99,1.16-2.74-1.88-.91-4.05-.77-6.1-.79-1.91-.02-4.13-.22-5.78.92-.7.48-.92,1.28-.54,2.05.99,1.98,2.95,2.03,4.65.93.87-.56,1.08-2.08,0-2.59-1.17-.55-2.34-1.1-3.51-1.65l.3,2.36c.71-.87,2.45-1.03,3.51-1.14,1.9-.19,1.96-2.89,0-3-.87-.05-1.73-.05-2.6-.01-1.63.07-2.11,2.54-.4,2.95,2.16.51,4.36.69,6.56.47,1.64-.16,2.09-2.41.4-2.95l-5.06-1.6.36,2.74c.84-.39,1.7-.66,2.6-.86l-.8-2.89-.59.22c-1.27.47-1.57,2.56,0,2.89,1.28.27,2.57.46,3.87.58l-.4-2.95-1.29.29c-1.47.33-1.38,2.51,0,2.89.53.15,1.06.22,1.61.28v-3l-2.68-.1.76,2.8c.63-.28,1.06-.8,1.43-1.37,1.05-1.63-1.54-3.13-2.59-1.51-.13.2-.12.19-.35.29-1.46.63-.59,2.74.76,2.8l2.68.1c1.96.07,1.89-2.82,0-3-.28-.03-.54-.1-.82-.17v2.89l1.29-.29c1.75-.39,1.19-2.8-.4-2.95-1.04-.09-2.06-.25-3.08-.47v2.89l.59-.22c1.8-.67,1.11-3.3-.8-2.89-1.16.25-2.25.66-3.32,1.16-1.24.58-.78,2.38.36,2.74l5.06,1.6.4-2.95c-1.95.2-3.85.09-5.77-.37l-.4,2.95c.87-.04,1.73-.03,2.6.01v-3c-1.84.18-4.39.48-5.63,2.01-.55.68-.65,1.91.3,2.36,1.17.55,2.34,1.1,3.51,1.65v-2.59c-.21.14-.46.34-.71.41.28-.08.43.27.17-.26l-.54,2.05c1.16-.8,2.92-.52,4.26-.51s3.29-.24,4.58.38l1.16-2.74c-4.97-1.53-10.23-1.3-15.06.61-1.16.46-1.54,2.03-.36,2.74,2.05,1.24,4.19,2.53,6.61,2.82,2.19.27,4.17-.48,5.82-1.92.72-.63.5-1.92-.3-2.36-2.08-1.13-4.17.58-6.3.78-2.25.22-4.4-.38-6.35-1.48l.3,2.36c1.42-1.13,1.9-3.67,4.06-3.81,1.46-.1,2.07-1.98.76-2.8-.33-.21-.59-.44-.85-.73l.23,1.82c-.07-.02-.1-.04-.06-.05.12-.04.23-.08.35-.1.32-.12.71-.18,1.04-.24.69-.14,1.39-.23,2.09-.33,1.24-.17,1.49-2.25.36-2.74s-2.28-.94-3.46-1.31l-.4,2.95,4.14.04c1.71.01,2.01-2.47.4-2.95-2.38-.71-4.85-1.07-7.34-1.03-1.64.02-2.11,2.59-.4,2.95l1.92.4-.66-2.51-.17.14c-1.6.61-1.32,2.78.4,2.95.6.06,1.2.12,1.79.17l-.4-2.95c-1.06.16-2.38.12-3.12,1.01-.64.77-.56,2.31.66,2.51.68.11,1.37.19,2.06.23l-.4-2.95-.27.09c-1.82.61-1.06,3.48.8,2.89l.91-.29c1.56-.49,1.35-3-.4-2.95l-2.39.07c-1.93.05-1.94,3,0,3,.39,0,.59.1.92.3v-2.59c-1.42.92-3.17,2.28-4.96,1.82v2.89c.63-.21,1.15-.27,1.8-.21,1.67.16,2.06-2.63.4-2.95l-.29-.05v2.89c2.78-.84,5.61-1.36,8.52-1.49l-.4-2.95c-2.42.9-4.94.79-7.07,2.46-.84.65-1.56,1.48-2.53,1.94-1.36.64-1.95,1.49-2.12,3-.12,1.05,1.05,1.61,1.9,1.45,1.31-.25,2.46-1.13,3.57-1.82s2.15-1.4,3.18-2.18,2-1.59,3.15-2.14,2.48-.88,3.72-1.27c1.45-.46,1.39-2.41,0-2.89-2.4-.84-4.82-1.68-7.31-2.2-1.18-.25-2.39-.43-3.6-.5-.63-.04-1.26-.05-1.89-.02-.25.01-.5.03-.76.05-.15.02-.31.04-.46.05-.37,0-.15.15.68.44-.19-.7-.78-1.02-1.45-1.1l-.72-.09v3l2.14.15-1.06-2.56-.73.6c-.97.79-.2,2.71,1.06,2.56l2.09-.24-.4-2.95c-1.86.77-3.56,1.63-4.87,3.22-.41.5-.62,1.23-.23,1.82.33.5.63,1.03.87,1.58.12.28.26.59.33.89.06.27.08.29.04.05-.06.2-.07.4-.03.6.17,1.25,1.7,2.32,2.92,2.17l-.4-2.95c-.77.1-1.54.21-2.31.31-.66.09-1.08.85-1.1,1.45-.04,1-.04,2.39.92,2.99.87.55,1.85.08,2.52-.55,1.52-1.45,1.93-3.91,1.94-5.91,0-.52-.28-1.04-.74-1.3l-1.56-.85-.76,2.8c1.52-.1,3.04-.09,4.56.05.81.07,1.5-.74,1.5-1.5,0-.89-.69-1.41-1.5-1.5l-1.21-.14.4,2.95,1.65-.24c1.73-.25,1.22-2.89-.4-2.95l-3.91-.15c-1.93-.07-1.93,2.93,0,3h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.45,24.29c-.26.27-.44.58-.59.91-.1.24-.2.5-.36.71l.23-.3s-.07.08-.11.11l.3-.23s-.05.03-.08.04l.36-.15s-.03.01-.05.01c-.2.05-.37.14-.51.27-.16.11-.29.25-.39.42-.11.17-.17.36-.18.56-.04.2-.04.4.03.6l.15.36c.13.23.31.4.54.54l.36.15c.27.07.53.07.8,0,.01,0,.03,0,.04-.01.11-.03.28-.11.38-.16.08-.04.14-.1.21-.15s.15-.11.21-.17c.11-.11.2-.24.29-.37s.17-.27.23-.41c.13-.28.22-.59.41-.83l-.23.3s.04-.05.07-.07c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48-.29-.26-.66-.46-1.06-.44l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M23.43,33.5c1.41-.29,2.84-.32,4.27-.36,1.3-.04,1.98-1.61,1.06-2.56-.59-.61-1.33-1.05-2.17-1.21-.93-.17-1.87-.02-2.8-.14l.76.2-.09-.04.54.54-.07-.09.2.76-.02-.14-1.1,1.45c.8-.12,1.74.7,2.41,1.02,1.1.53,2.1.65,3.3.39.98-.22,1.93-.18,2.92-.28.59-.06,1.12-.2,1.66-.42.45-.18.93-.45,1.42-.45,1.93,0,1.93-3,0-3-.64,0-1.23.15-1.81.39-.46.19-.94.44-1.44.5-1.12.14-2.22.07-3.34.32-.42.1-.6.18-.99.05-.46-.15-.88-.45-1.3-.68-1.17-.63-2.29-.93-3.61-.72-.58.09-1.17.85-1.1,1.45.17,1.52,1.29,1.84,2.66,1.82.86-.01,1.3-.16,1.86.42l1.06-2.56c-1.7.05-3.4.13-5.07.47-.79.16-1.25,1.1-1.05,1.85.23.83,1.05,1.21,1.85,1.05h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M35.15,31.96c.8.52,1.76.5,2.61.11.55-.26,1.01-.68,1.45-1.1.07-.06.13-.13.2-.19l-.1.07c.16-.09.14-.09-.05,0l-.19.02c-.69-.09-1.07-.43-1.14-1.02v.11c-.03.16-.01.36-.02.52,0,.14-.03.31-.01.45,0,.12,0,.1.03-.06.1-.21.09-.23,0-.06l.08-.1c-.05.06-.1.12-.16.17l-.08.08c-.13.11-.11.09.05-.04-.06-.02-.45.27-.53.31-.17.09-.34.19-.51.3-.71.48-1.11,1.25-1.07,2.12.03.72.3,1.48.85,1.97.12.1.25.2.38.28l-.34-.34c-.07-.18-.08-.19-.03-.01l.03.13c.05.36.08.18.1-.55-.04.06-.08.12-.12.18-.04.06-.08.12-.12.17.09-.12.09-.12-.02.01l2.51.66c-.02-.08-.04-.17-.05-.25.02.18.02.18,0,0,0-.18,0-.36,0-.54l-2.95.4c.3.72.57,1.49,1.05,2.11.25.32.48.58.9.69.36.1.84.05,1.16-.15.61-.39,1.05-1.39.54-2.05-.18-.23-.32-.48-.45-.74-.06-.12-.12-.25-.17-.37-.04-.08-.08-.17-.11-.26.06.14.06.13-.01-.03-.29-.7-.84-1.18-1.65-1.07-.76.1-1.26.72-1.3,1.47-.03.53.03,1.07.15,1.59.24,1.06,1.78,1.5,2.51.66.28-.32.56-.66.76-1.02.3-.54.28-1.06.18-1.65-.08-.48-.27-.94-.61-1.3-.13-.14-.3-.23-.44-.35.11.07.21.16.27.28-.08-.14-.07-.13,0,.03l-.03-.13c.02.2.02.22.01.04,0,.11-.04.22-.1.32-.15.17-.17.2-.07.1-.32.29-.12.1,0,.04s.24-.13.36-.2c.62-.34,1.14-.77,1.55-1.34.5-.69.47-1.5.49-2.32.03-.98-.38-1.89-1.39-2.18-.94-.27-1.81.31-2.45.92-.13.13-.27.25-.4.38-.24.23.15-.06-.11.08-.07.04-.14.08-.21.12.17-.07.17-.08,0-.03.1-.04.2-.04.31,0,.16.08.16.07,0-.02-.66-.43-1.69-.15-2.05.54-.39.75-.17,1.59.54,2.05h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M37.56,38.84s.04.02.06.02l-.36-.15c.09.04.18.09.26.15l-.3-.23c.16.13.3.29.43.45l-.23-.3c.18.24.37.48.49.75l-.15-.36c.05.12.08.24.1.37l-.05-.4s0,.09.01.13l1.1-1.45h-.03c.13-.01.27-.03.4-.05-.11.01-.23.01-.34,0l.4.05c-.1-.02-.2-.04-.3-.08l.36.15c-.05-.02-.1-.05-.15-.08l.3.23s-.08-.07-.11-.11l.23.3s-.05-.07-.07-.11l.15,1.16c.03-.08.03-.18.04-.25.01-.09.03-.17.03-.26l-1.5,1.5h.02c-.13-.02-.27-.04-.4-.05h.02c-.12-.05-.24-.1-.36-.15.01,0,.03.01.04.02l-.3-.23s.02.02.03.04l-.23-.3s.02.03.03.05c.09.17.22.32.39.42.14.13.31.22.51.27.2.06.4.07.6.03.2,0,.39-.07.56-.18.32-.21.6-.51.69-.9.09-.4.05-.79-.15-1.16-.29-.53-.84-.84-1.43-.85-.21,0-.4.04-.58.13-.19.06-.35.16-.48.31l-.23.3c-.14.23-.2.49-.2.76,0,.02,0,.04,0,.06l.05-.4c-.03.14-.06.3-.07.45-.01.27.09.56.22.79.09.15.2.29.32.43.02.02.04.04.06.06.1.09.23.19.34.26.04.03.08.05.13.07.16.07.32.15.49.19.18.05.39.07.57.09.26.03.51-.02.77-.06l.36-.15c.17-.09.32-.22.42-.39.09-.09.16-.2.19-.33.09-.18.14-.37.13-.58-.01-.24-.04-.48-.1-.71-.06-.21-.15-.41-.24-.6-.08-.18-.2-.34-.32-.5-.2-.28-.4-.57-.65-.81-.15-.15-.34-.29-.51-.41-.19-.13-.42-.2-.63-.29-.2-.06-.4-.07-.6-.03-.2,0-.39.07-.56.18-.17.09-.32.22-.42.39-.13.14-.22.31-.27.51-.09.38-.07.81.15,1.16l.23.3c.19.19.41.31.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M37.97,40.9c.33.93.78,1.88.8,2.87.02,1.14-.09,2.28-.15,3.42-.11,2.28.06,4.56.51,6.8.35,1.72,2.87,1.22,2.95-.4.03-.61-.02-1.3.09-1.9.08-.44.27-.8.31-1.26.1-1.15.03-2.35,0-3.5-.02-1.04-.09-2.18-.66-3.08-.24-.38-.6-.63-.68-1.08s.32-.89-.22-.5l-1.16.15.15.03-1.05-1.05.08.21c.59,1.52,2.89,1.39,2.95-.4.05-1.69-.28-3.34-.67-4.97s-2.95-1.28-2.95.4c0,.5.06.97.13,1.47.22,1.48,2.59,1.38,2.89,0,.21-.93.28-1.84.16-2.79-.19-1.54-2.55-2.2-2.95-.4l-.06.26h2.89c-.21-.61-.41-1.21-.62-1.82-.44-1.3-2.57-1.55-2.89,0-.16.78-.24,1.56-.18,2.36.1,1.57,2.7,2.18,2.95.4.17-1.22.28-2.44.29-3.68l-2.8.76c.11.15.17.31.2.48l2.8-.76c-.51-.89-1.23-1.73-2.36-1.55s-1.61,1.28-1.73,2.32c-.09.81.75,1.49,1.5,1.5.89,0,1.41-.7,1.5-1.5-1.49-.16-2,.09-1.5.75.78,1.37,2.68.66,2.8-.76.06-.74-.29-1.35-.61-2-.68-1.38-2.78-.66-2.8.76-.01.96-.06,1.93-.19,2.88l2.95.4c-.04-.53-.03-1.04.08-1.56h-2.89c.21.61.41,1.21.62,1.82.45,1.31,2.55,1.54,2.89,0l.06-.26-2.95-.4c.08.67.09,1.32-.05,1.99h2.89c-.02-.22-.03-.45-.02-.67l-2.95.4c.33,1.39.61,2.74.56,4.17l2.95-.4c-.65-1.67-2.58-1.75-3.34-.09-.54,1.19-.53,2.85.19,3.97.39.62.71.89.76,1.68.06.83.02,1.67.03,2.5,0,1.59-.34,3.11-.42,4.72l2.95-.4c-.46-2.26-.5-4.51-.36-6.81.06-1.06.17-2.13.08-3.19s-.53-2.08-.89-3.09c-.64-1.81-3.54-1.03-2.89.8h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M40.36,27.13l-1.78-3.18c-.57-1.01-1.09-2.4-2.15-3-.25-.15-.53-.21-.81-.25l-.2-.03c-.31-.03-.34-.02-.09.03-.13-.12-.22-.3-.32-.46-.49-.77-.81-1.64-1.29-2.41-1.12-1.8-3.09-2.25-4.49-3.71-1.71-1.77-3.77-2.5-6.01-3.41-.98-.4-2.12-1.11-3.21-.93s-1.73,1.18-2.25,2.06c-1.15,1.94-1.53,4.09.02,5.92s3.18,3.38,4.53,5.3,2.37,3.61,4.35,4.88c2.12,1.35,3.88,3.36,6.47,3.74,2.38.35,4.82.08,5.76-2.42.45-1.19-1.16-2.43-2.2-1.69-.79.56-1.62,1-2.61.98s-1.81-.51-2.67-.9-1.73-.84-2.65-.86c-.52-.02-1,.14-1.43.43-.15.1-.32.23-.43.37-.06.06-.12.13-.18.19-.48.45.02.6,1.51.45l-2.51,1.46c1.2,1.23,2.57,2,4.29,2.16,1.58.14,1.91-2.05.76-2.8-1.92-1.23-3.7-2.64-5.39-4.18-1.42-1.3-3.55.82-2.12,2.12,1.87,1.71,3.87,3.28,6,4.65l.76-2.8c-.88-.08-1.58-.68-2.17-1.28-1.01-1.04-2.99.02-2.51,1.46.4,1.18,1.48,2.02,2.74,1.44.28-.13.57-.32.76-.56.56-.68-.21-.03-.21-.11,0,.02,1.74.68,1.92.77,2.64,1.22,5.2,1.35,7.66-.39l-2.2-1.69c-.09.24-.03.15-.27.25-.45.17-1.17.08-1.65.06-1.21-.05-2.11-.61-3.03-1.35-1.73-1.39-3.8-2.38-5.05-4.25-1.35-2.01-2.79-3.91-4.41-5.72-.54-.6-1.6-1.34-1.84-2.15-.15-.5.13-1.04.35-1.48.14-.28.57-1.13.73-1.16h-.8c1.14.23,2.29.87,3.37,1.31s2.19.78,3.04,1.54,1.48,1.6,2.44,2.18c.79.47,1.65.74,2.2,1.52.94,1.35,1.31,3.23,2.84,4.09.34.19,1,.13,1.26.32-.26-.19.12.55.14.57.17.29.33.59.5.88l1.98,3.53c.94,1.68,3.54.17,2.59-1.51h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M38.67,27c-2.02-1.22-3.87-2.82-5.82-4.16-1.03-.71-2.06-1.4-3.1-2.09-.85-.57-1.9-1.49-2.93-1.67-1.7-.3-2.56,1.73-1.16,2.74.68.49,1.38.93,2.08,1.38.33.21.65.43.98.65l.5.33c.43.18.48.2.14.06l1.69-2.2c-1.47-.26-2.79-1.03-4.15-1.61s-2.75-1.16-4.07-1.85c-1.71-.89-3.18,1.59-1.51,2.59,1.24.75,2.46,1.53,3.65,2.34.55.37,1.09.75,1.63,1.14.31.22.61.46.93.68l.31.23c.68.35.54.11-.4-.72l1.5-1.5c-.58,0-1.15-.31-1.7-.49-1.68-.55-2.52,1.84-1.16,2.74,2.1,1.39,4.38,2.53,6.52,3.86l1.16-2.74c-.75-.25-1.54-.93-2.22-1.34-.77-.47-1.76-.86-2.38-1.51l-1.82,2.36c1.64.71,3.25,1.63,4.73,2.62l1.16-2.74c-.75-.18-1.43-.71-2.1-1.09-.79-.44-1.66-.75-2.3-1.4l-1.46,2.51c1.32.33,2.55.84,3.77,1.43.6.29,1.19.59,1.78.88.24.12.48.26.74.36.19.07.37.3.25.05l.9-2.2-.15.03h.8l-.15-.04-.8,2.89.19.05c1.58.41,2.76-2.03,1.16-2.74-.43-.19-.84-.34-1.22-.62l-1.16,2.74c.24.04.45.12.69.18,1.35.34,2.68-1.51,1.46-2.51-1.81-1.48-3.83-2.68-5.69-4.09-.9-.68-1.79-1.39-2.66-2.12-.67-.56-1.83-1.28-2.23-2.07l-2.05,2.05c.74.32,1.46.82,2.14,1.27l1.51-2.59c-1.04-.58-2.04-1.24-3.04-1.89-.48-.31-.96-.61-1.44-.92-.22-.14-.43-.27-.64-.41-.44-.28-.46-.42-.22-.05l-1.69,2.2s.06.02.31.17c.17.1.35.2.52.3.4.23.77.44,1.24.46,1.27.05,2.01-1.7,1.06-2.56-.48-.43-.99-.82-1.5-1.21-.23-.18-.47-.39-.73-.53-.27-.15-.39-.39-.02.13l-.54,2.05c1.18-.57,2.99.31,4.03.85,1.36.69,2.67,1.6,3.72,2.71l.66-2.51c-.27.11-.76.02-1.05.02-.52,0-1.01.03-1.52.11-1.37.22-1.33,2.1-.36,2.74,1.32.87,3.01,1.11,4.35,1.98l1.51-2.59c-1.04-.5-1.97-1.35-2.93-2-1.14-.78-2.28-1.56-3.43-2.32-2.2-1.45-4.47-2.81-6.56-4.42l-.3,2.36.07-.04h-1.51c.76.4,1.48.84,2.22,1.28.48.28,1.42.71,1.7,1.02l1.06-2.56c-.14-.08-.28-.15-.42-.21-1.72-.84-3.18,1.57-1.51,2.59.72.44,1.45.86,2.18,1.28.53.31,1.26.62,1.7,1.06l1.06-2.56c.13,0-.2-.14-.21-.15l.23,1.82c1.1-1.89-1.88-2.93-2.63-4.24v1.51l.08-.12-1.3.74c-.39.02-.37-.14-.09.07.17.13.37.22.56.3.58.23,1.07.19,1.64-.09.68-.34.98-1.42.54-2.05-.41-.58-.85-.97-1.47-1.31-1.7-.92-3.2,1.64-1.51,2.59.78.44,1.78.95,2.33,1.69v-1.51l-.05.07c-.6.79.06,1.97.9,2.2.1.03.6.17.44.09-.21-.11.42.34.49.38.53.3.96.25,1.48.4.47.13.97.67,1.36.97.43.32.9.6,1.34.9.16.11.31.26.48.37.22.25.28.26.18.04-.08-.27-.08-.19,0,.26.12.48.36.87.67,1.25s.66,1.36,1.46,1.47,1.59-.19,1.85-1.05c.15-.5.05-.93-.16-1.38-.08-.18-.43-.76-.38-.62l-1.85,1.85c-.83-.34-.17.02.06.25.2.21.44.44.61.68.36.48.58,1.06.93,1.56.39.56.84.99,1.44,1.31.53.29,1.09.46,1.41,1.03.93,1.69,3.53.18,2.59-1.51-.36-.65-.95-1.21-1.57-1.63-.34-.23-.81-.33-1.13-.57-.27-.21-.42-.56-.58-.85-.68-1.2-1.64-2.63-2.95-3.17-1.02-.42-2.24.84-1.85,1.85.1.25.21.48.34.71.05.1.26.54.23.4v-.8l-.03.09,1.85-1.05c.78.11.78.72.55.2-.07-.17-.2-.32-.32-.46-.32-.4-.19-.37-.39-.91-.39-1.03-1.56-1.68-2.44-2.25s-1.62-1.36-2.6-1.71c-.54-.19-.98-.21-1.48-.51-.23-.14-.48-.27-.73-.35-.12-.04-.93-.26-.49-.13l.9,2.2.05-.07c.29-.38.28-1.13,0-1.51-.89-1.19-2.13-2.04-3.41-2.76l-1.51,2.59c.07.04.34.15.4.23l.54-2.05-.12.06,1.16-.15c-.37-.09-.68-.45-1.08-.55-.8-.19-1.47.15-1.92.82-.3.44-.25,1.07,0,1.51.33.58.86,1.15,1.35,1.61.25.24.52.45.8.66.16.12.51.4.51.41v-1.51l-.03.04c-.34.59-.22,1.33.23,1.82.58.61,1.5,1.01,2.33,1.03,1.31.03,1.97-1.66,1.06-2.56-1.21-1.2-3.05-1.93-4.49-2.81l-1.51,2.59c.65.32,1.2.58,1.93.62,1.38.08,1.87-1.66,1.06-2.56-.69-.76-1.9-1.25-2.77-1.77-.95-.56-2.21-1.65-3.34-.96-.73.45-1.1,1.74-.3,2.36,2.19,1.7,4.53,3.16,6.85,4.68,1.15.75,2.29,1.53,3.42,2.3,1.06.73,2.1,1.67,3.26,2.23,1.73.84,3.15-1.53,1.51-2.59-1.34-.87-3.04-1.11-4.35-1.98l-.36,2.74c.84-.14,1.76.2,2.57-.13,1.03-.42,1.51-1.62.66-2.51-2.56-2.7-7.61-5.86-11.38-4.02-.68.33-.98,1.43-.54,2.05.66.93,1.87,1.45,2.71,2.21l1.06-2.56h-.03c.25.07.5.14.76.2-.68-.31-1.27-.83-2.01-1.03-1.21-.33-2.42,1.08-1.69,2.2.64.98,1.94,1.53,2.9,2.15,1.17.74,2.31,1.52,3.52,2.2,1.7.95,3.12-1.53,1.51-2.59-.68-.45-1.4-.95-2.14-1.27-1.35-.58-2.78.62-2.05,2.05.44.86,1.39,1.57,2.11,2.18.96.82,1.95,1.62,2.95,2.4,1.94,1.5,4.08,2.76,5.98,4.31l1.46-2.51c-.23-.06-.45-.14-.69-.18-1.73-.3-2.51,1.71-1.16,2.74.38.29.79.44,1.22.62l1.16-2.74-.19-.05c-1.87-.49-2.66,2.39-.8,2.89.39.11.71.09,1.1,0,1-.21,1.3-1.39.9-2.2-.57-1.14-2.43-1.67-3.49-2.19-1.56-.76-3.16-1.48-4.85-1.91-1.45-.37-2.52,1.43-1.46,2.51.85.87,1.87,1.3,2.91,1.87.91.5,1.79,1.15,2.82,1.39,1.69.4,2.56-1.79,1.16-2.74-1.48-.99-3.09-1.91-4.73-2.62-1.48-.64-3.09,1.04-1.82,2.36.82.85,1.98,1.37,2.99,1.98.94.57,1.89,1.3,2.94,1.65,1.66.55,2.56-1.86,1.16-2.74-2.14-1.34-4.41-2.47-6.52-3.86l-1.16,2.74c.85.28,1.59.58,2.5.59.84.01,1.45-.7,1.5-1.5s-.26-1.4-.9-1.83c-.68-.46-1.38-.93-2.06-1.41-1.51-1.06-3.06-2.07-4.64-3.03l-1.51,2.59c1.44.75,2.93,1.36,4.41,2s2.92,1.48,4.53,1.77c1.3.23,2.32-.98,1.69-2.2-.46-.89-1.26-1.17-2.05-1.7-.91-.61-1.84-1.17-2.73-1.81l-1.16,2.74c.37.06.82.47,1.14.67.47.29.92.6,1.38.91,1.05.7,2.09,1.4,3.13,2.12,1.84,1.27,3.57,2.78,5.48,3.93,1.66,1,3.17-1.6,1.51-2.59h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M7.52,18.53c1.37-.22,2.27-1.42,2.48-2.74.18-1.14-.64-2.1-1.85-1.85-.42.09-.75.32-1.06.61-1.22,1.14.41,3.36,1.82,2.36.68-.49,1.3-1,1.76-1.71.17-.27.3-.55.42-.85.07-.18.11-.45.22-.61-.27.4.22-.14.24-.15.14-.15.28-.34.45-.46.29-.2.67-.3.97-.5.45-.31.79-.71,1.07-1.18.11-.18.21-.36.32-.54.1-.16.15-.11.03-.03.48-.3.84-.58,1.18-1.06.86-1.21-.85-2.9-2.05-2.05-.83.58-1.6,1.23-2.28,1.97-.73.79-.91,1.61-1.16,2.62-.19.77-.4,1.45-.87,2.09s-.9,1.3-1.09,2.12c-.17.74.22,1.69,1.05,1.85,3.42.65,6.82,1.43,10.19,2.32l.4-2.95-6.54-.32v3l4.01-.09c.66-.01,1.27-.46,1.45-1.1.16-.59-.09-1.43-.69-1.69l-3.92-1.72-.76,2.8,5.59-.03c.66,0,1.27-.46,1.45-1.1.16-.58-.09-1.44-.69-1.69-1.45-.62-2.92-1.15-4.45-1.53l-.4,2.95c.72-.05,1.36,0,2.05.2l.8-2.89c-2.02-.4-4-.94-5.95-1.59l-.8,2.89c.45.1.83.24,1.24.46l.76-2.8-1.55.03c-1.75.03-1.96,2.38-.4,2.95,1.29.47,2.54,1.01,3.77,1.62l.36-2.74c-.28.06-.56,0-.82-.12l-.36,2.74,3.68-1.1c1.49-.45,1.35-2.39,0-2.89l-4.87-1.81-.8,2.89c1.66.49,3.31,1.02,4.93,1.61l.4-2.95c-.93.08-1.77-.02-2.67-.3l-.4,2.95c.9-.04,1.79-.02,2.68.04.73.05,1.39-.61,1.47-1.3s-.33-1.54-1.07-1.65c-.55-.07-1.11-.19-1.63-.41l-.76,2.8c1.28.16,2.54.46,3.78.83l.8-2.89c-1.56-.28-3.07-.72-4.54-1.29v2.89c.42-.06.85,0,1.26.1l.8-2.89c-1.55-.35-3.08-.8-4.57-1.34l-.8,2.89c1.34.21,2.64.55,3.91,1.02l.8-2.89-.39-.13-.8,2.89,2.08.39c.8.15,1.62-.22,1.85-1.05s-.26-1.63-1.05-1.85c-1.69-.48-3.37-1.01-5.02-1.6l-.4,2.95c.72.03,1.4.19,2.08.44.76.27,1.64-.31,1.85-1.05.23-.84-.29-1.56-1.05-1.85l-.75-.28-.8,2.89c.98.21,1.93.5,2.87.85l.4-2.95c-.37-.04-.74-.2-1.07-.34v2.89c-.06.01-.39-.13.19.07.77.26,1.64-.3,1.85-1.05.23-.84-.29-1.56-1.05-1.85-1.26-.48-2.45-1.11-3.59-1.82l-.76,2.8c.99.01,1.91.64,2.88.82,1.27.24,2.52.03,3.76-.29,1.33-.34,1.37-2.04.36-2.74-.63-.44-1.28-.8-1.99-1.1-.64-.27-1.3-.39-1.94-.61l.9.69c.07.37.11.42.11.14,0-.21-.01-.41-.06-.62-.05-.27-.11-.5-.24-.75-.26-.51-.68-.96-1.26-1.07-.8-.15-1.62.22-1.85,1.05-.2.73.25,1.7,1.05,1.85l-.15-.06-.54-.54c.15.2,0,.7.1,1.04.22.75.84,1.11,1.56,1.27,1.03.23,1.93.71,2.79,1.31l.36-2.74c-.95.25-1.85.43-2.81.13-1.02-.32-1.94-.75-3.03-.77-1.52-.02-1.99,2.02-.76,2.8,1.37.85,2.8,1.55,4.31,2.12l.8-2.89c-.61-.2-1.17-.19-1.78-.07s-1.1.82-1.1,1.45c0,.72.48,1.19,1.1,1.45s1.21.37,1.87.44c.73.08,1.39-.63,1.47-1.3.09-.78-.36-1.37-1.07-1.65-.94-.35-1.89-.64-2.87-.85-1.91-.41-2.6,2.23-.8,2.89l.75.28.8-2.89c-.93-.33-1.89-.51-2.87-.55-.74-.03-1.39.59-1.47,1.3-.09.77.35,1.39,1.07,1.65,1.66.59,3.33,1.13,5.02,1.6l.8-2.89-2.08-.39c-1.89-.35-2.65,2.28-.8,2.89l.39.13c.77.25,1.64-.29,1.85-1.05.23-.84-.28-1.56-1.05-1.85-1.27-.47-2.57-.81-3.91-1.02-.8-.12-1.61.2-1.85,1.05s.28,1.57,1.05,1.85c1.5.54,3.02.99,4.57,1.34.79.18,1.62-.24,1.85-1.05.21-.76-.26-1.66-1.05-1.85-.97-.23-1.87-.24-2.86-.1-.64.09-1.1.85-1.1,1.45,0,.71.48,1.2,1.1,1.45,1.47.58,2.98,1.01,4.54,1.29.8.14,1.62-.22,1.85-1.05s-.27-1.61-1.05-1.85c-1.5-.45-3.02-.74-4.58-.94-1.45-.18-2.09,2.22-.76,2.8.77.33,1.51.6,2.34.71l.4-2.95c-.89-.07-1.79-.08-2.68-.04-1.7.07-2.03,2.42-.4,2.95,1.12.36,2.29.51,3.46.41,1.7-.15,2.02-2.36.4-2.95s-3.27-1.13-4.93-1.61c-.78-.23-1.63.28-1.85,1.05-.23.84.29,1.56,1.05,1.85l4.87,1.81v-2.89l-3.68,1.1c-1.15.34-1.57,2.16-.36,2.74,1.03.5,2.01.65,3.13.43,1.24-.24,1.49-2.18.36-2.74-1.46-.72-2.96-1.37-4.49-1.92l-.4,2.95,1.55-.03c1.45-.03,2.1-2.06.76-2.8-.62-.34-1.27-.61-1.95-.76-1.89-.42-2.63,2.28-.8,2.89,1.95.65,3.93,1.19,5.95,1.59.79.16,1.62-.23,1.85-1.05s-.26-1.63-1.05-1.85c-.93-.25-1.89-.37-2.85-.31-.74.05-1.38.53-1.47,1.3-.09.72.34,1.46,1.07,1.65,1.27.31,2.53.71,3.73,1.22l.76-2.8-5.59.03c-.66,0-1.27.46-1.45,1.1-.16.59.09,1.43.69,1.69l3.92,1.72.76-2.8-4.01.09c-1.94.04-1.92,2.91,0,3l6.54.32c1.7.08,2.02-2.52.4-2.95-3.37-.89-6.77-1.67-10.19-2.32l1.05,1.85c.13-.55.46-.95.83-1.47.46-.63.75-1.37.96-2.11.11-.39.2-.78.29-1.17.04-.17.09-.35.12-.52.06-.31.06-.18-.02-.06.44-.65,1.2-1.23,1.83-1.68l-2.05-2.05c.26-.36.06-.12-.11-.02-.2.12-.4.26-.57.42-.29.29-.51.65-.71.99-.16.28-.21.39-.45.52-.42.24-.8.39-1.19.71-.32.27-.61.6-.89.91-.4.44-.53.88-.75,1.41-.11.27-.2.41-.36.57-.3.33-.32.31-.56.48l1.82,2.36-.26.16-1.85-1.85c-.03.19-.19.56-.18.65.02.31,0-.23.08-.04.11-.05.1-.06-.01-.02-.09.03-.18.04-.27.05-.8.13-1.24,1.13-1.05,1.85.23.85,1.04,1.17,1.85,1.05h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M17.5,8.21c-.09-.61-.33-1.05-.71-1.51l-1.06,2.56c1.83-.23,3.61-.6,5.37-1.17,1.67-.54,1.26-2.79-.4-2.95l-1.62-.15v3c4.16-.53,7.86,1.22,10.7,4.2,1.72,1.8,3.01,3.83,3.85,6.18.91,2.52,2.01,4.9,3.27,7.26l2.36-1.82c-.8-.76-1.58-1.54-2.32-2.36s-1.16-1.68-1.67-2.63c-.94-1.75-2.59-2.65-3.8-4.15l-1.46,2.51c1.26.32,2.3,1.14,3.33,1.9,1.42,1.05,2.93-1.16,1.82-2.36-1.86-1.99-4-3.59-6.53-4.6l-.4,2.95c1.07.04,2.06.24,3.08.57,1.61.52,2.67-1.95,1.16-2.74-4.82-2.53-9.94-4.21-15.35-4.86-1.69-.2-2.02,2.55-.4,2.95,3.94.96,8.25.39,11.92,2.34,1.71.9,3.15-1.56,1.51-2.59-2.87-1.8-6.02-3.11-9.37-3.62-.81-.12-1.6.2-1.85,1.05-.2.71.25,1.72,1.05,1.85,3.13.48,5.98,1.64,8.66,3.32l1.51-2.59c-3.99-2.12-8.38-1.6-12.64-2.64l-.4,2.95c4.85.58,9.52,2.18,13.84,4.45l1.16-2.74c-1.26-.41-2.55-.63-3.87-.68-1.82-.07-1.87,2.36-.4,2.95,2.04.81,3.73,2.24,5.21,3.83l1.82-2.36c-1.25-.92-2.52-1.81-4.05-2.2s-2.37,1.39-1.46,2.51c.57.7,1.26,1.24,1.94,1.83.78.68,1.25,1.42,1.71,2.34.98,1.94,2.57,3.49,4.14,4.98,1.25,1.18,3.17-.3,2.36-1.82-.68-1.28-1.37-2.56-1.95-3.88s-1.01-2.75-1.57-4.1c-1.02-2.47-2.68-4.71-4.58-6.57-3.28-3.2-7.69-5.15-12.31-4.57-1.9.24-1.96,2.81,0,3l1.62.15-.4-2.95c-1.49.48-3.01.87-4.57,1.06-1.32.17-1.93,1.5-1.06,2.56-.15-.28-.17-.22-.06.19.12.81,1.13,1.24,1.85,1.05.86-.23,1.16-1.05,1.05-1.85h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M18.7,5.09c-.16.06-.34.12-.48.22s-.28.2-.41.32c-.09.08-.18.18-.26.28-.17.2-.32.43-.53.59l.3-.23c-.06.04-.11.08-.18.11l.36-.15s-.08.03-.12.03l.4-.05s-.05,0-.08,0l.4.05s-.07-.01-.1-.03l.36.15h-.02c-.17-.12-.36-.18-.56-.19-.2-.04-.4-.04-.6.03-.2.05-.37.14-.51.27-.16.11-.29.25-.39.42l-.15.36c-.07.27-.07.53,0,.8l.15.36c.13.23.31.4.54.54.12.06.26.12.39.16.02,0,.03.01.05.02.08.02.17.03.24.03.06,0,.16.03.24.03s.17-.02.24-.03c.06,0,.16-.02.24-.03.14-.03.36-.14.44-.18.12-.06.22-.14.33-.22.12-.09.23-.18.33-.29.22-.24.4-.53.66-.74l-.3.23c.05-.04.1-.07.16-.1l-.36.15h.02c.2-.05.37-.14.51-.28.16-.11.29-.25.39-.42.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6l-.15-.36c-.13-.23-.31-.4-.54-.54l-.36-.15c-.27-.07-.53-.07-.8,0h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.81,30.58c.22-1.37,1.03-3.57-.43-4.5-.77-.49-2.03-.05-2.2.9-.08.4-.15.81-.23,1.21l2.95.4c-.12-.97-.14-2.03.38-2.89s0-1.9-.9-2.2c-.29-.1-.55-.14-.86-.11l1.45,1.9-.25.15c.73-.4.91-1.36.54-2.05-.23-.42-.48-.68-.88-.94l.54,2.05c-.47.64.46-.42.51-.5.16-.25.26-.54.32-.83.14-.72-.02-1.48-.57-2l.44,1.06c0-.71.14-1.26-.04-2s-.31-1.45-.31-2.23c0-1.62.12-3.31.36-4.92.19-1.26,1.28-1.84,1.62-3.07.18-.65.46-1.09,1-1.53.23-.19.49-.37.78-.47.13-.05.26-.08.39-.1.44.04.28-.12-.49-.48-.18,1.92,2.82,1.91,3,0,.26-2.75-2.88-2.87-4.67-1.89-.99.54-1.91,1.45-2.49,2.42-.28.47-.23,1.04-.49,1.49-.19.34-.63.62-.86.96-.64.94-.74,2.12-.84,3.22-.13,1.32-.26,2.65-.3,3.97-.02.66,0,1.3.09,1.95.08.58.38,1.22.39,1.8.02.52-.24.92,0,1.46.51,1.21.38-.49.27-.57s-.65.68-.69.75c-.5.68-.08,1.64.54,2.05l-.2-.14.54-2.05c-.66.36-.96.93-1.13,1.64-.2.86.43,2.01,1.45,1.9h.06c-.3-.74-.6-1.47-.9-2.2-.78,1.3-.98,2.92-.79,4.41.1.75.5,1.36,1.3,1.47.68.09,1.51-.34,1.65-1.07.08-.4.15-.81.23-1.21l-2.2.9.07.05-.69-.9c.07.45-.26,1.46-.34,1.96-.3,1.89,2.59,2.7,2.89.8h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M5.64,21.75c.42-1.83.82-3.66,1.19-5.5.32-1.61-1.86-2.7-2.74-1.16-.31.54-.54,1.12-.72,1.71h2.89c-.02.14-.02.1-.01-.1,0-.74-.57-1.39-1.3-1.47-.8-.1-1.35.36-1.65,1.07-.4.97-.75,1.97-1.06,2.97l2.95.4c.05-.47.11-.94.18-1.4.03-.21.07-.41.11-.62.03-.13.17-.4-.02-.18l-2.56-1.06c-.01-.07-.03-.02-.07.15l2.95.4c0-.93-.06-1.89.02-2.83.03-.32.11-.63.22-.94.05-.14.09-.21.15-.34l.08-.16c.12-.22.11-.22-.05.02l-1.82.23c-.35-.37-.43-.43-.24-.17l.1.15c.1.15.19.31.28.47.06.11.12.24.17.36.05.14.09.27.12.41.04-.26.03-.31-.02-.15-.24.24-.4.98-.54,1.3-.2.48-.4.96-.6,1.44-.48,1.15.86,2.04,1.85,1.85s1.39-1.37,1.72-2.22.54-1.7.71-2.57c.13-.66-.08-1.34-.69-1.69-.54-.31-1.4-.27-1.82.23-.67.8-1.26,1.64-1.79,2.54-.46.78-.07,2.02.9,2.2,1.14.22,1.73-.34,2.59-.95.68-.49,1.41-.9,2.18-1.23l-2.2-1.69c-.03.1-.07.2-.14.29-.15.2.14-.11-.14.12-1.07.86-.13,2.53,1.06,2.56.86.02,1.62-.2,2.39-.55,1.02-.46.93-2.1,0-2.59-.99-.52-1.98-1.06-2.91-1.69l.69,1.69.04-.16-.39.66.09-.09-.66.39c.59-.23,1.35-.17,1.97-.13l-.4-2.95c-.41.15-.73.21-1.16.19-.74-.03-1.39.6-1.47,1.3-.09.79.36,1.37,1.07,1.65s1.44.55,2.16.83l.4-2.95c-.84-.11-1.72-.59-2.38-1.12l-.66,2.51c.52-.14,1.03-.11,1.56-.08,1.49.08,2.04-2.1.76-2.8-.62-.34-1.25-.62-1.91-.88s-1.52.24-1.77.87c-.28.69-.04,1.48.61,1.87.83.5,1.64,1.02,2.43,1.56l1.16-2.74c-.46-.13-.88-.33-1.26-.63l-1.46,2.51c.61.11,1.1.31,1.62.64l1.16-2.74c-.97-.4-1.88-.95-2.74-1.54l-.76,2.8c.34,0,.56.14.84.33l1.16-2.74c-.31-.11-.59-.31-.85-.51l-1.16,2.74c.72.21,1.28.77,2.03.96.84.21,1.74.18,2.6.19,1.07.02,1.96-1.31,1.3-2.26-.55-.79-1.32-1.19-2.13-1.68-.9-.54-1.8-1.03-2.88-1.05-.81-.01-1.5.7-1.5,1.5,0,.86.69,1.44,1.5,1.5.73.05,1.48.1,2.21.05,1.01-.08,1.77-.87,1.65-1.91-.08-.69-.58-1.32-1.1-1.76-.77-.64-1.74-.83-2.63-.28-.78.48-1.04,1.69-.3,2.36,1.02.91,2.48,1.34,3.71,1.88.74.33,1.61.22,2.05-.54.37-.64.21-1.72-.54-2.05-.58-.26-1.17-.52-1.75-.77-.41-.18-1.02-.34-1.35-.64l-.3,2.36h0c-.27,0-.53,0-.8,0l-.15-.14c.07.06.14.13.2.21.05.05.09.1.13.15.13.16.09.1-.1-.18v-.8l-.03.12.39-.66-.07.06.66-.39c.2-.05-.14-.02-.17-.02-.2,0-.41,0-.61,0-.37,0-.74-.03-1.1-.05v3c.48,0,.96.39,1.36.64.27.16.54.32.8.48.06.04.41.34.25.12l1.3-2.26c-.6-.01-1.36.09-1.94-.12-.66-.24-1.19-.72-1.89-.93s-1.5.19-1.77.87c-.3.74,0,1.41.61,1.87.48.36.99.61,1.57.81.7.24,1.51-.22,1.77-.87.29-.72.02-1.45-.61-1.87-.71-.47-1.5-.72-2.36-.74-1.58-.04-1.92,2-.76,2.8,1.09.75,2.24,1.34,3.46,1.85.68.28,1.52-.25,1.77-.87.28-.7.03-1.46-.61-1.87-.71-.45-1.5-.79-2.33-.94-.66-.12-1.34.08-1.69.69-.31.53-.28,1.41.23,1.82.79.63,1.6,1.13,2.58,1.4,1.7.47,2.52-1.81,1.16-2.74-.8-.54-1.61-1.06-2.43-1.56l-1.16,2.74c.41.16.8.36,1.19.58l.76-2.8c-.8-.04-1.58-.02-2.36.19-1,.27-1.57,1.78-.66,2.51,1.36,1.08,2.77,1.77,4.5,1.99.73.09,1.39-.64,1.47-1.3.09-.79-.36-1.37-1.07-1.65s-1.44-.55-2.16-.83l-.4,2.95c.67.03,1.33-.07,1.96-.3,1.59-.57,1.33-2.85-.4-2.95-1.39-.08-3.52-.13-3.94,1.54-.17.68.13,1.31.69,1.69.93.63,1.92,1.16,2.91,1.69v-2.59c-.29.13-.57.15-.88.14l1.06,2.56c.54-.44.83-1.09,1.06-1.73.19-.56-.09-1.24-.54-1.58-.52-.39-1.08-.37-1.67-.12s-1.17.56-1.72.91c-.25.16-.5.34-.75.52-.19.14-.45.27-.58.45-.15.21-.1.03-.06.03h.8l-.16-.03.9,2.2c.4-.67.82-1.33,1.32-1.93l-2.51-1.46c-.12.62-.26,1.23-.45,1.84-.09.28-.18.56-.29.84,0-.02-.26.54-.14.39l.66-.39-.11.02,1.85,1.85c.52-1.24,1.47-2.71,1.17-4.09-.13-.6-.4-1.2-.7-1.74-.27-.47-.61-1.14-1.13-1.36-.69-.3-1.23-.22-1.82.23-.32.25-.49.73-.65,1.09-.23.53-.43,1.05-.52,1.62-.2,1.2-.12,2.44-.12,3.65,0,.74.57,1.39,1.3,1.47.8.09,1.36-.36,1.65-1.07.12-.3.15-.62.17-.95.09-1.26-1.73-2.02-2.56-1.06-.98,1.14-1,2.9-1.15,4.32-.08.73.63,1.39,1.3,1.47.75.09,1.42-.34,1.65-1.07.31-1.01.66-2,1.06-2.97l-2.95-.4c0,.3.04.61.12.89.41,1.44,2.46,1.41,2.89,0,.11-.36.23-.67.42-.99l-2.74-1.16c-.37,1.84-.77,3.68-1.19,5.5s2.46,2.68,2.89.8h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M11.9,7.54c.02.17.03.1.05-.02.02-.09.02-.2.03-.29,0-.32-.06-.64-.18-.93-.31-.75-1.09-1.21-1.91-.97-.61.18-1.13.78-1.1,1.45.03.7.45,1.21,1.1,1.45.12.04.23.08.34.13.1.04.09.04-.01,0l.14.06c.23.12.46.23.68.36.49.28.93.63,1.48.79.76.23,1.58.07,2.16-.5.39-.39.68-.93.95-1.41.36-.65.22-1.72-.54-2.05-1.09-.48-2.12-.64-3.29-.43-.73.13-1.17.97-1.07,1.65.11.8.72,1.21,1.47,1.3s1.42.13,2.15.02,1.34-.43,1.93-.83c.11-.07.23-.14.34-.22.28-.19-.18.02.1-.06-.2.01-.21.01-.03,0,.15.01.17,0,.05,0-.21-.03.26.06.3.07.85.19,1.59.2,2.38-.2.53-.27.79-.94.72-1.49-.08-.63-.5-1.03-1.07-1.25-.41-.16.14.08-.09-.03-.11-.05-.21-.1-.32-.15-.22-.11-.43-.23-.63-.35-.19-.12-.38-.24-.56-.37-.05-.04-.28-.21-.13-.09-.14-.11-.28-.24-.43-.32-1.22-.69-2.5.42-3.53,1.02-1.09.63-.91,2.44.36,2.74.58.14,1.17.17,1.76.16.78-.01,1.54-.68,1.5-1.5s-.66-1.51-1.5-1.5c-.2,0-.4,0-.61,0-.1,0-.2-.01-.3-.02.15.01.13,0-.05-.03l.36,2.74c.31-.18.62-.36.92-.54.14-.08.28-.17.43-.25.07-.04.14-.08.21-.12.2-.11.19-.11-.04,0h-.8c-.16-.03-.64-.42.02.08.1.08.2.16.31.23.22.16.45.31.69.45.52.31,1.07.55,1.64.77l-.36-2.74c.1-.05.41-.05.15-.06-.34,0,.21.06-.1-.02-.34-.09-.68-.15-1.02-.19-.69-.07-1.36.15-1.95.51-.23.14-.45.3-.68.44-.05.03-.41.17-.18.1-.14.05-.29.08-.43.11.26-.05-.12,0-.18,0-.12,0-.24,0-.37,0-.32-.02-.64-.05-.95-.09l.4,2.95c-.29.05.14,0,.17,0,.14,0,.29,0,.43.02-.27-.03.11.04.17.06.05.01.43.16.21.06l-.54-2.05c-.1.17-.19.34-.29.51-.07.11-.2.25-.24.37.17-.28.46-.39.88-.32.14.07.13.06-.04-.02-.15-.1-.3-.19-.46-.29-.69-.43-1.43-.77-2.2-1.05v2.89l.05-.02-1.46-.39c-.17-.17-.27-.36-.3-.59,0,.1-.02.19-.03.29-.02.28.02.54.06.82.11.78,1.14,1.27,1.85,1.05.86-.28,1.16-1.01,1.05-1.85h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M20.29,6.22c.76-.18,1.39-.61,1.92-1.18.91-.98.25-2.49-1.06-2.56l-.61-.03c-1.93-.1-1.92,2.88,0,3,1.75.11,3.53.31,5.1,1.16,1.68.91,3.17,2.17,4.77,3.22s3.22,1.88,4.66,3c1.26.98,1.74,2.6,2.05,4.1.4,1.89,3.29,1.09,2.89-.8s-1.09-3.76-2.47-5.1c-1.51-1.47-3.58-2.46-5.33-3.6s-3.45-2.61-5.35-3.56-4.13-1.28-6.32-1.42v3l.61.03-1.06-2.56c-.22.23-.3.34-.6.41-1.88.44-1.08,3.33.8,2.89h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M42.69,38.45c.03-.69.04-1.38.05-2.07s-.03-1.33.04-1.99l-.05.4c.02-.15.05-.3.09-.45l-2.95-.4c.09.69.08,1.39.08,2.09s.05,1.38-.04,2.05l.05-.4c-.02.09-.04.17-.07.26-.13.35-.03.85.15,1.16s.54.61.9.69c.38.09.81.07,1.16-.15s.55-.51.69-.9c.16-.42.15-.92.15-1.36,0-.38,0-.75,0-1.13,0-.77.03-1.54-.07-2.31-.05-.4-.13-.77-.44-1.06-.25-.23-.53-.37-.86-.41-.73-.1-1.45.35-1.65,1.07-.23.82-.18,1.68-.18,2.52,0,.79-.02,1.59-.05,2.38s.71,1.54,1.5,1.5c.84-.04,1.47-.66,1.5-1.5h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M43.29,31.92c-.15-.74-.27-1.47-.35-2.22-.2-1.95-2.75-1.9-3,0-.15,1.13-.29,2.27-.44,3.4h3c.09-2.41.16-4.82.03-7.23-.09-1.63-2.52-2.11-2.95-.4-.34,1.37-.52,2.76-.55,4.17-.05,1.95,2.85,1.9,3,0,.05-.61.07-1.22.07-1.83,0-1.47-2.06-2.07-2.8-.76-.17.3-.29.6-.41.92h2.89c-.37-.88-.64-1.78-.85-2.71-.39-1.71-2.86-1.23-2.95.4-.04.72.1,1.44.52,2.04.2.28.47.54.78.7.19.1.4.17.61.22.51.12.53.07.06-.16-.34-.33-.44-.3-.29.09.02.17.05.34.1.5.09.36.23.72.41,1.04.36.62.88,1.07,1.58,1.24.9.22,1.95-.44,1.9-1.45-.08-1.57-.07-3.15.06-4.72.07-.82.18-1.47-.46-2.09-.48-.46-1.04-.62-1.69-.47-.39.09-1.22.51-1.43.88-.32.18-.14.22.55.11l-.1-.42c.02-.33-.12-.8-.17-1.13-.17-1.32-.19-2.81-.78-4.02s-1.38-2.14-1.86-3.4c-.54-1.44-.99-2.91-1.5-4.36-.55-1.59-1.12-3.17-1.71-4.74-.53-1.42-.97-3-1.71-4.32-.26-.46-.77-.74-1.3-.74h-.13c-.65,0-1.28.47-1.45,1.1-.49,1.84-.13,3.92.49,5.67.73,2.08,1.5,4.14,2.26,6.21l2.2-1.69c-.69-.49-1.39-.98-2.08-1.48-1.19-.85-2.94.86-2.05,2.05,1.33,1.79,2.04,4,3.43,5.72.62.76,1.14,1.13,1.46,2.08.26.78.51,1.67,1.17,2.2,1.33,1.05,3.11-.22,2.36-1.82-1.08-2.31-2.16-4.62-3.24-6.93l-2.05,2.05c1.66,1.12,2.53,2.58,3.32,4.37.69,1.54,1.33,3.03,2.7,4.08.73.57,2.04-.02,2.2-.9.06-.32.11-.59.26-.87l-2.8-.76c0,1.18.25,2.37,1.52,2.72.47.13,1.13.02,1.46-.39.62-.77.83-1.7.99-2.66l-2.95-.4v.41c.07,1.61,2.64,2.13,2.96.4.12-.64.19-1.26.16-1.91-.04-.86-.66-1.43-1.5-1.5l-.3-.02,1.45,1.1c-.04-.29-.09-.58-.13-.87-.26-1.68-2.99-1.27-2.95.4.93-.38,1.04-.56.33-.54-.29-.03-.57-.06-.86-.09l1.5,1.5c-.02-.61-.05-1.21-.07-1.82-.08-1.92-3.03-1.94-3,0l.21-.43,1.82-.23c.09.04,1.09,1.51.11.42-.56-.62-.39-.41-.26-.04.19.54.57.91,1.13,1.07l-.66-2.51-.19.12c-1.29.48-1.55,2.52,0,2.89,1.01.24,1.9.09,2.74-.52l-2.26-1.3c0,.27,0,.54,0,.8.02,1.94,2.89,1.92,3,0,.09-1.61.18-3.29.02-4.9-.11-1.08-1.03-2.23-1.85-2.93-1.01-.85-2.46-.57-3.05.62s-.42,3.06-.26,4.39l1.9-1.45c-.89-.24-1.76-.52-2.63-.82l-.4,2.95c1.5.07,3,.15,4.5.22l-1.5-1.5v.22c.13-.35.28-.71.43-1.06l-.12.12,1.46-.39c.46.34.57.32.32-.07-.08-.19-.17-.37-.27-.55-.18-.28-.42-.55-.7-.73s-.72-.32-1.03-.32c-.62,0,.63.74-.06-.18-.51-.68-1.16-.98-1.98-1.07-.39-.05-.78-.03-1.17-.06.27.44.32.44.17.01-.05-.21-.08-.43-.1-.64l-1.5,1.5c.36,0,.89.57,1.2.73.55.28,1.13.46,1.75.51.52.05,1.01.03,1.48-.23.22-.12.39-.24.54-.44.27-.34.53-.58-.13-.31,1.15-.48,1.55-2.01.36-2.74-1.6-.98-3.59-1.1-5.12-2.22-.68-.5-.81-1.2-1.07-1.97-.11-.33-.22-.68-.38-.99s-.53-.64-.63-.96l-1.05,1.85c1.3-.33,4.25,2.41,4.48,3.52l1.45-1.9c-1.06.07-2.03.13-2.72-.82l-2.05,2.05c1.52.91,3.03,1.81,4.55,2.72l1.51-2.59c-1.91-.87-3.75-1.87-5.54-2.98-1.65-1.02-3.15,1.57-1.51,2.59,1.79,1.11,3.62,2.1,5.54,2.98,1.72.79,3.2-1.58,1.51-2.59-1.52-.91-3.03-1.81-4.55-2.72-1.22-.73-2.96.8-2.05,2.05,1.34,1.86,3.07,2.46,5.31,2.31,1.01-.07,1.65-.9,1.45-1.9-.34-1.67-2.03-3.08-3.32-4.06-1.37-1.03-3.09-1.99-4.84-1.55-.77.19-1.28,1.08-1.05,1.85.28.9.88,1.56,1.17,2.47.31.99.72,1.93,1.5,2.65,1.69,1.56,4.03,1.67,5.9,2.82l.36-2.74c-.39.16-.72.31-1.01.63-.15.17-.28.35-.37.55.63-.21.65-.35.06-.41-.65-.66-1.81-1.15-2.72-1.14-.74.01-1.6.68-1.5,1.5.14,1.14.25,2.64,1.35,3.3.63.38,1.34.24,2.02.34.96.15.02-.12.63.4.24.2.38.44.67.61s.56.26.89.28h.29c-.4-.27-.52-.29-.36-.03-.08.41.72,1.24,1.04,1.42,1.28.74,2.46-.35,2.54-1.62.05-.84-.73-1.46-1.5-1.5-1.5-.07-3-.15-4.5-.22-1.77-.09-1.92,2.41-.4,2.95.87.3,1.74.58,2.63.82s2.02-.46,1.9-1.45c-.1-.85,0-1.72-.1-2.56l.03-.42c-1.39-.26-1.88-.14-1.48.38.05.29.47.57.62.81s.15,1.22.15,1.85c0,.92-.03,1.84-.08,2.76h3c0-.27,0-.54,0-.8,0-1.04-1.31-1.99-2.26-1.3-.11.18-.26.25-.43.22v2.89c.59-.22,1.03-.49,1.51-.89.9-.75.34-2.22-.66-2.51l-.08-.02,1.05,1.05c-.26-.74-.47-1.43-1.31-1.69s-1.96-.06-2.68.36c-1.36.79-1.97,3.55-.26,4.33.68.31,1.24.22,1.82-.23.52-.41.68-1.06.67-1.69h-3c.02.61.05,1.21.07,1.82.03.88.66,1.41,1.5,1.5s1.79.33,2.57-.19c.72-.49.98-1.33.96-2.18l-2.95.4c.04.29.09.58.13.87.1.68.84,1.05,1.45,1.1l.3.02-1.5-1.5c.02.39.02.74-.05,1.12l2.95.4v-.41c-.07-1.6-2.68-2.14-2.96-.4-.04.24-.12,1.22-.21,1.34l1.46-.39-.21-.06.9.69c-.03-.15-.03-.3,0-.46-.01-1.46-2.07-2.08-2.8-.76-.28.51-.46,1.02-.56,1.59l2.2-.9c-.57-.44-.89-1.38-1.18-2.01-.35-.77-.67-1.56-1.05-2.31-.88-1.74-2.19-3.05-3.79-4.14-1.36-.92-2.63.82-2.05,2.05,1.08,2.31,2.16,4.62,3.24,6.93l2.36-1.82c-.47-.37-.54-1.37-.77-1.92-.38-.91-1.01-1.36-1.62-2.08s-.97-1.68-1.4-2.52c-.52-1.01-1.12-1.97-1.8-2.88l-2.05,2.05c.69.49,1.39.98,2.08,1.48,1.04.74,2.64-.5,2.2-1.69-.64-1.77-1.29-3.54-1.93-5.31-.56-1.54-1.26-3.3-.82-4.97l-1.45,1.1h.13c-.43-.25-.86-.5-1.3-.74.65,1.16,1.03,2.58,1.49,3.82s.94,2.55,1.39,3.83c.87,2.47,1.51,5.14,2.79,7.43.54.97,1.11,1.61,1.28,2.75.19,1.25.19,2.62.57,3.83.3.96.91,1.81,1.93,2.06.53.13,1.03.04,1.51-.16.39-.17.86-.75,1.26-.81l-1.46-.39.21.2-.44-1.06c-.19,1.88-.24,3.76-.15,5.65l1.9-1.45c.27.07-.27-1.72-.49-2-.24-.3-.56-.54-.94-.66-.98-.32-.18.56-.14-.13l-2.95.4c.21.93.48,1.83.85,2.71.57,1.36,2.35,1.47,2.89,0l.1-.2-2.8-.76c0,.61-.02,1.22-.07,1.83h3c.03-1.15.17-2.26.45-3.37l-2.95-.4c.13,2.41.06,4.82-.03,7.23-.07,1.98,2.76,1.85,3,0,.15-1.13.29-2.27.44-3.4h-3c.1,1.02.25,2.02.45,3.02.39,1.89,3.28,1.09,2.89-.8h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M31.92,5.42l-3.78-2.04-1.86-1c-.63-.34-1.32-.83-2.03-.96l-.8,2.89c.8.12,1.49.07,2.29-.05.09-.01.18-.03.27-.04-.17.02-.17.02,0,0,.14,0,.27-.02.41-.03.13,0,.25,0,.38.01.17.02.16.02-.03,0,.06.01.12.02.18.03,1.11.23,2.14.76,3.25,1,.48.1.92.03,1.31-.27.33-.26.65-.73.59-1.18-.09-.66-.15-1.38-.67-1.87-.66-.64-1.74-.71-2.39,0-.53.58-.61,1.56,0,2.12.58.53,1.55.62,2.12,0l.05-.06-.66.39.06-.02h-.8l-.78-.75c.02.06.03.11.04.17.02.07.06.36.01.03l1.9-1.45c-1.11-.24-2.14-.77-3.25-1-.65-.13-1.29-.17-1.95-.09-.25.03-.49.06-.74.1-.33.05.22-.01-.14.02-.14.01-.27.03-.41.03-.07,0-.62-.04-.28.01-.41-.06-.78-.07-1.16.15-.31.18-.61.54-.69.9-.17.73.22,1.7,1.05,1.85.07,0,.15.03.22.05-.18-.08-.19-.08-.04,0,.12.07.24.13.36.19l.9.48,1.86,1,3.65,1.97c.69.37,1.67.19,2.05-.54s.2-1.65-.54-2.05h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M36.43,1.72h-.01c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.01c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M35.25,1.05h-.01c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.01c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M34.38.66h-.03c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.03c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M33.92.47h-.1c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.1c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M33.51.42h-.04c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.04c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M32.95.37h-.03c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.03c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M31.42,1.1l-.06.09c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.06-.09c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M30.55,1.18v-.03c-.11-.17-.24-.32-.4-.42-.14-.13-.31-.22-.51-.27-.2-.06-.4-.07-.6-.03-.2,0-.39.07-.56.18l-.3.23c-.19.19-.31.41-.39.66l-.05.4c0,.27.07.52.2.76v.03c.11.17.24.32.4.42.14.13.31.22.51.27.2.06.4.07.6.03.2,0,.39-.07.56-.18l.3-.23c.19-.19.31-.41.39-.66l.05-.4c0-.27-.07-.52-.2-.76h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M29.25.21c-.14-.03-.28-.04-.42-.06,0,0-.01,0-.02,0,0,0-.02,0-.02,0-.07,0-.16.02-.22.03s-.15.02-.22.03c0,0-.02,0-.02,0s-.02,0-.02,0c0,0,0,0,0,0l-.36.15s0,0-.01,0c-.17.09-.32.22-.42.39-.13.14-.22.31-.27.51-.06.2-.07.4-.03.6,0,.2.07.39.18.56l.23.3c.19.19.41.31.66.39l.4.05c.27,0,.52-.07.76-.2,0,0,0,0,.01,0l-.36.15s.05-.02.07-.02l-.4.05s.05,0,.07,0l-.4-.05s.01,0,.02,0c.2.06.4.07.6.03.2,0,.39-.07.56-.18.17-.09.32-.22.42-.39.13-.14.22-.31.27-.51l.05-.4c0-.27-.07-.52-.2-.76l-.23-.3c-.19-.19-.41-.31-.66-.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M25.97.44l-.03.03c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39l.03-.03c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48l-.3-.23c-.23-.14-.49-.2-.76-.2l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M26.46.16h-.04c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.04c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M26.11.14h-.03c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.03c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M23.58.61l-.13.12c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39l.13-.12c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48l-.3-.23c-.23-.14-.49-.2-.76-.2l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M23.09,1.12l-.06.09c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.06-.09c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M24.19.61h-.03c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.03c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M23.94.6h-.09c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.09c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M22.84.63l-.1.03c-.2.05-.37.14-.51.27-.16.11-.29.25-.39.42-.11.17-.17.36-.18.56-.04.2-.04.4.03.6l.15.36c.13.23.31.4.54.54l.36.15c.27.07.53.07.8,0l.1-.03c.2-.05.37-.14.51-.27.16-.11.29-.25.39-.42.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6l-.15-.36c-.13-.23-.31-.4-.54-.54l-.36-.15c-.27-.07-.53-.07-.8,0h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M22.82.58h-.07c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.07c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M22.38.57h-.15c-.21-.01-.4.03-.58.12-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.15c.21.01.4-.03.58-.12.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M21.85.55h-.04c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.04c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M21.31.41h-.09c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.09c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M20.61.45l-.12.03c-.2.05-.37.14-.51.27-.16.11-.29.25-.39.42-.11.17-.17.36-.18.56-.04.2-.04.4.03.6l.15.36c.13.23.31.4.54.54l.36.15c.27.07.53.07.8,0l.12-.03c.2-.05.37-.14.51-.27.16-.11.29-.25.39-.42.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6l-.15-.36c-.13-.23-.31-.4-.54-.54l-.36-.15c-.27-.07-.53-.07-.8,0h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M19.58,1.06l-.17.21c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39l.17-.21c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48l-.3-.23c-.23-.14-.49-.2-.76-.2l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M18.92,1.82l-.04.09c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.04-.09c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M18.81,2.06l-.07.15c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.07-.15c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M19.88,1.67c-.08,0-.17.02-.25.03s-.17.02-.25.04c-.04,0-.07.02-.11.03-.13.05-.25.1-.38.16,0,0-.02,0-.02.01-.02,0-.03.02-.05.03s-.03.02-.05.03c0,0-.02.01-.03.02-.11.08-.22.17-.32.25-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39h0c-.1.07-.2.15-.3.23.06-.04.12-.08.18-.11l-.36.15c.05-.02.1-.04.16-.04l-.4.05s.03,0,.05,0c.21,0,.4-.04.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M18.64,2.09l-.1.06c-.17.09-.32.22-.42.39-.13.14-.22.31-.27.51-.06.2-.07.4-.03.6,0,.2.07.39.18.56l.23.3c.19.19.41.31.66.39l.4.05c.27,0,.52-.07.76-.2l.1-.06c.17-.09.32-.22.42-.39.13-.14.22-.31.27-.51.06-.2.07-.4.03-.6,0-.2-.07-.39-.18-.56l-.23-.3c-.19-.19-.41-.31-.66-.39l-.4-.05c-.27,0-.52.07-.76.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M19.63,2.02l-.07-.06c-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13-.21,0-.4.04-.58.13-.19.06-.35.16-.48.31l-.23.3c-.14.23-.2.49-.2.76l.05.4c.07.25.2.47.39.66l.07.06c.14.15.3.25.48.31.18.09.37.14.58.13.21,0,.4-.04.58-.13.19-.06.35-.16.48-.31l.23-.3c.14-.23.2-.49.2-.76l-.05-.4c-.07-.25-.2-.47-.39-.66h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.71.92h-.06c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.06c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M16.3.82h-.07c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.07c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M15.35.84s-.03,0-.04.01l-.36.15s0,0,0,0c0,0,0,0,0,0,0,0-.01,0-.02.01s-.01,0-.02.01c-.11.07-.28.21-.32.25-.01.01-.03.02-.04.03-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39.01-.01.02-.02.04-.03l-.3.23s.04-.03.07-.04l-.36.15s.03-.01.04-.01c.2-.05.37-.14.51-.27.16-.11.29-.25.39-.42.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6l-.15-.36c-.13-.23-.31-.4-.54-.54l-.36-.15c-.27-.07-.53-.07-.8,0h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M13.26,2.48l-.04.15c-.06.2-.07.4-.03.6,0,.2.07.39.18.56.09.17.22.32.39.42.14.13.31.22.51.27l.4.05c.27,0,.52-.07.76-.2l.3-.23c.19-.19.31-.41.39-.66l.04-.15c.06-.2.07-.4.03-.6,0-.2-.07-.39-.18-.56-.09-.17-.22-.32-.39-.42-.14-.13-.31-.22-.51-.27l-.4-.05c-.27,0-.52.07-.76.2l-.3.23c-.19.19-.31.41-.39.66h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M14.89,1.78s0,0-.01,0c-.13-.03-.27-.05-.41-.05,0,0,0,0-.01,0-.14.01-.28.02-.41.06,0,0,0,0-.01,0-.06.03-.12.05-.18.08-.06.02-.12.05-.18.08,0,0,0,0,0,0,0,0,0,0-.01,0h0c-.1.08-.2.16-.3.24,0,0,0,0,0,0-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39,0,0,0,0,0,0l-.3.23s.02-.01.03-.02l-.36.15s.02,0,.03,0l-.4.05s.02,0,.02,0l-.4-.05s.01,0,.02,0c.2.06.4.07.6.03.2,0,.39-.07.56-.18.17-.09.32-.22.42-.39.13-.14.22-.31.27-.51l.05-.4c0-.27-.07-.52-.2-.76l-.23-.3c-.19-.19-.41-.31-.66-.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M13.9,1.79h-.01c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.01c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M12.26,2.64l-.1.14c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.1-.14c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M13.12,2.3h-.07c-.21-.01-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.07c.21.01.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M11.57,2.72l-.1.05c-.17.09-.32.22-.42.39-.13.14-.22.31-.27.51-.06.2-.07.4-.03.6,0,.2.07.39.18.56l.23.3c.19.19.41.31.66.39l.4.05c.27,0,.52-.07.76-.2l.1-.05c.17-.09.32-.22.42-.39.13-.14.22-.31.27-.51.06-.2.07-.4.03-.6,0-.2-.07-.39-.18-.56l-.23-.3c-.19-.19-.41-.31-.66-.39l-.4-.05c-.27,0-.52.07-.76.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M11.95,2.61h-.04c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.04c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M8.77,2.68l-.03.03c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39l.03-.03c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48l-.3-.23c-.23-.14-.49-.2-.76-.2l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M9.14,2.39h-.03c-.21,0-.4.03-.58.13-.19.06-.35.16-.48.31-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58l.05.4c.07.25.2.47.39.66l.3.23c.23.14.49.2.76.2h.03c.21,0,.4-.03.58-.13.19-.06.35-.16.48-.31.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58l-.05-.4c-.07-.25-.2-.47-.39-.66l-.3-.23c-.23-.14-.49-.2-.76-.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M6.97,1.74l-.1.09c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39l.1-.09c.15-.14.25-.3.31-.48.09-.18.14-.37.13-.58,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48l-.3-.23c-.23-.14-.49-.2-.76-.2l-.4.05c-.25.07-.47.2-.66.39h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M5.58,2.91l-.07.06c-.17.09-.32.22-.42.39-.13.14-.22.31-.27.51-.06.2-.07.4-.03.6,0,.2.07.39.18.56l.23.3c.19.19.41.31.66.39l.4.05c.27,0,.52-.07.76-.2l.07-.06c.17-.09.32-.22.42-.39.13-.14.22-.31.27-.51.06-.2.07-.4.03-.6,0-.2-.07-.39-.18-.56l-.23-.3c-.19-.19-.41-.31-.66-.39l-.4-.05c-.27,0-.52.07-.76.2h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.78,4.78c0,.09,0,.17,0,.26l.05-.4s0,.03,0,.04c-.06.2-.07.4-.03.6,0,.2.07.39.18.56.09.17.22.32.39.42.14.13.31.22.51.27l.4.05c.27,0,.52-.07.76-.2l.3-.23c.19-.19.31-.41.39-.66.03-.16.05-.31.06-.47,0-.02,0-.05,0-.07,0-.05,0-.1,0-.15,0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M3.26,5.46s-.03.06-.04.09c-.06.15-.13.3-.19.44-.03.07-.05.13-.07.2-.06.2-.07.4-.03.6,0,.2.07.39.18.56.09.17.22.32.39.42.14.13.31.22.51.27l.4.05c.27,0,.52-.07.76-.2l.3-.23c.19-.19.31-.41.39-.66.03-.09.06-.17.1-.26l-.15.36s.03-.08.05-.12c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.78,6.97v.09c0,.21.03.4.13.58.06.19.16.35.31.48.14.15.3.25.48.31.18.09.37.14.58.13l.4-.05c.25-.07.47-.2.66-.39l.23-.3c.14-.23.2-.49.2-.76v-.09c0-.21-.03-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.7,6.93c-.01.07-.03.14-.06.21l.15-.36s-.04.08-.07.12l.23-.3s-.01.01-.02.02c-.15.14-.25.3-.31.48-.09.18-.14.37-.13.58,0,.21.04.4.13.58.06.19.16.35.31.48l.3.23c.23.14.49.2.76.2l.4-.05c.25-.07.47-.2.66-.39.09-.1.17-.22.26-.33,0-.01.02-.02.02-.04,0-.01.01-.03.02-.04,0,0,0-.01,0-.02.05-.12.11-.25.16-.38.03-.07.04-.14.06-.21.06-.2.07-.4.03-.6,0-.2-.07-.39-.18-.56-.09-.17-.22-.32-.39-.42-.14-.13-.31-.22-.51-.27l-.4-.05c-.27,0-.52.07-.76.2l-.3.23c-.19.19-.31.41-.39.66h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M2.05,7.64l-.04.09c-.11.17-.17.36-.18.56-.04.2-.04.4.03.6.05.2.14.37.27.51.11.16.25.29.42.39l.36.15c.27.07.53.07.8,0l.36-.15c.23-.13.4-.31.54-.54l.04-.09c.11-.17.17-.36.18-.56.04-.2.04-.4-.03-.6-.05-.2-.14-.37-.27-.51-.11-.16-.25-.29-.42-.39l-.36-.15c-.27-.07-.53-.07-.8,0l-.36.15c-.23.13-.4.31-.54.54h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M1.68,8.77v.33c-.01.21.03.4.13.58.06.19.16.35.31.48.14.15.3.25.48.31.18.09.37.14.58.13l.4-.05c.25-.07.47-.2.66-.39l.23-.3c.14-.23.2-.49.2-.76v-.33c.01-.21-.03-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M1.63,9.75l-.02.12c0,.21.04.4.13.58.06.19.16.35.31.48.14.15.3.25.48.31.18.09.37.14.58.13l.4-.05c.25-.07.47-.2.66-.39l.23-.3c.14-.23.2-.49.2-.76l.02-.12c0-.21-.04-.4-.13-.58-.06-.19-.16-.35-.31-.48-.14-.15-.3-.25-.48-.31-.18-.09-.37-.14-.58-.13l-.4.05c-.25.07-.47.2-.66.39l-.23.3c-.14.23-.2.49-.2.76h0Z"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                mask: `url(#${id}-hair-mask)`,
+                pointerEvents: "none",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("rect", {
+                        width: "49.15",
+                        height: "116.6",
+                        fill: `url(#${id}-hair-left)`,
+                        opacity: left
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("rect", {
+                        width: "49.15",
+                        height: "116.6",
+                        fill: `url(#${id}-hair-right)`,
+                        opacity: right
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-R_ear1`,
+                "data-name": "R_ear",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "head-st5",
+                        d: "M44.29,67.4s3.71,4.67-1.37,5.42"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M44.29,67.4s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-burn)`,
+                        opacity: burn,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M44.29,67.4s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-left)`,
+                        opacity: left,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M44.29,67.4s3.71,4.67-1.37,5.42",
+                        fill: `url(#${id}-right)`,
+                        opacity: right,
+                        stroke: "none",
+                        pointerEvents: "none"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: "M44.29,67.4s3.71,4.67-1.37,5.42",
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10,
+                        pointerEvents: "none"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("line", {
+                className: "head-st3",
+                x1: "19.7",
+                y1: "62.9",
+                x2: "29.62",
+                y2: "60.76"
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/YusufFootballSideCharacter/YusufSideLegs.tsx
+
+
+// Use the SAME SceneMaster module that provides this character's lighting.
+
+const YusufSideLegs = ()=>{
+    const id = `yusuf-leg-${(0,react.useId)().replace(/:/g, "")}`;
+    const lighting = useCharacterLighting();
+    const left = Math.max(0, Math.min(1, lighting.leftLight));
+    const right = Math.max(0, Math.min(1, lighting.rightLight));
+    const burn = Math.max(0, Math.min(1, lighting.burn));
+    const night = left + right + burn > 0;
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: `${id}-Yusuf_x5F_Legs_x5F_Side`,
+        version: "1.1",
+        style: {
+            display: "block",
+            width: "100%",
+            height: "100%"
+        },
+        viewBox: "0 0 196.52 259.89",
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("defs", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-burn`,
+                        x1: "0%",
+                        y1: "0%",
+                        x2: "100%",
+                        y2: "100%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.05"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "55%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.4"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#07152f",
+                                stopOpacity: "0.48"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-left`,
+                        x1: "0%",
+                        y1: "0%",
+                        x2: "100%",
+                        y2: "0%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.42"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "22%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0.16"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "65%",
+                                stopColor: lighting.leftColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-right`,
+                        x1: "100%",
+                        y1: "0%",
+                        x2: "0%",
+                        y2: "0%",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.4"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "22%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0.14"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "65%",
+                                stopColor: lighting.rightColor,
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                        children: `
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st0 { fill: #ccc; isolation: isolate; opacity: .3; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st1 { opacity: .05; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st1, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st2, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st3 { fill: #f7ff00; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st4, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st7, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st8, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st9, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st10, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { stroke-miterlimit: 10; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st4, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st7, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st8, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st10 { stroke: #000; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st4, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { fill: #fff; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st12 { fill: #3fa9f5; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st13, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6 { fill: none; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5 { fill: #46a2cd; stroke: #042840; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st5, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st6, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { stroke-width: 2px; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st14 { fill: #84c0e2; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st15 { fill: #6faad3; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st7 { fill: #0252d2; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st8 { fill: aqua; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st9 { fill: #ff0014; stroke: #fff; stroke-width: 3px; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st3 { opacity: .2; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st16 { fill: #0d475c; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st17, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st18, #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st19 { fill: #141110; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st18 { opacity: .1; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st10 { fill: #d48455; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st11 { stroke: #ed1c24; }
+          #${id}-Yusuf_x5F_Legs_x5F_Side .leg-st19 { opacity: .3; }
+        `
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Leg_x5F_L`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        "data-yusuf-joint": "left-knee",
+                        style: {
+                            transform: "rotate(var(--yusuf-left-knee, 0deg))",
+                            transformOrigin: "118px 124px",
+                            transformBox: "view-box"
+                        },
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                                id: `${id}-Calf_x5F_L`,
+                                children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                    children: [
+                                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            id: `${id}-Body_x5F_Calf_x5F_L`,
+                                            className: "leg-st10",
+                                            d: "M128.35,229l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z"
+                                        }),
+                                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            d: "M128.35,229l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z",
+                                            fill: `url(#${id}-burn)`,
+                                            opacity: burn,
+                                            stroke: "none",
+                                            pointerEvents: "none"
+                                        }),
+                                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            d: "M128.35,229l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z",
+                                            fill: `url(#${id}-left)`,
+                                            opacity: left,
+                                            stroke: "none",
+                                            pointerEvents: "none"
+                                        }),
+                                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            d: "M128.35,229l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z",
+                                            fill: `url(#${id}-right)`,
+                                            opacity: right,
+                                            stroke: "none",
+                                            pointerEvents: "none"
+                                        }),
+                                        /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                            className: "leg-st10",
+                                            d: "M128.35,229l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z",
+                                            style: {
+                                                fill: "none"
+                                            },
+                                            pointerEvents: "none"
+                                        })
+                                    ]
+                                })
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                id: `${id}-Foot_x5F_L`,
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                        children: [
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                id: `${id}-Body_x5F_Foot_x5F_L`,
+                                                className: "leg-st10",
+                                                d: "M133.03,226.73c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                d: "M133.03,226.73c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z",
+                                                fill: `url(#${id}-burn)`,
+                                                opacity: burn,
+                                                stroke: "none",
+                                                pointerEvents: "none"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                d: "M133.03,226.73c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z",
+                                                fill: `url(#${id}-left)`,
+                                                opacity: left,
+                                                stroke: "none",
+                                                pointerEvents: "none"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                d: "M133.03,226.73c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z",
+                                                fill: `url(#${id}-right)`,
+                                                opacity: right,
+                                                stroke: "none",
+                                                pointerEvents: "none"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st10",
+                                                d: "M133.03,226.73c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z",
+                                                style: {
+                                                    fill: "none"
+                                                },
+                                                pointerEvents: "none"
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                        id: `${id}-Shoe_x5F_L`,
+                                        children: [
+                                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                                children: [
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        id: `${id}-Shoe_x5F_R_x5F_Upper_x5F_Layer`,
+                                                        className: "leg-st5",
+                                                        d: "M129.72,240.42s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M129.72,240.42s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z",
+                                                        fill: `url(#${id}-burn)`,
+                                                        opacity: burn,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M129.72,240.42s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z",
+                                                        fill: `url(#${id}-left)`,
+                                                        opacity: left,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M129.72,240.42s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z",
+                                                        fill: `url(#${id}-right)`,
+                                                        opacity: right,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st5",
+                                                        d: "M129.72,240.42s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z",
+                                                        style: {
+                                                            fill: "none"
+                                                        },
+                                                        pointerEvents: "none"
+                                                    })
+                                                ]
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st8",
+                                                d: "M102.54,188.26"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                                children: [
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        id: `${id}-Shoe_x5F_R_x5F_Lower_x5F_Layer`,
+                                                        className: "leg-st15",
+                                                        d: "M84.44,225.89c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02Z"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M84.44,225.89c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02Z",
+                                                        fill: `url(#${id}-burn)`,
+                                                        opacity: burn,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M84.44,225.89c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02Z",
+                                                        fill: `url(#${id}-left)`,
+                                                        opacity: left,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M84.44,225.89c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02Z",
+                                                        fill: `url(#${id}-right)`,
+                                                        opacity: right,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st15",
+                                                        d: "M84.44,225.89c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02Z",
+                                                        style: {
+                                                            fill: "none"
+                                                        },
+                                                        pointerEvents: "none"
+                                                    })
+                                                ]
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                                id: `${id}-Shoe_x5F_Laces`,
+                                                children: [
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st6",
+                                                        d: "M100.49,216.12s1.24,4.47,1.82,3.63"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st6",
+                                                        d: "M97.28,218.28s.36,2.21,1.9,3.32"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st6",
+                                                        d: "M94.73,220.13s-.8,2.7,1.38,3.09"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st6",
+                                                        d: "M92.04,221.75s-.07,2.31,1.24,2.62"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st6",
+                                                        d: "M88.39,224.22s.07,1.85.73,2.08"
+                                                    })
+                                                ]
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st0",
+                                                d: "M85.94,227.04c.81-.43,2.33-.65,2.38.31.1,1.71,3.12,3.79,6.99,4.23,6.63.75,19.45,4.11,19.45,4.54h0c.02.75-.48,1.39-1.18,1.44-4.03.24-13.7.8-14.95.8-1.58,0-22.78-2.33-21.63-4.63.86-1.7,5.32-4.77,8.94-6.69h0Z"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st12",
+                                                d: "M177.75,253.32"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                                className: "leg-st16",
+                                                points: "128.32 241.45 124.31 241.55 125.2 243.16 128.06 243.13 128.32 241.45"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                                className: "leg-st16",
+                                                points: "117.13 241.68 113.08 241.78 113.97 243.39 117.04 243.35 117.13 241.68"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                                className: "leg-st16",
+                                                points: "98.88 241.61 95.44 241.72 96.05 243.09 98.66 243.29 98.88 241.61"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                                className: "leg-st16",
+                                                points: "88.48 241.69 85.57 241.79 85.94 243.25 88.16 243.36 88.48 241.69"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                                className: "leg-st16",
+                                                points: "79.12 240.76 75.88 240.6 76.11 242.19 78.51 242.12 79.12 240.76"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                                children: [
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st14",
+                                                        d: "M88.4,236.58c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M88.4,236.58c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z",
+                                                        fill: `url(#${id}-burn)`,
+                                                        opacity: burn,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M88.4,236.58c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z",
+                                                        fill: `url(#${id}-left)`,
+                                                        opacity: left,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M88.4,236.58c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z",
+                                                        fill: `url(#${id}-right)`,
+                                                        opacity: right,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st14",
+                                                        d: "M88.4,236.58c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z",
+                                                        style: {
+                                                            fill: "none"
+                                                        },
+                                                        pointerEvents: "none"
+                                                    })
+                                                ]
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                        id: `${id}-Socks_x5F_L`,
+                                        children: [
+                                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                                children: [
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st4",
+                                                        d: "M104.68,166.17l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M104.68,166.17l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z",
+                                                        fill: `url(#${id}-burn)`,
+                                                        opacity: burn,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M104.68,166.17l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z",
+                                                        fill: `url(#${id}-left)`,
+                                                        opacity: left,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        d: "M104.68,166.17l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z",
+                                                        fill: `url(#${id}-right)`,
+                                                        opacity: right,
+                                                        stroke: "none",
+                                                        pointerEvents: "none"
+                                                    }),
+                                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                        className: "leg-st4",
+                                                        d: "M104.68,166.17l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z",
+                                                        style: {
+                                                            fill: "none"
+                                                        },
+                                                        pointerEvents: "none"
+                                                    })
+                                                ]
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st4",
+                                                d: "M45.99,161.89"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st11",
+                                                d: "M107.4,170.45s15.54,3.44,24.37-2.27"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "leg-st11",
+                                                d: "M109.24,179.46s13.82,2.3,21.78-1.94"
+                                            })
+                                        ]
+                                    })
+                                ]
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        id: `${id}-Body_x5F_Thigh_x5F_L`,
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                            children: [
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    id: `${id}-Body_x5F_Thigh_x5F_L1`,
+                                    className: "leg-st10",
+                                    d: "M135.17,5.26l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M135.17,5.26l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z",
+                                    fill: `url(#${id}-burn)`,
+                                    opacity: burn,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M135.17,5.26l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z",
+                                    fill: `url(#${id}-left)`,
+                                    opacity: left,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    d: "M135.17,5.26l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z",
+                                    fill: `url(#${id}-right)`,
+                                    opacity: right,
+                                    stroke: "none",
+                                    pointerEvents: "none"
+                                }),
+                                /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                    className: "leg-st10",
+                                    d: "M135.17,5.26l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z",
+                                    style: {
+                                        fill: "none"
+                                    },
+                                    pointerEvents: "none"
+                                })
+                            ]
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                id: `${id}-Shorts_x5F_L`,
+                                className: "leg-st7",
+                                d: "M147.09,93.48c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09Z"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M147.09,93.48c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09Z",
+                                fill: `url(#${id}-burn)`,
+                                opacity: burn,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M147.09,93.48c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09Z",
+                                fill: `url(#${id}-left)`,
+                                opacity: left,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                d: "M147.09,93.48c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09Z",
+                                fill: `url(#${id}-right)`,
+                                opacity: right,
+                                stroke: "none",
+                                pointerEvents: "none"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                className: "leg-st7",
+                                d: "M147.09,93.48c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09Z",
+                                style: {
+                                    fill: "none"
+                                },
+                                pointerEvents: "none"
+                            })
+                        ]
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-LEGS_x5F_SHADOW_x5F_L`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("line", {
+                        className: "leg-st9",
+                        x1: "147.97",
+                        y1: "9.15",
+                        x2: "137.37",
+                        y2: "100.31"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "leg-st13",
+                        d: "M163.74,18.86"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "leg-st18",
+                        d: "M99.68,6.54l27.09,97.73s-30.92,7.23-29.93-12.62-3.97-78.16-3.97-78.16l6.24-7.8"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        style: {
+                            transform: "rotate(var(--yusuf-left-knee, 0deg))",
+                            transformOrigin: "118px 124px",
+                            transformBox: "view-box"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            className: "leg-st18",
+                            d: "M114.57,106.4l-1.41,111.25c0,.09-.13.11-.15.02-1.63-7.41-16.59-77.16-6.38-93.4,0,0-1.99-19.43,1.84-18.72s6.1.85,6.1.85Z"
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "leg-st17",
+                        d: "M41.52,79.59"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polyline", {
+                        style: {
+                            transform: "rotate(var(--yusuf-left-knee, 0deg))",
+                            transformOrigin: "118px 124px",
+                            transformBox: "view-box"
+                        },
+                        className: "leg-st19",
+                        points: "103.79 168.95 100.96 149.66 102.09 133.92 104.36 167.82"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: `${id}-Highlights`,
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "leg-st3",
+                        d: "M150.03,70.23s-2.98,24.96-4.68,26.1l-5.96,3.97,10.35-91.06s5.39,3.69,5.11,8.94-4.82,52.06-4.82,52.06Z",
+                        style: {
+                            fill: night ? lighting.rightColor : "#f7ff00",
+                            opacity: night ? right * 0.2 : 0.2
+                        }
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "leg-st2",
+                        d: "M178.69,49.24",
+                        style: {
+                            fill: night ? lighting.rightColor : "#f7ff00",
+                            opacity: night ? right * 1 : 1
+                        }
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        style: {
+                            transform: "rotate(var(--yusuf-left-knee, 0deg))",
+                            transformOrigin: "118px 124px",
+                            transformBox: "view-box"
+                        },
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            className: "leg-st1",
+                            d: "M133.75,104.13l-6.68,24.26-.29,36.31,9.01-1.42s1.36-32.91-3.88-34.89c0,0,5.33-20.71,1.84-24.26Z",
+                            style: {
+                                fill: night ? lighting.rightColor : "#f7ff00",
+                                opacity: night ? right * 0.05 : 0.05
+                            }
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/YusufFootballSideCharacter/YusufTorso.tsx
+
+
+
+const YusufSideTorso = ()=>{
+    const id = (0,react.useId)();
+    const lighting = useCharacterLighting();
+    const bodyPath = "M46.61,32.45c1.09-8.11,8.67-13.11,14.96-13.57,5.76-.37,11.72,1.17,17.52,2.03,6.77,1,11.53,2.9,14.5,11.41,1.29,3.33,1.33,6.67,1.31,10.36.18,19.17.54,50.77,1.84,66.89.23,2.98.8,6.41,1.06,8.71.33,3.22.28,4.4.69,8.41.59,6.91,1.21,17.21-1.95,23.68-2.2,4.49-5.83,5.93-10.13,7.31-11.41,3.58-27.15,4.35-37.32-.85-6.5-2.89-8.99-10.26-9.35-19.32-.33-5.97.07-10.52.77-15.97,1.1-8.97,3.62-30.36,4.2-43.66.31-6.2-.04-10.97.22-16.92.49-8.84.97-19.68,1.67-28.4v-.11Z";
+    const shirtPath = "M94.46,34.62s-.06-.27-.18-.73c-.8-2.93-4.4-13.65-13.91-12.11,0,0-27.52-10.51-33.72,3.92,0,0-2.44,41.35-1.69,46.34s-8.27,67.72-4.51,69.68c0,0-2.82,25.66,36.63,18.18,0,0,24.14,3.39,22.35-23.17s-4.98-102.12-4.98-102.12Z";
+    const neckPath = "M64.08,17.69s1.6-9.09.89-11.05S81.36.94,81.36.94c4.46,11.94,1.07,20.5,1.07,20.5";
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        viewBox: "0 0 141.6 161.42",
+        style: {
+            display: "block",
+            width: "100%",
+            height: "100%"
+        },
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("defs", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-shirt-burn`,
+                        x1: "43",
+                        y1: "35",
+                        x2: "99",
+                        y2: "150",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#03132f",
+                                stopOpacity: "0"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "50%",
+                                stopColor: "#03132f",
+                                stopOpacity: "0.12"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#03132f",
+                                stopOpacity: "0.55"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("radialGradient", {
+                        id: `${id}-shirt-dodge`,
+                        cx: "48",
+                        cy: "25",
+                        r: "100",
+                        gradientUnits: "userSpaceOnUse",
+                        gradientTransform: "translate(48 25) scale(0.65 1) translate(-48 -25)",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#b9e4ff",
+                                stopOpacity: "0.55"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "35%",
+                                stopColor: "#78bfff",
+                                stopOpacity: "0.22"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#78bfff",
+                                stopOpacity: "0"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-shirt-rim`,
+                        x1: "40",
+                        y1: "0",
+                        x2: "100",
+                        y2: "0",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#b9e4ff",
+                                stopOpacity: "0"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "86%",
+                                stopColor: "#b9e4ff",
+                                stopOpacity: "0"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#b9e4ff",
+                                stopOpacity: "0.35"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-neck-burn`,
+                        x1: "72",
+                        y1: "2",
+                        x2: "76",
+                        y2: "22",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#101d3c",
+                                stopOpacity: "0.5"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#101d3c",
+                                stopOpacity: "0.12"
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("linearGradient", {
+                        id: `${id}-neck-dodge`,
+                        x1: "64",
+                        y1: "0",
+                        x2: "83",
+                        y2: "0",
+                        gradientUnits: "userSpaceOnUse",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "0%",
+                                stopColor: "#c5e7ff",
+                                stopOpacity: "0.35"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "35%",
+                                stopColor: "#c5e7ff",
+                                stopOpacity: "0"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "85%",
+                                stopColor: "#c5e7ff",
+                                stopOpacity: "0"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("stop", {
+                                offset: "100%",
+                                stopColor: "#c5e7ff",
+                                stopOpacity: "0.25"
+                            })
+                        ]
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                d: bodyPath,
+                fill: "#d48455",
+                stroke: "#000",
+                strokeMiterlimit: 10
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: shirtPath,
+                        fill: "#063ac6"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: shirtPath,
+                        fill: `url(#${id}-shirt-burn)`,
+                        opacity: lighting.burn
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: shirtPath,
+                        fill: `url(#${id}-shirt-dodge)`,
+                        opacity: lighting.leftLight
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: shirtPath,
+                        fill: `url(#${id}-shirt-rim)`,
+                        opacity: lighting.rightLight
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: shirtPath,
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: neckPath,
+                        fill: "#c87749"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: neckPath,
+                        fill: `url(#${id}-neck-burn)`
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: neckPath,
+                        fill: `url(#${id}-neck-dodge)`
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        d: neckPath,
+                        fill: "none",
+                        stroke: "#000",
+                        strokeMiterlimit: 10
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/YusufFootballSideCharacter/YusufSideFootball.tsx
+
+
+
+
+
+// The same side-view artwork is instanced for the near and far limbs.
+// Each instance has its own pose, inherited joint variables and SVG IDs.
+const YusufSideFootball = ({ headRotation = 0, bodyY = 0, leftArmSwing = 0, rightArmSwing = 0, leftElbowRotation = 0, rightElbowRotation = 0, leftArmScaleY = 1, rightArmScaleY = 1, leftHipRotation = 0, rightHipRotation = 0, leftKneeRotation = 0, rightKneeRotation = 0, leftLegScaleY = 1, rightLegScaleY = 1 })=>{
+    const legStyle = (hip, knee, scaleY, far = false)=>({
+            position: "absolute",
+            left: far ? -61 : -55,
+            top: far ? 268 : 270,
+            width: 196.52,
+            height: 259.89,
+            transformOrigin: "118px 10px",
+            transform: `rotate(${hip}deg) scaleY(${scaleY})`,
+            filter: far ? "brightness(0.8)" : undefined,
+            // The source SVG calls this joint left-knee; each instance supplies its own value.
+            "--yusuf-left-knee": `${knee}deg`
+        });
+    const armStyle = (swing, elbow, scaleY, far = false)=>({
+            position: "absolute",
+            left: far ? 64 : 70,
+            top: far ? 138 : 140,
+            width: 150,
+            height: 150,
+            transformOrigin: "20px 20px",
+            transform: `rotate(${20 + swing}deg) scaleY(${scaleY})`,
+            filter: far ? "brightness(0.8)" : undefined,
+            // The source SVG calls this joint right-elbow; each instance supplies its own value.
+            "--yusuf-right-elbow": `${elbow}deg`
+        });
+    return /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+        style: {
+            position: "relative",
+            width: 200,
+            height: 540
+        },
+        children: /*#__PURE__*/ (0,jsx_runtime.jsxs)("div", {
+            style: {
+                position: "absolute",
+                inset: 0,
+                transform: `translateY(${bodyY}px)`
+            },
+            children: [
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: legStyle(rightHipRotation, rightKneeRotation, rightLegScaleY, true),
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideLegs, {})
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: legStyle(leftHipRotation, leftKneeRotation, leftLegScaleY),
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideLegs, {})
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        left: 0,
+                        top: 115,
+                        width: 141.6,
+                        height: 161.42
+                    },
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideTorso, {})
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: {
+                        position: "absolute",
+                        left: 49,
+                        top: 4,
+                        width: 49.15,
+                        height: 116.6,
+                        transformOrigin: "24px 115px",
+                        transform: `rotate(${headRotation}deg)`
+                    },
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideHead, {})
+                }),
+                /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                    style: armStyle(rightArmSwing, rightElbowRotation, rightArmScaleY),
+                    children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideArms, {})
+                })
+            ]
+        })
+    });
+};
+
+;// CONCATENATED MODULE: ./src/RodeNPCSide/RodeNPCLegs.tsx
+
+const RodeNPCSideLeg = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: "RodeNPCSideLeg",
+        version: "1.1",
+        viewBox: "0 0 137.17 250.07",
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("defs", {
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                    children: `
+          .rode-leg-st0 {
+            opacity: .1;
+          }
+
+          .rode-leg-st0,
+          .rode-leg-st1,
+          .rode-leg-st2,
+          .rode-leg-st3 {
+            isolation: isolate;
+          }
+
+          .rode-leg-st0,
+          .rode-leg-st4,
+          .rode-leg-st5 {
+            fill: #141110;
+          }
+
+          .rode-leg-st1 {
+            fill: #ccc;
+            opacity: .3;
+          }
+
+          .rode-leg-st4,
+          .rode-leg-st6,
+          .rode-leg-st7,
+          .rode-leg-st8,
+          .rode-leg-st9,
+          .rode-leg-st10,
+          .rode-leg-st11,
+          .rode-leg-st12 {
+            stroke-miterlimit: 10;
+          }
+
+          .rode-leg-st4,
+          .rode-leg-st8 {
+            stroke: #fff;
+          }
+
+          .rode-leg-st4,
+          .rode-leg-st10,
+          .rode-leg-st12 {
+            stroke-width: 2px;
+          }
+
+          .rode-leg-st6,
+          .rode-leg-st7,
+          .rode-leg-st9,
+          .rode-leg-st11 {
+            stroke: #000;
+          }
+
+          .rode-leg-st6,
+          .rode-leg-st10 {
+            fill: red;
+          }
+
+          .rode-leg-st7,
+          .rode-leg-st12 {
+            fill: #fff;
+          }
+
+          .rode-leg-st13 {
+            fill: #3fa9f5;
+          }
+
+          .rode-leg-st2 {
+            opacity: .2;
+          }
+
+          .rode-leg-st2,
+          .rode-leg-st14,
+          .rode-leg-st3 {
+            fill: #f7ff00;
+          }
+
+          .rode-leg-st15,
+          .rode-leg-st8 {
+            fill: none;
+          }
+
+          .rode-leg-st16 {
+            fill: #c1272d;
+          }
+
+          .rode-leg-st8 {
+            stroke-width: 3px;
+          }
+
+          .rode-leg-st9 {
+            fill: aqua;
+          }
+
+          .rode-leg-st10 {
+            stroke: #c1272d;
+          }
+
+          .rode-leg-st11 {
+            fill: #d48455;
+          }
+
+          .rode-leg-st12 {
+            stroke: #ed1c24;
+          }
+
+          .rode-leg-st3 {
+            opacity: .05;
+          }
+        `
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Leg_x5F_L",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        id: "Calf_x5F_L",
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            id: "Body_x5F_Calf_x5F_L",
+                            className: "rode-leg-st11",
+                            d: "M84.83,227.75l2.71-42.71c.03-.44.09-.88.19-1.31,1.58-6.75,14.56-65.58-12.6-65.43-.43,0-1.28-.08-1.28-.08,0,0-28.73-1.7-8.92,67.61.12.43.21.87.26,1.31l4.64,40.85c.33,2.89,2.17,5.39,4.8,6.45.06.02.11.05.17.07,4.69,1.83,9.7-1.6,10.03-6.75h0Z"
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                        id: "Foot_x5F_L",
+                        children: [
+                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                id: "Body_x5F_Foot_x5F_L",
+                                className: "rode-leg-st11",
+                                d: "M89.51,225.48c-.75-5.33-5.77-7.95-10.73-7.16-4.48.68-9.25,1.57-13.58,2.87-2.21.66-4.15,1.43-6.17,2.13-6.75,2.13-17.03,2.91-22.68,6.41-2.16,1.32-3.09,3.64-1.23,5.19,2.3,1.68,4.67,1.58,8.17,2.09,5.02.6,10.41,1.02,15.37.98,6.33-.13,12.85.14,19.11,1.16,1.64.24,3.2.71,4.83.67,6.36-.5,7.91-8.98,6.93-14.29v-.04h-.02Z"
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                id: "Shoe_x5F_L",
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        id: "Shoe_x5F_R_x5F_Upper_x5F_Layer",
+                                        className: "rode-leg-st10",
+                                        d: "M86.2,239.17s9.18-.15.95-26.15c0,0-2.77,1.16-3.06,2.55s-5.39,3.63-5.39,3.63c0,0-3.35,2.62-11.88-5.01,0,0,1.75-6.56-.51-6.02,0,0-22.3,16.28-25.73,16.82,0,0-15.6,3.93-14.43,6.71s-1.31,5.01,5.83,6.63l.44,2.85,2.7-.08,1.02-2.24s4.37,1.08,4.96.85,1.17,2.47,1.17,2.47l2.55.15.58-3.01,5.83.23,1.24,2.47,2.84.23.44-2.85,16.84.08,1.53,2.85h2.7l.15-2.85,5.03.08,1.17,2.55h2.62l.44-2.93h-.03Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st9",
+                                        d: "M59.02,187.01"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        id: "Shoe_x5F_R_x5F_Lower_x5F_Layer",
+                                        className: "rode-leg-st16",
+                                        d: "M40.92,224.64c.74.3,3.2,1.15,5.37.3.22-.09.39-.27.46-.51.16-.55.69-1.47,2.3-.3.15.11.32.15.5.13.44-.05,1.26-.39,2.2-1.92.17-.28.49-.42.8-.35l1.4.32c.36.08.71-.12.86-.47.36-.83,1.26-2.14,3.33-1.55.31.09.64-.04.82-.31l.89-1.33c.22-.32.62-.43.96-.26l2.08,1.07c.38.2.85.03,1.03-.38,0,0,0-.02.01-.03.26-.62,1.1-.62,1.38,0,1.57,3.45,4.66,8.19,9.59,7.59h.18c1.04.15,10.67,1.6,8.48,3.92-2.31,2.45-18.52,9.72-49.94,5.12,0,0-19.77-3.69,6.81-11.06.15-.04.32-.03.47.03h.02,0Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                        id: "Shoe_x5F_Laces",
+                                        children: [
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "rode-leg-st4",
+                                                d: "M56.97,214.87s1.24,4.47,1.82,3.63"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "rode-leg-st4",
+                                                d: "M53.76,217.03s.36,2.21,1.9,3.32"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "rode-leg-st4",
+                                                d: "M51.21,218.88s-.8,2.7,1.38,3.09"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "rode-leg-st4",
+                                                d: "M48.52,220.5s-.07,2.31,1.24,2.62"
+                                            }),
+                                            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                                className: "rode-leg-st4",
+                                                d: "M44.87,222.97s.07,1.85.73,2.08"
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st1",
+                                        d: "M42.42,225.79c.81-.43,2.33-.65,2.38.31.1,1.71,3.12,3.79,6.99,4.23,6.63.75,19.45,4.11,19.45,4.54h0c.02.75-.48,1.39-1.18,1.44-4.03.24-13.7.8-14.95.8-1.58,0-22.78-2.33-21.63-4.63.86-1.7,5.32-4.77,8.94-6.69h0Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st13",
+                                        d: "M134.23,252.07"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                        className: "rode-leg-st16",
+                                        points: "84.8 240.2 80.79 240.3 81.68 241.91 84.54 241.88 84.8 240.2"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                        className: "rode-leg-st16",
+                                        points: "73.61 240.43 69.56 240.53 70.45 242.14 73.52 242.1 73.61 240.43"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                        className: "rode-leg-st16",
+                                        points: "55.36 240.36 51.92 240.47 52.53 241.84 55.14 242.04 55.36 240.36"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                        className: "rode-leg-st16",
+                                        points: "44.96 240.44 42.05 240.54 42.42 242 44.64 242.11 44.96 240.44"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("polygon", {
+                                        className: "rode-leg-st16",
+                                        points: "35.6 239.51 32.36 239.35 32.59 240.94 34.99 240.87 35.6 239.51"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st16",
+                                        d: "M44.88,235.33c.1.41-.12.82-.5.93-.91.27-2.56.7-4.1.84-2.26.21-11.15-.9-13.41-4.14s2.12-3.6,13.78-7.88c.11-.04.23-.05.34-.04l2.21.33c.72.11.85,1.16.18,1.46h0c-.33.15-.51.53-.41.9l1.92,7.59h0Z"
+                                    })
+                                ]
+                            }),
+                            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                                id: "Socks_x5F_L",
+                                children: [
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st7",
+                                        d: "M61.16,164.92l29.7-2.38-5.47,50.61s-2.08,2.56-4.75,4.99c-3.41,3.1-8.27,2.05-12.53-2.94l-6.96-50.29h0Z"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st7",
+                                        d: "M2.47,160.64"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st12",
+                                        d: "M63.88,169.2s15.54,3.44,24.37-2.27"
+                                    }),
+                                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                                        className: "rode-leg-st12",
+                                        d: "M65.72,178.21s13.82,2.3,21.78-1.94"
+                                    })
+                                ]
+                            })
+                        ]
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                        id: "Body_x5F_Thigh_x5F_L",
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                            id: "Body_x5F_Thigh_x5F_L1",
+                            className: "rode-leg-st11",
+                            d: "M91.65,4.01l-.64,4.56,2.67.53s11.57.66,16.91,8.95c4.91,7.61-16.88,60.78-20.47,69.43-.32.77-.45,1.62-.37,2.46.57,6.12,2.63,32.48-3.59,35.77-7.04,3.73-16.17,2.81-23.25-2.96,0,0-.51-3.34-.72-7.93-.25-5.55.61-11.15,2.51-16.35,1.21-3.31,2.35-8.2,1.58-13.74-2.49-17.75-7.69-36.9-2.77-54.29,2.18-7.7,4.45-15.04,6.14-18.7,0,0,.48-5.87,20.7-3.34l1.3-4.39h0Z"
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "Shorts_x5F_L",
+                        className: "rode-leg-st6",
+                        d: "M103.57,92.23c-2.16,5.67-10.56,9.34-17.32,11.47-5.08,1.54-9.34,1.32-14.08,1.02-4.27-.32-8.99-.66-12.4-2.62-6-3.52-6.49-8.72-6.51-14.29-.11-2.34-.26-5.32-.42-8.72-.98-20.71-2.64-53.46-3.04-62.87-.06-2.8.95-5.62,3.3-8.4,3.62-4.07,9.49-5.49,15.3-5.3,4.91.11,12.2.38,17.66.56,7.12.29,11.03.1,15.31,1.65,6.88,2.32,11.6,8.81,10.55,14.53-1.42,11.26-5.56,55.67-8.33,72.88l-.04.09h.02Z"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "LEGS_x5F_SHADOW_x5F_L",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("line", {
+                        className: "rode-leg-st8",
+                        x1: "106.45",
+                        y1: "5.9",
+                        x2: "95.85",
+                        y2: "97.06"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st15",
+                        d: "M122.22,15.61"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st0",
+                        d: "M58.16,3.29l27.09,97.73s-30.92,7.23-29.93-12.62-3.97-78.16-3.97-78.16l6.24-7.8"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st0",
+                        d: "M64.15,104.58c3.45.63,12.4-1.85,12.36,1.66l.14,114.13c0,.09-8.3-3.47-8.32-3.56-1.6-7.26-15.53-66.58-6.65-84.12.4-.78-.93,4.84-.85,3.97.54-6.08,4.33-35.28,7.65-34.67.04,0-4.36,2.58-4.32,2.59Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st5",
+                        d: "M0,76.34"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Highlights",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st2",
+                        d: "M108.51,66.98s-2.98,24.96-4.68,26.1l-5.96,3.97L108.22,5.99s5.39,3.69,5.11,8.94-4.82,52.06-4.82,52.06h0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st14",
+                        d: "M137.17,45.99"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-leg-st3",
+                        d: "M92.23,100.88l-6.68,24.26-.29,36.31,9.01-1.42s1.36-32.91-3.88-34.89c0,0,5.33-20.71,1.84-24.26h0Z"
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/RodeNPCSide/RodeNPCHead.tsx
+
+const RodeNPCHead = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: "RodeNPCHead",
+        version: "1.1",
+        viewBox: "0 0 220.22 137.29",
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("defs", {
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                    children: `
+          .rode-head-st0,
+          .rode-head-st1,
+          .rode-head-st2,
+          .rode-head-st3,
+          .rode-head-st4,
+          .rode-head-st5,
+          .rode-head-st6,
+          .rode-head-st7,
+          .rode-head-st8 {
+            stroke-miterlimit: 10;
+          }
+
+          .rode-head-st0,
+          .rode-head-st1,
+          .rode-head-st2,
+          .rode-head-st3,
+          .rode-head-st4,
+          .rode-head-st6,
+          .rode-head-st7,
+          .rode-head-st8 {
+            stroke: #000;
+          }
+
+          .rode-head-st0,
+          .rode-head-st5,
+          .rode-head-st6,
+          .rode-head-st8 {
+            fill: none;
+          }
+
+          .rode-head-st1,
+          .rode-head-st3 {
+            fill: #fff;
+          }
+
+          .rode-head-st3,
+          .rode-head-st9 {
+            opacity: .5;
+          }
+
+          .rode-head-st4 {
+            fill: #141110;
+          }
+
+          .rode-head-st5 {
+            stroke: #1b0000;
+          }
+
+          .rode-head-st6 {
+            stroke-width: 3px;
+          }
+
+          .rode-head-st7 {
+            fill: #d48455;
+          }
+
+          .rode-head-st8 {
+            stroke-width: 7px;
+          }
+        `
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                id: "Head",
+                className: "rode-head-st7",
+                d: "M112.57,123.64c-9.55-.36-20.97,1.97-18.55-74.92.62-19.69,10.45-33.75,20-33.39s18.8,15.12,19.39,34.88c2.43,81.07-11.29,73.79-20.84,73.42"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "R_ear",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st7",
+                        d: "M135.42,75.66s3.71,4.67-1.37,5.42"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st7",
+                        d: "M131.57,87.94c18.56-8.88,1.52-22.79,1.52-22.79"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-head-st5",
+                d: "M107.18,100.88c-1.89,4.22-6.46,6.44-10.93,6.51"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Eye_L",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st1",
+                        d: "M103.7,79.55l-5.02-.07c-2.63-.04-4.7-3.63-4.63-8.02h0c.08-4.39,2.27-7.93,4.9-7.89l5.02.07c2.63.04,4.7,3.63,4.63,8.02h0c-.08,4.39-2.27,7.93-4.9,7.89Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("ellipse", {
+                        className: "rode-head-st2",
+                        cx: "101.22",
+                        cy: "73.91",
+                        rx: "1.38",
+                        ry: ".83",
+                        transform: "translate(25.41 173.7) rotate(-88.91)"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st7",
+                        d: "M108.27,67.31l-13.84.06s1.14-4.54,5.84-4l4.27.13s3.1.38,3.73,3.82Z"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Nose_Yusuf",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "nostril_R",
+                        className: "rode-head-st0",
+                        d: "M101.44,94.11"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "nostril_R1",
+                        "data-name": "nostril_R",
+                        className: "rode-head-st0",
+                        d: "M104.85,89.23"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "nostril_L",
+                        className: "rode-head-st7",
+                        d: "M94.47,84.07s-5.99,10.35,1.01,10.04"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                className: "rode-head-st9",
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                    className: "rode-head-st1",
+                    d: "M93.27,72.82"
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Eyebrow_R",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("line", {
+                        className: "rode-head-st0",
+                        x1: "98.95",
+                        y1: "53.64",
+                        x2: "119.34",
+                        y2: "54.02"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st0",
+                        d: "M118.98,54.13c.13-.27,2.11-.09,1.96,1.79"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-head-st0",
+                        d: "M99.65,53.76c-.12-.27-2.1-.17-2.03,1.73"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                id: "R_ear1",
+                "data-name": "R_ear",
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                    className: "rode-head-st7",
+                    d: "M135.87,75.26s3.71,4.67-1.37,5.42"
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-head-st3",
+                d: "M121.2,68.62"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-head-st3",
+                d: "M111.28,70.76"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-head-st4",
+                d: "M0,0"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "Chin_patch",
+                        className: "rode-head-st8",
+                        d: "M101.36,112.68h0c3.8,8.91,9.88,7.26,15.97,7.94l.73.08"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        id: "Mustache",
+                        className: "rode-head-st6",
+                        d: "M95.44,98.38l4.84-1.1c1.75-.4,3.55-.5,5.33-.3l6.3.69"
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/RodeNPCSide/RodeNPCTorso.tsx
+
+const RodeNPCTorso = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: "RodeNPCTorso",
+        version: "1.1",
+        viewBox: "-3 0 65 161.42",
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("defs", {
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                    children: `
+          .rode-torso-st0,
+          .rode-torso-st1,
+          .rode-torso-st2 {
+            stroke: #000;
+            stroke-miterlimit: 10;
+          }
+
+          .rode-torso-st0 {
+            fill: red;
+          }
+
+          .rode-torso-st1 {
+            fill: #c87749;
+          }
+
+          .rode-torso-st2 {
+            fill: #d48455;
+          }
+        `
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                id: "RodeNPC_Torso_component",
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                    className: "rode-torso-st2",
+                    d: "M7.58,32.09c1.09-8.11,8.67-13.11,14.96-13.57,5.76-.37,11.72,1.17,17.52,2.03,6.77,1,11.53,2.9,14.5,11.41,1.29,3.33,1.33,6.67,1.31,10.36.18,19.17.54,50.77,1.84,66.89.23,2.98.8,6.41,1.06,8.71.33,3.22.28,4.4.69,8.41.59,6.91,1.21,17.21-1.95,23.68-2.2,4.49-5.83,5.93-10.13,7.31-11.41,3.58-27.15,4.35-37.32-.85-6.5-2.89-8.99-10.26-9.35-19.32-.33-5.97.07-10.52.77-15.97,1.1-8.97,3.62-30.36,4.2-43.66.31-6.2-.04-10.97.22-16.92.49-8.84.97-19.68,1.67-28.4v-.11Z"
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-torso-st0",
+                d: "M55.43,34.26s-.06-.27-.18-.73c-.8-2.93-4.4-13.65-13.91-12.11,0,0-27.52-10.51-33.72,3.92,0,0-2.44,41.35-1.69,46.34S-2.34,139.41,1.42,141.37c0,0-2.82,25.66,36.63,18.18,0,0,24.14,3.39,22.35-23.17s-4.98-102.12-4.98-102.12Z"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-torso-st1",
+                d: "M25.05,17.33s1.6-9.09.89-11.05S42.33.58,42.33.58c4.46,11.94,1.07,20.5,1.07,20.5"
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/RodeNPCSide/RodeNPCArms.tsx
+
+const RodeNPCArms = ()=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        id: "RodeNPCArms",
+        version: "1.1",
+        viewBox: "0 0 188.37 200",
+        style: {
+            width: "100%",
+            height: "100%"
+        },
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("defs", {
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("style", {
+                    children: `
+          .rode-arm-st0,
+          .rode-arm-st1,
+          .rode-arm-st2,
+          .rode-arm-st3 {
+            stroke-miterlimit: 10;
+          }
+
+          .rode-arm-st0,
+          .rode-arm-st1,
+          .rode-arm-st3 {
+            stroke: #000;
+          }
+
+          .rode-arm-st0,
+          .rode-arm-st4,
+          .rode-arm-st5 {
+            fill: #141110;
+          }
+
+          .rode-arm-st0,
+          .rode-arm-st6 {
+            opacity: 0;
+          }
+
+          .rode-arm-st1,
+          .rode-arm-st7 {
+            fill: red;
+          }
+
+          .rode-arm-st7 {
+            stroke: #1b0000;
+          }
+
+          .rode-arm-st8,
+          .rode-arm-st6 {
+            fill: #f7ff00;
+          }
+
+          .rode-arm-st2 {
+            stroke: #111;
+          }
+
+          .rode-arm-st2,
+          .rode-arm-st3 {
+            fill: #d48455;
+          }
+
+          .rode-arm-st5 {
+            opacity: .3;
+          }
+     
+        `
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "R_hand",
+                transform: "rotate(45 72 70)",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M123.5,139.67c.27-5.01,2.5-8.9,6.7-11.66,4.1-2.88,8.15-3.82,12.17-2.8l3.22,4.04c1.22,2.86-4.1,2.77-6,10.53-1.84,7.52-9.41,5.58-12.58,4.28l-3.5-4.4Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M143.4,124.78c.36,3.96,2.17,6.44,5.42,7.44,2.09.35,3.29-.42,3.58-2.3-.61-1.88-2.31-3.38-5.07-4.49-1.11-.46-2.18-.73-3.21-.81l-.72.16Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M131.29,146.04c-1.26.21-1.83,1.31-1.7,3.29.12,2.48.54,4.41,1.27,5.79.46.92,1.15,1.21,2.09.85.74-.32.96-1.11.65-2.36-.17-2.77-.41-5.13-.74-7.07-.31-.65-.84-.81-1.58-.48Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M135.97,144.82c-1,.8-.87,2.08.41,3.84,2.18,3.05,4.19,5.42,6.04,7.1,1.03.82,1.91.81,2.63-.02.57-.71.33-1.65-.73-2.82-2.1-3.11-4.18-5.88-6.22-8.28-.77-.65-1.48-.59-2.13.18Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M140.63,138.79c-1,.8-.87,2.08.41,3.84,2.61,3.59,5.21,6.69,7.79,9.3,1.09.89,2.04.9,2.84,0,.57-.71.3-1.69-.83-2.94-3.27-4.58-5.93-8.07-7.97-10.48-.77-.65-1.52-.56-2.24.27Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st2",
+                        d: "M143.9,133.76c-1,.8-.83,2.05.52,3.74,2.26,2.99,4.46,5.52,6.62,7.59,1.03.82,1.91.81,2.63-.02.57-.71.33-1.65-.73-2.82-2.49-3.44-4.75-6.36-6.8-8.77-.77-.65-1.52-.56-2.24.27Z"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                id: "Forearm_x5F_R",
+                transform: "rotate(45 72 70)",
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                    id: "Forearm_R",
+                    className: "rode-arm-st3",
+                    d: "M72.6,61.6l-9.78,8.77c-1.22,1.1-.37,4.34,2.26,8.62h0c2.25,3.66,5.57,7.7,9.11,11.08l42.11,40.19c4.17,3.98,7.9,5.96,9.14,4.86l5.36-4.81c1.09-.98-.19-4.36-3.18-8.39l-31.79-42.9c-4.23-5.71-9.74-11.25-14.56-14.65h0c-4.16-2.93-7.34-3.94-8.67-2.75Z"
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("g", {
+                id: "Upper_x5F_Arm_x5F_R",
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                    id: "Upper_x5F_Arm_x5F_R1",
+                    "data-name": "Upper_x5F_Arm_x5F_R",
+                    className: "rode-arm-st3",
+                    d: "M25.23,10.78l-12.39,11.11c-1.55,1.39-1.11,4.78,1.15,9.01h0c1.94,3.63,5.02,7.49,8.45,10.59l40.85,36.98c4.04,3.66,7.92,5.22,9.49,3.82l6.8-6.1c1.38-1.24,2.56-10.83-.15-14.75l-30.9-35.47c-3.83-5.53-9.13-10.68-14.01-13.61h0c-4.27-2.47-9.48-1.57-9.3-1.6Z"
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                className: "rode-arm-st7",
+                d: "M77.2,57.44c2.65,3.66,4.39,7.91,4.99,12.39,1.21,9.02-6.03,20.58-23.47,8.99C33.98,62.39,1.05,29.22,13.43,20.88c1.28-.86,2.44-1.89,3.56-2.95,3.47-3.29,9.98-8.91,13.04-7.9,4.12,1.37,18.31,7.53,47.18,47.41Z"
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Shoulder_x5F_R",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st1",
+                        d: "M32.93,6.68l-3.67-1.73-12.82,1.8c-1.87.42-3.23,1.91-4.07,4.45l-3.59,11.04c-1.32,4.28-1.52,8.26-.61,11.95l10.49,4.94L32.93,6.68Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st1",
+                        d: "M23.72,6.58c1.06-.48.95-1.35-.33-2.6-3.14-2.46-6.39-1.95-9.75,1.53L4.32,21.93c-1.42,2.6-1.08,4.39,1.01,5.37l3.85,1.81c1.86.88,3.57-.12,5.11-2.98L23.72,6.58Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st7",
+                        d: "M18.67,39.13s-39.92-8.78-1.42-36.35c0,0,36.59-15.94,1.42,36.35Z"
+                    })
+                ]
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)("g", {
+                id: "Details",
+                transform: "rotate(45 72 70)",
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st0",
+                        d: "M121.51,134.77c.08-.63.28-1.24.61-1.8.09-.15.21-.28.31-.42L6.89,14.19c-11.39,19.43,11.78,24.94,11.78,24.94-1.9,10.92,50.02,45.04,49.31,45.04-.53,0,32.64,31.66,53.49,50.59.01,0,.03,0,.04,0Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st0",
+                        d: "M5.96,13.24l.93.95c.77-1.32,1.71-2.7,2.82-4.16l-3.74,3.21Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st4",
+                        d: "M111.91,151.96"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st5",
+                        d: "M5.49,13.78S-1.11,22.27,1.03,25.9s1.01,4.46,5.76,7.49c0,0-6.12-16.63-1.31-19.6Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st6",
+                        d: "M16.12,3.89l112.72,127.51s3.21-1.6-.27-6.77c-1.1-1.64-16.12-24.2-30.21-41.08C68.01,47.2,25.99,2.01,24.23,1.03c-2.58-1.43-8.11,2.85-8.11,2.85Z"
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)("path", {
+                        className: "rode-arm-st8",
+                        d: "M188.37,49.78"
+                    })
+                ]
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/RodeNPCSide/RodeNPCSideCharacter.tsx
+
+
+
+
+
+const RodeNpcCharacter = (props)=>{
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                style: {
+                    position: "absolute",
+                    left: 1200,
+                    top: 300,
+                    width: 200,
+                    height: 300
+                },
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(RodeNPCHead, {
+                    ...props
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                style: {
+                    position: "absolute",
+                    width: 70,
+                    height: 100,
+                    left: 1265,
+                    top: 409
+                },
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(RodeNPCTorso, {
+                    ...props
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                style: {
+                    position: "absolute",
+                    left: 1218,
+                    top: 574,
+                    width: 140,
+                    height: 300
+                },
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(RodeNPCSideLeg, {
+                    ...props
+                })
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)("div", {
+                style: {
+                    position: "absolute",
+                    left: 1302,
+                    top: 437,
+                    width: 150,
+                    height: 150,
+                    transform: "rotate(20deg)",
+                    transformOrigin: "20px 20px"
+                },
+                children: /*#__PURE__*/ (0,jsx_runtime.jsx)(RodeNPCArms, {
+                    ...props
+                })
+            })
+        ]
+    });
+};
+
+;// CONCATENATED MODULE: ./src/environments/Episode3StreetTest.tsx
+
+
+
+
+
+
+
+
+const Episode3StreetTest_integration = {
+    contactShadow: true,
+    ambientLight: "stadiumNight",
+    keyLight: "stadium",
+    castShadow: "stadium"
+};
+const Episode4FootballRunTest = ()=>{
+    const frame = (0,esm/* .useCurrentFrame */.UC)();
+    // Keep your existing RunAnimation call convention; offset the NPC by 8 frames.
+    const yusufRunPose = yusufPose(RunAnimation(frame, 30));
+    const npcRunPose = yusufPose(RunAnimation(frame + 8, 30));
+    return /*#__PURE__*/ (0,jsx_runtime.jsxs)(esm/* .AbsoluteFill */.H1, {
+        children: [
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(Episode4Stadium, {}),
+            /*#__PURE__*/ (0,jsx_runtime.jsxs)(esm/* .AbsoluteFill */.H1, {
+                style: {
+                    zIndex: 5
+                },
+                children: [
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: 720,
+                        y: 300,
+                        width: 200,
+                        groundX: 45,
+                        groundY: 514,
+                        integration: Episode3StreetTest_integration,
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(YusufSideFootball, {
+                            ...yusufRunPose
+                        })
+                    }),
+                    /*#__PURE__*/ (0,jsx_runtime.jsx)(SceneMaster, {
+                        x: 1900,
+                        y: 300,
+                        width: 200,
+                        groundX: 45,
+                        groundY: 514,
+                        integration: Episode3StreetTest_integration,
+                        children: /*#__PURE__*/ (0,jsx_runtime.jsx)(RodeNpcCharacter, {
+                            ...npcRunPose
+                        })
+                    })
+                ]
+            })
+        ]
+    });
+};
+
 ;// CONCATENATED MODULE: ./src/Root.tsx
+
+
 
 
 
 
 // import { HandPoseTest } from "./handPoseTest";
 const EPISODE_2_SCENE_1_DURATION = 17400;
+const EPISODE_3_DURATION = 12400;
 const RemotionRoot = ()=>{
     return /*#__PURE__*/ (0,jsx_runtime.jsxs)(jsx_runtime.Fragment, {
         children: [
@@ -50995,6 +57681,22 @@ const RemotionRoot = ()=>{
                 id: "Episode2",
                 component: Episode2Master,
                 durationInFrames: EPISODE_2_SCENE_1_DURATION,
+                fps: 60,
+                width: 1920,
+                height: 1080
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Composition */.BO, {
+                id: "Episode3",
+                component: Episode3Master,
+                durationInFrames: EPISODE_3_DURATION,
+                fps: 60,
+                width: 1920,
+                height: 1080
+            }),
+            /*#__PURE__*/ (0,jsx_runtime.jsx)(esm/* .Composition */.BO, {
+                id: "StreetTest",
+                component: Episode4FootballRunTest,
+                durationInFrames: 120,
                 fps: 60,
                 width: 1920,
                 height: 1080
@@ -51223,7 +57925,7 @@ var renderContent = (Root) => {
     renderToDOM(/* @__PURE__ */ (0,react_jsx_runtime__rspack_import_5.jsx)("div", {
       children: /* @__PURE__ */ (0,react_jsx_runtime__rspack_import_5.jsx)(DelayedSpinner, {})
     }));
-    __webpack_require__.e(/* import() */ "170").then(__webpack_require__.bind(__webpack_require__, 8665)).then(({ StudioInternals }) => {
+    __webpack_require__.e(/* import() */ "957").then(__webpack_require__.bind(__webpack_require__, 6364)).then(({ StudioInternals }) => {
       window.remotion_isStudio = true;
       window.remotion_isReadOnlyStudio = true;
       window.remotion_inputProps = "{}";
@@ -96251,7 +102953,7 @@ __webpack_require__.ruid = "bundler=rspack@1.7.11";
 // Load entry module and return exports
 // This entry module is referenced by other modules so it can't be inlined
 __webpack_require__(6507);
-__webpack_require__(2413);
+__webpack_require__(6788);
 __webpack_require__(3610);
 var __webpack_exports__ = __webpack_require__(3482);
 })()

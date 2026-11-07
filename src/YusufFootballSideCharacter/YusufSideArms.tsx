@@ -1,7 +1,10 @@
 import { useId } from "react";
 // Use the SAME SceneMaster module that provides this character's lighting.
 import { useCharacterLighting } from "../scenes/sceneCharacter";
-export const YusufSideArms = () => {
+
+type Props = { shirtColor?: string,skinColor?: string };
+
+export const YusufSideArms = ({ shirtColor = "#063ac6",skinColor = "#d48455" }: Props) => {
   const id = `yusuf-arm-${useId().replace(/:/g, "")}`;
   const lighting = useCharacterLighting();
   const left = Math.max(0, Math.min(1, lighting.leftLight));
@@ -34,8 +37,8 @@ export const YusufSideArms = () => {
           #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st5 { opacity: .1; }
           #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st0, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { stroke: #000; }
           #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1 { stroke: #111; }
-          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { fill: #d48455; }
-          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st7 { fill: #063ac6; stroke: #1b0000; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st1, #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st2 { fill: ${skinColor}; }
+          #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st7 { fill: ${shirtColor}; stroke: #1b0000; }
           #${id}-Yusuf_x5F_Side_x5F_Arm .arm-st4 { opacity: .3; }
         `}</style>
       </defs>
